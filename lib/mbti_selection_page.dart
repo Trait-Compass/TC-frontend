@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'calendar_selection_page.dart'; // 달력 선택 페이지 파일을 import
+import 'loginpage.dart'; // 로그인 페이지 파일을 import
 
 class MBTISelectionApp extends StatelessWidget {
   @override
@@ -35,6 +36,7 @@ class MBTISelectionPage extends StatefulWidget {
 
 class _MBTISelectionPageState extends State<MBTISelectionPage> {
   List<String> selectedMBTI = [];
+  int _selectedIndex = 0;
 
   void toggleSelection(String mbti) {
     setState(() {
@@ -55,6 +57,19 @@ class _MBTISelectionPageState extends State<MBTISelectionPage> {
             mbti: selectedMBTI.join(),
           ),
         ),
+      );
+    }
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+    if (index == 2) {
+      // '내 정보' 탭이 클릭되었을 때
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => LoginScreen()),
       );
     }
   }
@@ -154,14 +169,18 @@ class _MBTISelectionPageState extends State<MBTISelectionPage> {
             label: '홈',
           ),
           BottomNavigationBarItem(
-            icon: Image.asset('assets/location1.png', height: 30), // 여행 일정 아이콘 경로
+            icon:
+                Image.asset('assets/location1.png', height: 30), // 여행 일정 아이콘 경로
             label: '여행 일정',
           ),
           BottomNavigationBarItem(
-            icon: Image.asset('assets/myprofile.png', height: 30), // 내 정보 아이콘 경로
+            icon:
+                Image.asset('assets/myprofile.png', height: 30), // 내 정보 아이콘 경로
             label: '내 정보',
           ),
         ],
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
       ),
     );
   }

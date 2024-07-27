@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'creataccount.dart'; // SignupScreen 파일을 import
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -30,12 +31,9 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              'MBTrip',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+            Image.asset(
+              'assets/mbtilogo.jpg', // 여기에 로고 이미지의 경로를 넣으세요.
+              height: 100, // 이미지의 높이를 적절히 조절하세요.
             ),
             SizedBox(height: 24),
             TextField(
@@ -130,7 +128,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   },
                   child: Text('아이디 찾기'),
                   style: TextButton.styleFrom(
-                    foregroundColor: Colors.black, // 텍스트 색상을 검정색으로 변경
+                    foregroundColor: Colors.grey, // 텍스트 색상을 검정색으로 변경
                     textStyle: TextStyle(fontSize: 12), // 글씨 크기를 작게 설정
                   ),
                 ),
@@ -144,7 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   },
                   child: Text('비밀번호 찾기'),
                   style: TextButton.styleFrom(
-                    foregroundColor: Colors.black, // 텍스트 색상을 검정색으로 변경
+                    foregroundColor: Colors.grey, // 텍스트 색상을 검정색으로 변경
                     textStyle: TextStyle(fontSize: 12), // 글씨 크기를 작게 설정
                   ),
                 ),
@@ -154,11 +152,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 TextButton(
                   onPressed: () {
-                    // 회원가입 로직 추가
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SignupScreen()),
+                    );
                   },
                   child: Text('회원가입'),
                   style: TextButton.styleFrom(
-                    foregroundColor: Colors.black, // 텍스트 색상을 검정색으로 변경
+                    foregroundColor: Colors.grey, // 텍스트 색상을 검정색으로 변경
                     textStyle: TextStyle(fontSize: 12), // 글씨 크기를 작게 설정
                   ),
                 ),
