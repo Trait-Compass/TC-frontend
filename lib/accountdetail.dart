@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'MBTIselection.dart'; // MBTIselection.dart 파일을 import
 import 'MBTItestpage.dart'; // MBTItestpage.dart 파일을 import
 
 class UserInfoScreen extends StatefulWidget {
@@ -11,6 +12,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   final TextEditingController _mbtiController = TextEditingController();
   String _gender = '';
   bool isButtonEnabled = false;
+  bool isMBTISelectionVisible = false;
 
   void _updateButtonState() {
     setState(() {
@@ -55,6 +57,19 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
       context,
       MaterialPageRoute(builder: (context) => MBTItestpage()),
     );
+  }
+
+  void _showMBTISelection() {
+    setState(() {
+      isMBTISelectionVisible = !isMBTISelectionVisible;
+    });
+  }
+
+  void _selectMBTI(String mbti) {
+    setState(() {
+      _mbtiController.text = mbti;
+      isMBTISelectionVisible = false;
+    });
   }
 
   @override
@@ -181,42 +196,47 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                       fontSize: screenHeight * 0.02,
                                       fontWeight: FontWeight.bold),
                                 ),
-                                Container(
-                                  height: screenHeight * 0.06,
-                                  child: TextField(
-                                    controller: _mbtiController,
-                                    decoration: InputDecoration(
-                                      hintText: 'MBTI를 설정해주세요',
-                                      hintStyle: TextStyle(
+                                GestureDetector(
+                                  onTap: _showMBTISelection,
+                                  child: Container(
+                                    height: screenHeight * 0.06,
+                                    decoration: BoxDecoration(
+                                      color: Color(0xFFF1F2F3),
+                                      border: Border.all(
+                                        color: Color(0xFFF1F2F3),
+                                      ),
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    alignment: Alignment.centerLeft,
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: screenWidth * 0.04),
+                                    child: Text(
+                                      _mbtiController.text.isEmpty
+                                          ? 'MBTI를 설정해주세요'
+                                          : _mbtiController.text,
+                                      style: TextStyle(
                                         fontSize: screenHeight * 0.017,
-                                        color: Color(0xFF676767),
+                                        color: _mbtiController.text.isEmpty
+                                            ? Color(0xFF676767)
+                                            : Colors.black,
                                       ),
-                                      filled: true,
-                                      fillColor: Color(0xFFF1F2F3),
-                                      border: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: Color(
-                                              0xFFF1F2F3), // 테두리 색상을 변경합니다.
-                                        ),
-                                      ),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: Color(
-                                              0xFFF1F2F3), // 테두리 색상을 변경합니다.
-                                        ),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: Color(
-                                              0xFFF1F2F3), // 테두리 색상을 변경합니다.
-                                        ),
-                                      ),
-                                      contentPadding: EdgeInsets.symmetric(
-                                          horizontal: screenWidth * 0.04),
                                     ),
                                   ),
                                 ),
                                 SizedBox(height: screenHeight * 0.01),
+                                if (isMBTISelectionVisible)
+                                  Container(
+                                    height: screenHeight * 0.3, // 4개의 박스 높이
+                                    child: MBTISelection(
+                                      onSelectMBTI: _selectMBTI,
+                                      boxHeight: screenHeight * 0.06,
+                                      boxWidth: double.infinity,
+                                      textStyle: TextStyle(
+                                        fontSize: screenHeight * 0.017,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
                                 Container(
                                   alignment: Alignment.centerRight,
                                   child: Column(
