@@ -62,6 +62,9 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
+
     return MaterialApp(
       theme: ThemeData(
         fontFamily: 'Pretendard', // 전체 글씨체를 Pretendard로 설정
@@ -70,8 +73,8 @@ class _SignupScreenState extends State<SignupScreen> {
         backgroundColor: Colors.white,
         body: Center(
           child: Container(
-            width: 360,
-            height: 800,
+            width: screenWidth * 0.9,
+            height: screenHeight * 0.8,
             padding: const EdgeInsets.all(32.0),
             child: SingleChildScrollView(
               child: Column(
@@ -79,36 +82,37 @@ class _SignupScreenState extends State<SignupScreen> {
                 children: <Widget>[
                   Image.asset(
                     'assets/mbtilogo.jpg', // 여기에 로고 이미지의 경로를 넣으세요.
-                    height: 100, // 이미지의 높이를 적절히 조절하세요.
+                    height: screenHeight * 0.1, // 이미지의 높이를 적절히 조절하세요.
                   ),
-                  SizedBox(height: 24),
+                  SizedBox(height: screenHeight * 0.03),
                   Text(
                     '회원가입',
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: screenHeight * 0.03,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 24),
+                  SizedBox(height: screenHeight * 0.03),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         '아이디',
                         style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+                            fontSize: screenHeight * 0.02,
+                            fontWeight: FontWeight.bold),
                       ),
                       Row(
                         children: [
                           Expanded(
                             child: Container(
-                              height: 47,
+                              height: screenHeight * 0.06,
                               child: TextField(
                                 controller: _idController,
                                 decoration: InputDecoration(
                                   hintText: '아이디 또는 이메일을 입력해주세요',
                                   hintStyle: TextStyle(
-                                    fontSize: 14,
+                                    fontSize: screenHeight * 0.017,
                                     color: Color(0xFF676767),
                                   ),
                                   filled: true,
@@ -131,23 +135,23 @@ class _SignupScreenState extends State<SignupScreen> {
                                           Color(0xFFF1F2F3), // 테두리 색상을 변경합니다.
                                     ),
                                   ),
-                                  contentPadding:
-                                      EdgeInsets.symmetric(horizontal: 16),
+                                  contentPadding: EdgeInsets.symmetric(
+                                      horizontal: screenWidth * 0.04),
                                 ),
                                 keyboardType: TextInputType.emailAddress,
                               ),
                             ),
                           ),
-                          SizedBox(width: 8),
+                          SizedBox(width: screenWidth * 0.02),
                           Container(
-                            width: 70,
-                            height: 47,
+                            width: screenWidth * 0.2,
+                            height: screenHeight * 0.06,
                             child: ElevatedButton(
                               onPressed: _checkDuplicate,
                               child: Text(
                                 '중복 확인',
                                 style: TextStyle(
-                                  fontSize: 12,
+                                  fontSize: screenHeight * 0.017,
                                   color: Colors.black,
                                 ),
                               ),
@@ -163,20 +167,21 @@ class _SignupScreenState extends State<SignupScreen> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 16),
+                      SizedBox(height: screenHeight * 0.02),
                       Text(
                         '비밀번호',
                         style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+                            fontSize: screenHeight * 0.02,
+                            fontWeight: FontWeight.bold),
                       ),
                       Container(
-                        height: 47,
+                        height: screenHeight * 0.06,
                         child: TextField(
                           controller: _passwordController,
                           decoration: InputDecoration(
                             hintText: '비밀번호를 입력해주세요',
                             hintStyle: TextStyle(
-                              fontSize: 14,
+                              fontSize: screenHeight * 0.017,
                               color: Color(0xFF676767),
                             ),
                             filled: true,
@@ -196,26 +201,27 @@ class _SignupScreenState extends State<SignupScreen> {
                                 color: Color(0xFFF1F2F3), // 테두리 색상을 변경합니다.
                               ),
                             ),
-                            contentPadding:
-                                EdgeInsets.symmetric(horizontal: 16),
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: screenWidth * 0.04),
                           ),
                           obscureText: true,
                         ),
                       ),
-                      SizedBox(height: 16),
+                      SizedBox(height: screenHeight * 0.02),
                       Text(
                         '비밀번호 확인',
                         style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+                            fontSize: screenHeight * 0.02,
+                            fontWeight: FontWeight.bold),
                       ),
                       Container(
-                        height: 47,
+                        height: screenHeight * 0.06,
                         child: TextField(
                           controller: _passwordConfirmController,
                           decoration: InputDecoration(
                             hintText: '비밀번호를 다시 한번 더 입력해주세요',
                             hintStyle: TextStyle(
-                              fontSize: 14,
+                              fontSize: screenHeight * 0.017,
                               color: Color(0xFF676767),
                             ),
                             filled: true,
@@ -235,27 +241,27 @@ class _SignupScreenState extends State<SignupScreen> {
                                 color: Color(0xFFF1F2F3), // 테두리 색상을 변경합니다.
                               ),
                             ),
-                            contentPadding:
-                                EdgeInsets.symmetric(horizontal: 16),
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: screenWidth * 0.04),
                           ),
                           obscureText: true,
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 24),
+                  SizedBox(height: screenHeight * 0.03),
                   Align(
                     alignment: Alignment.center,
                     child: Container(
-                      width: 192,
-                      height: 47,
-                      margin: EdgeInsets.only(bottom: 202),
+                      width: screenWidth * 0.5,
+                      height: screenHeight * 0.06,
+                      margin: EdgeInsets.only(bottom: screenHeight * 0.25),
                       child: ElevatedButton(
                         onPressed: isButtonEnabled ? _signup : null,
                         child: Text(
                           '가입하기',
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: screenHeight * 0.025,
                             fontWeight: FontWeight.bold,
                             color: Colors.black,
                           ),

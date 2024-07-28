@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'MBTItestpage.dart'; // MBTItestpage.dart 파일을 import
 
 class UserInfoScreen extends StatefulWidget {
   @override
@@ -49,8 +50,18 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
     );
   }
 
+  void _goToMBTItestpage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => MBTItestpage()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
+
     return MaterialApp(
       theme: ThemeData(
         fontFamily: 'Pretendard', // 전체 글씨체를 Pretendard로 설정
@@ -59,8 +70,8 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
         backgroundColor: Colors.white,
         body: Center(
           child: Container(
-            width: 360,
-            height: 800,
+            width: screenWidth * 0.9,
+            height: screenHeight * 0.8,
             padding: const EdgeInsets.all(32.0),
             child: SingleChildScrollView(
               child: Column(
@@ -68,36 +79,37 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                 children: <Widget>[
                   Image.asset(
                     'assets/mbtilogo.jpg', // 여기에 로고 이미지의 경로를 넣으세요.
-                    height: 100, // 이미지의 높이를 적절히 조절하세요.
+                    height: screenHeight * 0.1, // 이미지의 높이를 적절히 조절하세요.
                   ),
-                  SizedBox(height: 24),
+                  SizedBox(height: screenHeight * 0.03),
                   Text(
                     '회원정보 설정',
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: screenHeight * 0.03,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 24),
+                  SizedBox(height: screenHeight * 0.03),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         '닉네임',
                         style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+                            fontSize: screenHeight * 0.02,
+                            fontWeight: FontWeight.bold),
                       ),
                       Row(
                         children: [
                           Expanded(
                             child: Container(
-                              height: 47,
+                              height: screenHeight * 0.06,
                               child: TextField(
                                 controller: _nicknameController,
                                 decoration: InputDecoration(
                                   hintText: '닉네임을 입력해주세요',
                                   hintStyle: TextStyle(
-                                    fontSize: 14,
+                                    fontSize: screenHeight * 0.017,
                                     color: Color(0xFF676767),
                                   ),
                                   filled: true,
@@ -120,23 +132,23 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                           Color(0xFFF1F2F3), // 테두리 색상을 변경합니다.
                                     ),
                                   ),
-                                  contentPadding:
-                                      EdgeInsets.symmetric(horizontal: 16),
+                                  contentPadding: EdgeInsets.symmetric(
+                                      horizontal: screenWidth * 0.04),
                                 ),
                               ),
                             ),
                           ),
-                          SizedBox(width: 8),
+                          SizedBox(width: screenWidth * 0.02),
                           Container(
-                            width: 60,
-                            height: 47,
+                            width: screenWidth * 0.2,
+                            height: screenHeight * 0.06,
                             child: ElevatedButton(
                               onPressed: _checkDuplicate,
                               child: Center(
                                 child: Text(
                                   '중복 확인',
                                   style: TextStyle(
-                                    fontSize: 12,
+                                    fontSize: screenHeight * 0.017,
                                     color: Colors.black,
                                   ),
                                   textAlign: TextAlign.center,
@@ -154,8 +166,9 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 16),
+                      SizedBox(height: screenHeight * 0.02),
                       Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
                             flex: 2,
@@ -165,17 +178,17 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                 Text(
                                   'MBTI',
                                   style: TextStyle(
-                                      fontSize: 16,
+                                      fontSize: screenHeight * 0.02,
                                       fontWeight: FontWeight.bold),
                                 ),
                                 Container(
-                                  height: 47,
+                                  height: screenHeight * 0.06,
                                   child: TextField(
                                     controller: _mbtiController,
                                     decoration: InputDecoration(
                                       hintText: 'MBTI를 설정해주세요',
                                       hintStyle: TextStyle(
-                                        fontSize: 14,
+                                        fontSize: screenHeight * 0.017,
                                         color: Color(0xFF676767),
                                       ),
                                       filled: true,
@@ -198,15 +211,53 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                               0xFFF1F2F3), // 테두리 색상을 변경합니다.
                                         ),
                                       ),
-                                      contentPadding:
-                                          EdgeInsets.symmetric(horizontal: 16),
+                                      contentPadding: EdgeInsets.symmetric(
+                                          horizontal: screenWidth * 0.04),
                                     ),
+                                  ),
+                                ),
+                                SizedBox(height: screenHeight * 0.01),
+                                Container(
+                                  alignment: Alignment.centerRight,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        '아직 내 MBTI를 모른다면?',
+                                        style: TextStyle(
+                                            fontSize: screenHeight * 0.015,
+                                            color: Color(0xFF676767)),
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          Text(
+                                            '내 MBTI 알아보러 가기',
+                                            style: TextStyle(
+                                                fontSize: screenHeight * 0.015,
+                                                color: Color(0xFF676767)),
+                                          ),
+                                          GestureDetector(
+                                            onTap: _goToMBTItestpage,
+                                            child: Text(
+                                              ' GO',
+                                              style: TextStyle(
+                                                fontSize: screenHeight * 0.015,
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                          SizedBox(width: 16),
+                          SizedBox(width: screenWidth * 0.04),
                           Expanded(
                             flex: 1,
                             child: Column(
@@ -215,17 +266,18 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                 Text(
                                   '성별',
                                   style: TextStyle(
-                                      fontSize: 16,
+                                      fontSize: screenHeight * 0.02,
                                       fontWeight: FontWeight.bold),
                                 ),
                                 Container(
-                                  height: 47,
+                                  height: screenHeight * 0.06,
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
                                         '남성',
-                                        style: TextStyle(fontSize: 12),
+                                        style: TextStyle(
+                                            fontSize: screenHeight * 0.015),
                                       ),
                                       Radio<String>(
                                         value: '남성',
@@ -240,10 +292,11 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                             MaterialTapTargetSize.shrinkWrap,
                                         visualDensity: VisualDensity.compact,
                                       ),
-                                      SizedBox(width: 5),
+                                      SizedBox(width: screenWidth * 0.01),
                                       Text(
                                         '여성',
-                                        style: TextStyle(fontSize: 12),
+                                        style: TextStyle(
+                                            fontSize: screenHeight * 0.015),
                                       ),
                                       Radio<String>(
                                         value: '여성',
@@ -268,18 +321,18 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 24),
+                  SizedBox(height: screenHeight * 0.03),
                   Align(
                     alignment: Alignment.center,
                     child: Container(
-                      width: 192,
-                      height: 47,
+                      width: screenWidth * 0.5,
+                      height: screenHeight * 0.06,
                       child: ElevatedButton(
                         onPressed: isButtonEnabled ? _start : null,
                         child: Text(
                           '시작',
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: screenHeight * 0.025,
                             fontWeight: FontWeight.bold,
                             color: Colors.black,
                           ),
