@@ -36,29 +36,31 @@ class MBTISelection extends StatelessWidget {
 
     return Container(
       color: Colors.white,
-      child: ListView.builder(
-        itemCount: mbtiList.length,
-        itemBuilder: (context, index) {
-          return GestureDetector(
-            onTap: () => onSelectMBTI(mbtiList[index]),
-            child: Container(
-              height: boxHeight,
-              width: boxWidth,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: Color(0xFFF1F2F3),
-                border: Border.all(
-                  color: Colors.grey,
+      child: SingleChildScrollView(
+        child: Column(
+          children: mbtiList.map((mbti) {
+            return GestureDetector(
+              onTap: () => onSelectMBTI(mbti),
+              child: Container(
+                height: boxHeight,
+                width: boxHeight,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: Color(0xFFF1F2F3),
+                  border: Border.all(
+                    color: Color(0xFFF1F2F3),
+                  ),
+                  borderRadius: BorderRadius.circular(4),
                 ),
-                borderRadius: BorderRadius.circular(4),
+                margin: EdgeInsets.symmetric(vertical: 4),
+                child: Text(
+                  mbti,
+                  style: textStyle,
+                ),
               ),
-              child: Text(
-                mbtiList[index],
-                style: textStyle,
-              ),
-            ),
-          );
-        },
+            );
+          }).toList(),
+        ),
       ),
     );
   }
