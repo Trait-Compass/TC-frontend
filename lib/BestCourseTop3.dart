@@ -93,11 +93,11 @@ class RecommendedCourseCard extends StatelessWidget {
     final double screenHeight = MediaQuery.of(context).size.height;
 
     return Container(
-      width: screenWidth * 0.4,
-      margin:
-          EdgeInsets.only(left: screenWidth * 0.05, right: screenWidth * 0.025),
+      width: screenWidth * 0.9, //사진 가로크기
+      margin: EdgeInsets.only(
+          left: screenWidth * 0.05, right: screenWidth * 0.05), //양옆 공백
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(10), //사진 모따기 반경
         image: DecorationImage(
           image: AssetImage(imagePath),
           fit: BoxFit.cover,
@@ -106,13 +106,13 @@ class RecommendedCourseCard extends StatelessWidget {
       child: Stack(
         children: [
           Positioned(
-            bottom: screenHeight * 0.01,
-            left: screenWidth * 0.025,
+            bottom: screenHeight * 0.01, //사진설명텍스트 밑박스에서 거리
+            left: screenWidth * 0.025, //사진설명텍스트 박스기준왼쪽 거리
             child: Text(
               '$mbti\n$title\n$location',
               style: TextStyle(
                 color: Colors.white,
-                fontSize: screenHeight * 0.02,
+                fontSize: screenHeight * 0.02, //텍스트 크기
                 fontWeight: FontWeight.bold,
                 shadows: [
                   Shadow(

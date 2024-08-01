@@ -11,7 +11,7 @@ class CalendarSelectionPage extends StatefulWidget {
 }
 
 class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
-  DateTime selectedDate = DateTime(2024, 7, 1);
+  DateTime selectedDate = DateTime.now();
   List<DateTime> selectedDates = [];
 
   void onDateSelected(DateTime date) {
@@ -72,11 +72,30 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
     );
   }
 
-  Widget buildCalendar() {
-    DateTime firstDate = DateTime(2024, 7, 1);
-    DateTime lastDate = DateTime(2030, 12, 31);
-    DateTime currentDate = DateTime(selectedDate.year, selectedDate.month, 1);
+  Widget buildCalendarMonth(int year, int month) {
+    DateTime firstDate = DateTime(year, month, 1);
+    DateTime lastDate =
+        DateTime(year, month + 1, 0); // 다음 달의 0번째 날짜는 해당 달의 마지막 날짜
+    DateTime currentDate = firstDate;
+
     List<Widget> rows = [];
+
+    rows.add(Padding(
+      padding: const EdgeInsets.only(left: 8.0, top: 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "$year년",
+            style: TextStyle(color: Colors.grey, fontSize: 16),
+          ),
+          Text(
+            "$month월",
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
+    ));
 
     List<String> daysOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
     rows.add(Row(
@@ -96,11 +115,11 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
       }).toList(),
     ));
 
-    while (currentDate.month == selectedDate.month) {
+    while (currentDate.isBefore(lastDate.add(Duration(days: 1)))) {
       List<Widget> days = [];
       for (int i = 0; i < 7; i++) {
         if ((i < currentDate.weekday % 7 && currentDate.day == 1) ||
-            currentDate.month != selectedDate.month) {
+            currentDate.month != month) {
           days.add(Container(width: 32, height: 32));
         } else {
           days.add(buildDateWidget(currentDate));
@@ -112,29 +131,17 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
         children: days,
       ));
     }
+
     return Column(children: rows);
   }
 
-  List<DropdownMenuItem<int>> getYearItems() {
-    List<DropdownMenuItem<int>> items = [];
-    for (int year = 2024; year <= 2030; year++) {
-      items.add(DropdownMenuItem(
-        child: Text(year.toString()),
-        value: year,
-      ));
-    }
-    return items;
-  }
-
-  List<DropdownMenuItem<int>> getMonthItems() {
-    List<DropdownMenuItem<int>> items = [];
+  Widget buildCalendar() {
+    List<Widget> months = [];
+    int year = 2024; // 2024년 한 해만 표시
     for (int month = 1; month <= 12; month++) {
-      items.add(DropdownMenuItem(
-        child: Text(month.toString()),
-        value: month,
-      ));
+      months.add(buildCalendarMonth(year, month));
     }
-    return items;
+    return Column(children: months);
   }
 
   @override
@@ -214,42 +221,14 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
                     ),
                     SizedBox(height: 10),
                     Container(
+                      height: 400,
                       padding: EdgeInsets.all(20),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              DropdownButton<int>(
-                                value: selectedDate.year,
-                                items: getYearItems(),
-                                onChanged: (value) {
-                                  setState(() {
-                                    selectedDate = DateTime(value!,
-                                        selectedDate.month, selectedDate.day);
-                                  });
-                                },
-                              ),
-                              SizedBox(width: 20),
-                              DropdownButton<int>(
-                                value: selectedDate.month,
-                                items: getMonthItems(),
-                                onChanged: (value) {
-                                  setState(() {
-                                    selectedDate = DateTime(selectedDate.year,
-                                        value!, selectedDate.day);
-                                  });
-                                },
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          buildCalendar(),
-                        ],
+                      child: SingleChildScrollView(
+                        child: buildCalendar(),
                       ),
                     ),
                     SizedBox(height: 10),
