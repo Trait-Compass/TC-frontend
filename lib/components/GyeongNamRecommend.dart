@@ -3,29 +3,19 @@ import 'package:flutter/material.dart';
 class GyeongNamRecommend extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final double screenWidth = MediaQuery.of(context).size.width;
-    final double screenHeight = MediaQuery.of(context).size.height;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                '경상남도 행사 & 축제',
-                style: TextStyle(
-                    fontSize: screenHeight * 0.03, fontWeight: FontWeight.bold),
-              ),
-              SortOptions(),
-            ],
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          child: Text(
+            '경상남도 행사 & 축제',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
         ),
-        SizedBox(height: screenHeight * 0.01),
+        SizedBox(height: 10),
         Container(
-          height: screenHeight * 0.25,
+          height: 200,
           child: ListView(
             scrollDirection: Axis.horizontal,
             children: [
@@ -42,7 +32,6 @@ class GyeongNamRecommend extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(height: screenHeight * 0.02),
       ],
     );
   }
@@ -97,73 +86,6 @@ class EventFestivalCard extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class SortOptions extends StatefulWidget {
-  @override
-  _SortOptionsState createState() => _SortOptionsState();
-}
-
-class _SortOptionsState extends State<SortOptions> {
-  String selectedOption = 'latest';
-
-  @override
-  Widget build(BuildContext context) {
-    final double screenHeight = MediaQuery.of(context).size.height;
-
-    return Row(
-      children: [
-        SortOption(
-          text: '최신순',
-          isSelected: selectedOption == 'latest',
-          onTap: () {
-            setState(() {
-              selectedOption = 'latest';
-            });
-          },
-        ),
-        SizedBox(width: screenHeight * 0.02),
-        SortOption(
-          text: '인기순',
-          isSelected: selectedOption == 'popular',
-          onTap: () {
-            setState(() {
-              selectedOption = 'popular';
-            });
-          },
-        ),
-      ],
-    );
-  }
-}
-
-class SortOption extends StatelessWidget {
-  final String text;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  const SortOption({
-    required this.text,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final double screenHeight = MediaQuery.of(context).size.height;
-
-    return GestureDetector(
-      onTap: onTap,
-      child: Text(
-        text,
-        style: TextStyle(
-          fontSize: screenHeight * 0.02,
-          fontWeight: FontWeight.bold,
-          color: isSelected ? Colors.black : Colors.grey,
-        ),
       ),
     );
   }

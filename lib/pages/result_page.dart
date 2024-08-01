@@ -103,63 +103,6 @@ class ResultPage extends StatelessWidget {
             SizedBox(height: 30),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Text(
-                '인기 추천코스\nBEST 3',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-            ),
-            SizedBox(height: 10),
-            Container(
-              height: 200,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: [
-                  RecommendedCourseCard(
-                    imagePath: 'assets/course1.png',
-                    title: '해금강해안도로',
-                    location: '거제',
-                    mbti: 'ENTP',
-                  ),
-                  RecommendedCourseCard(
-                    imagePath: 'assets/course2.png',
-                    title: '시간여행마을',
-                    location: '창녕',
-                    mbti: 'ISTJ',
-                  ),
-                  RecommendedCourseCard(
-                    imagePath: 'assets/course3.png',
-                    title: '우포늪',
-                    location: '창녕',
-                    mbti: 'ESTJ',
-                  ),
-                  Container(
-                    width: 100,
-                    alignment: Alignment.center,
-                    child: TextButton(
-                      onPressed: () {},
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            'assets/your_image.png', // 여기에 이미지 경로를 넣으세요
-                            height: 30, // 적절한 높이로 조절하세요
-                          ),
-                          SizedBox(width: 10), // 이미지와 텍스트 사이의 간격을 조절하세요
-                          Text(
-                            '다른 코스가 보고 싶다면?',
-                            style: TextStyle(color: Colors.black),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -229,58 +172,6 @@ class RecommendedCourses extends StatelessWidget {
             ),
           );
         }).toList(),
-      ),
-    );
-  }
-}
-
-class RecommendedCourseCard extends StatelessWidget {
-  final String imagePath;
-  final String title;
-  final String location;
-  final String mbti;
-
-  const RecommendedCourseCard({
-    required this.imagePath,
-    required this.title,
-    required this.location,
-    required this.mbti,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 160,
-      margin: EdgeInsets.only(left: 20, right: 10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        image: DecorationImage(
-          image: AssetImage(imagePath),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: Stack(
-        children: [
-          Positioned(
-            bottom: 10,
-            left: 10,
-            child: Text(
-              '$mbti\n$title\n$location',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                shadows: [
-                  Shadow(
-                    offset: Offset(0, 1),
-                    blurRadius: 2,
-                    color: Colors.black.withOpacity(0.5),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
