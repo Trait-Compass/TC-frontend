@@ -132,7 +132,7 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
       ));
     }
 
-    return Column(children: rows);
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: rows);
   }
 
   Widget buildCalendar() {

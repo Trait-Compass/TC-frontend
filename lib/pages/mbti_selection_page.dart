@@ -164,9 +164,7 @@ class StepOneWidget extends StatelessWidget {
               child: Text('다음'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.grey[800],
-                foregroundColor: allGroupsSelected()
-                    ? Colors.white
-                    : Colors.white, // 비활성화 색상 설정
+                foregroundColor: Colors.white, // 비활성화 색상 설정
                 padding: EdgeInsets.symmetric(
                     vertical: screenHeight * 0.02), //이건 '다음'이랑 박스내부 비율
               ),
@@ -242,7 +240,6 @@ class MBTIButton extends StatelessWidget {
       margin: EdgeInsets.all(screenHeight * 0.004),
       child: ElevatedButton(
         onPressed: () => toggleSelection(group, mbti),
-        // 여기에 Padding을 추가하여 텍스트와 박스 사이의 간격을 조절합니다.
         child: Padding(
           padding: EdgeInsets.all(0), // 글자와 박스 사이의 간격을 조절합니다. 필요시 값을 조정하세요.
           child: Text(
