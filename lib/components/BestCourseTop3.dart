@@ -11,7 +11,7 @@ class BestCourseTop3 extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+          padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04),
           child: Text(
             '인기 추천코스\nBEST 3',
             style: TextStyle(

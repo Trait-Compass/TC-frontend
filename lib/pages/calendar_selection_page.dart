@@ -19,7 +19,9 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
       if (selectedDates.contains(date)) {
         selectedDates.remove(date);
       } else {
-        selectedDates.add(date);
+        if (selectedDates.length < 2) {
+          selectedDates.add(date);
+        }
       }
       selectedDates.sort();
     });
@@ -36,17 +38,20 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
   }
 
   Widget buildDateWidget(DateTime date) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
+
     bool selected = isSelected(date);
     bool between = isBetweenSelectedDates(date);
 
     return GestureDetector(
       onTap: () => onDateSelected(date),
       child: Container(
-        margin: EdgeInsets.all(2),
-        width: 32,
-        height: 32,
+        margin: EdgeInsets.all(screenWidth * 0.005),
+        width: screenWidth * 0.05, //날짜크기 및 원크기 한번에 조절....
+        height: screenWidth * 0.1, //날짜간 세로 간격조절
         decoration: BoxDecoration(
-          color: selected ? Colors.black : Colors.transparent,
+          color: selected ? Colors.grey : Colors.transparent,
           shape: BoxShape.circle,
         ),
         child: Stack(
@@ -54,7 +59,7 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
             if (between)
               Positioned.fill(
                 child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 2),
+                  margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.005),
                   color: Colors.grey,
                 ),
               ),
@@ -146,20 +151,25 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(60.0),
+        preferredSize: Size.fromHeight(screenHeight * 0.1),
         child: Container(
           color: Colors.white,
           child: AppBar(
             centerTitle: true,
-            title: Image.asset('assets/mbtilogo.jpg', height: 40), // MBTI 로고 경로
+            title: Image.asset('assets/mbtilogo.jpg',
+                height: screenHeight * 0.05), // MBTI 로고 경로
             backgroundColor: Colors.white,
             elevation: 0,
             actions: [
               IconButton(
-                icon: Image.asset('assets/alarm.jpg'), // 알림 아이콘 경로
+                icon: Image.asset('assets/alarm.jpg',
+                    height: screenHeight * 0.04), // 알림 아이콘 경로
                 onPressed: () {},
               ),
             ],
@@ -175,38 +185,42 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
               thickness: 1,
               height: 1,
             ),
-            SizedBox(height: 20),
+            SizedBox(height: screenHeight * 0.02),
             Row(
               children: [
-                SizedBox(width: 20),
-                Image.asset('assets/animation.png', height: 50), // 사람 아이콘 경로
-                SizedBox(width: 10),
+                SizedBox(width: screenWidth * 0.05),
+                Image.asset('assets/animation.png',
+                    height: screenHeight * 0.07), // 사람 아이콘 경로
+                SizedBox(width: screenWidth * 0.03),
                 Expanded(
                   child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                    padding: EdgeInsets.symmetric(
+                        vertical: screenHeight * 0.01,
+                        horizontal: screenWidth * 0.04),
                     decoration: BoxDecoration(
                       color: Colors.grey[200],
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
                       '${widget.mbti} OOO님!\n오늘은 경상남도 어디로 떠나볼까요?',
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(fontSize: screenHeight * 0.018),
                     ),
                   ),
                 ),
-                SizedBox(width: 20),
+                SizedBox(width: screenWidth * 0.05),
               ],
             ),
-            SizedBox(height: 20),
+            SizedBox(height: screenHeight * 0.02),
             Text(
               'MBTI 맞춤형 간단 추천 코스',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  fontSize: screenHeight * 0.03, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
             Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding: EdgeInsets.all(screenHeight * 0.03),
               child: Container(
-                padding: EdgeInsets.all(20),
+                padding: EdgeInsets.all(screenHeight * 0.03),
                 decoration: BoxDecoration(
                   color: Colors.grey[200],
                   borderRadius: BorderRadius.circular(10),
@@ -216,13 +230,13 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
                   children: [
                     Text(
                       'STEP 02 | 날짜 입력',
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(fontSize: screenHeight * 0.02),
                       textAlign: TextAlign.left,
                     ),
-                    SizedBox(height: 10),
+                    SizedBox(height: screenHeight * 0.02),
                     Container(
-                      height: 400,
-                      padding: EdgeInsets.all(20),
+                      height: screenHeight * 0.5,
+                      padding: EdgeInsets.all(screenHeight * 0.02),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(10),
@@ -231,67 +245,35 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
                         child: buildCalendar(),
                       ),
                     ),
-                    SizedBox(height: 10),
+                    SizedBox(height: screenHeight * 0.02),
                     ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                CourseGenerationPage(mbti: widget.mbti),
-                          ),
-                        );
-                      },
+                      onPressed: selectedDates.length == 2
+                          ? () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      CourseGenerationPage(mbti: widget.mbti),
+                                ),
+                              );
+                            }
+                          : null,
                       child: Text('완료'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey[800],
+                        backgroundColor: selectedDates.length == 2
+                            ? Colors.grey[800]
+                            : Colors.grey[400],
                         foregroundColor: Colors.white,
-                        padding: EdgeInsets.symmetric(vertical: 15),
+                        padding:
+                            EdgeInsets.symmetric(vertical: screenHeight * 0.02),
                       ),
                     ),
                   ],
                 ),
               ),
             ),
-            SizedBox(height: 20), // 추가 여백
-            RecommendedCourses(),
-            SizedBox(height: 20), // 추가 여백
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    '경상남도 행사 & 축제',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  SortOptions(),
-                ],
-              ),
-            ),
-            EventsAndFestivals(),
-            SizedBox(height: 20), // 추가 여백
           ],
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white, // 하단바 배경색을 흰색으로 설정
-        items: [
-          BottomNavigationBarItem(
-            icon: Image.asset('assets/home.jpg', height: 30), // 홈 아이콘 경로
-            label: '홈',
-          ),
-          BottomNavigationBarItem(
-            icon:
-                Image.asset('assets/location1.png', height: 30), // 여행 일정 아이콘 경로
-            label: '여행 일정',
-          ),
-          BottomNavigationBarItem(
-            icon:
-                Image.asset('assets/myprofile.png', height: 30), // 내 정보 아이콘 경로
-            label: '내 정보',
-          ),
-        ],
       ),
     );
   }

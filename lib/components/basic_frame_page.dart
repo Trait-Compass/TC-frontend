@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
-import '../pages/mbti_selection_page.dart'; // MBTI 선택 페이지 파일을 import
+import 'mbti_selection_page.dart'; // MBTI 선택 페이지 파일을 import
 import 'BestCourseTop3.dart'; // 인기 추천코스 파일을 import
 import 'GyeongNamRecommend.dart'; // 경상남도 행사 & 축제 파일을 import
 
-class BasicFramePage extends StatelessWidget {
+class BasicFramePage extends StatefulWidget {
+  @override
+  _BasicFramePageState createState() => _BasicFramePageState();
+}
+
+class _BasicFramePageState extends State<BasicFramePage> {
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
@@ -37,7 +42,7 @@ class BasicFramePage extends StatelessWidget {
             BestCourseTop3(),
             SizedBox(height: screenHeight * 0.04), // 위젯 간 간격
             GyeongNamRecommend(),
-            SizedBox(height: screenHeight * 0.04) //밑 공간 여유주기
+            SizedBox(height: screenHeight * 0.04) // 밑 공간 여유주기
           ],
         ),
       ),

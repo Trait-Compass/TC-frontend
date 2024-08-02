@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../pages/creataccount.dart'; // SignupScreen 파일을 import
+import 'creataccount.dart'; // SignupScreen 파일을 import
 
 class LoginScreen extends StatefulWidget {
   @override

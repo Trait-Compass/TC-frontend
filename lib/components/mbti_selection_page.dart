@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'calendar_selection_page.dart'; // 달력 선택 페이지 파일을 import
+import '../pages/calendar_selection_page.dart'; // 달력 선택 페이지 파일을 import
 
 class MBTISelectionPage extends StatefulWidget {
   @override
@@ -130,7 +130,6 @@ class StepOneWidget extends StatelessWidget {
             Wrap(
               alignment: WrapAlignment.center,
               spacing: screenHeight * 0.03, // mbti박스 간격 조절 부분
-
               children: [
                 MBTIGroup(
                   group: 'EI',
@@ -158,7 +157,7 @@ class StepOneWidget extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: screenHeight * 0.03), //요놈은 '다음'박스랑 MBTI박스사이 거리
+            SizedBox(height: screenHeight * 0.03), // 요놈은 '다음'박스랑 MBTI박스사이 거리
             ElevatedButton(
               onPressed: allGroupsSelected() ? onNextPressed : null,
               child: Text('다음'),
@@ -166,7 +165,7 @@ class StepOneWidget extends StatelessWidget {
                 backgroundColor: Colors.grey[800],
                 foregroundColor: Colors.white, // 비활성화 색상 설정
                 padding: EdgeInsets.symmetric(
-                    vertical: screenHeight * 0.02), //이건 '다음'이랑 박스내부 비율
+                    vertical: screenHeight * 0.02), // 이건 '다음'이랑 박스내부 비율
               ),
             ),
           ],
@@ -202,7 +201,7 @@ class MBTIGroup extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
       ),
-      padding: EdgeInsets.all(screenHeight * 0.01), //이건 뭔가 박스랑 글자사이 간격비율같은데...
+      padding: EdgeInsets.all(screenHeight * 0.01), // 이건 뭔가 박스랑 글자사이 간격비율같은데...
       child: Column(
         children: verticalItems.map((mbti) {
           return MBTIButton(
@@ -235,8 +234,8 @@ class MBTIButton extends StatelessWidget {
     final double screenHeight = MediaQuery.of(context).size.height;
 
     return Container(
-      width: screenHeight * 0.08, //이건 세로박스 너비
-      height: screenHeight * 0.08, //이건 세로박스 높이
+      width: screenHeight * 0.08, // 이건 세로박스 너비
+      height: screenHeight * 0.08, // 이건 세로박스 높이
       margin: EdgeInsets.all(screenHeight * 0.004),
       child: ElevatedButton(
         onPressed: () => toggleSelection(group, mbti),
@@ -244,7 +243,7 @@ class MBTIButton extends StatelessWidget {
           padding: EdgeInsets.all(0), // 글자와 박스 사이의 간격을 조절합니다. 필요시 값을 조정하세요.
           child: Text(
             mbti,
-            style: TextStyle(fontSize: screenHeight * 0.05), //이건 MBTI 글자크기
+            style: TextStyle(fontSize: screenHeight * 0.05), // 이건 MBTI 글자크기
           ),
         ),
         style: ElevatedButton.styleFrom(
