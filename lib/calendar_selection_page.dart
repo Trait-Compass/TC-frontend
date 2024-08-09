@@ -186,7 +186,7 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
-                a),
+                ),
                 SizedBox(width: 20),
               ],
             ),
