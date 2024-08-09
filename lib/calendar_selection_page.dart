@@ -31,7 +31,8 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
 
   bool isBetweenSelectedDates(DateTime date) {
     if (selectedDates.length < 2) return false;
-    return date.isAfter(selectedDates.first) && date.isBefore(selectedDates.last);
+    return date.isAfter(selectedDates.first) &&
+        date.isBefore(selectedDates.last);
   }
 
   Widget buildDateWidget(DateTime date) {
@@ -98,7 +99,8 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
     while (currentDate.month == selectedDate.month) {
       List<Widget> days = [];
       for (int i = 0; i < 7; i++) {
-        if ((i < currentDate.weekday % 7 && currentDate.day == 1) || currentDate.month != selectedDate.month) {
+        if ((i < currentDate.weekday % 7 && currentDate.day == 1) ||
+            currentDate.month != selectedDate.month) {
           days.add(Container(width: 32, height: 32));
         } else {
           days.add(buildDateWidget(currentDate));
@@ -227,7 +229,8 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
                                 items: getYearItems(),
                                 onChanged: (value) {
                                   setState(() {
-                                    selectedDate = DateTime(value!, selectedDate.month, selectedDate.day);
+                                    selectedDate = DateTime(value!,
+                                        selectedDate.month, selectedDate.day);
                                   });
                                 },
                               ),
@@ -237,7 +240,8 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
                                 items: getMonthItems(),
                                 onChanged: (value) {
                                   setState(() {
-                                    selectedDate = DateTime(selectedDate.year, value!, selectedDate.day);
+                                    selectedDate = DateTime(selectedDate.year,
+                                        value!, selectedDate.day);
                                   });
                                 },
                               ),
@@ -254,7 +258,8 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => CourseGenerationPage(mbti: widget.mbti),
+                            builder: (context) =>
+                                CourseGenerationPage(mbti: widget.mbti),
                           ),
                         );
                       },
@@ -298,11 +303,13 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
             label: '홈',
           ),
           BottomNavigationBarItem(
-            icon: Image.asset('assets/location1.png', height: 30), // 여행 일정 아이콘 경로
+            icon:
+                Image.asset('assets/location1.png', height: 30), // 여행 일정 아이콘 경로
             label: '여행 일정',
           ),
           BottomNavigationBarItem(
-            icon: Image.asset('assets/myprofile.png', height: 30), // 내 정보 아이콘 경로
+            icon:
+                Image.asset('assets/myprofile.png', height: 30), // 내 정보 아이콘 경로
             label: '내 정보',
           ),
         ],
