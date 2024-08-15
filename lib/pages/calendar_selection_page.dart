@@ -14,145 +14,160 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
   DateTime selectedDate = DateTime.now();
   List<DateTime> selectedDates = [];
 
-  void onDateSelected(DateTime date) {
-    setState(() {
-      if (selectedDates.contains(date)) {
-        selectedDates.remove(date);
-      } else {
-        if (selectedDates.length < 2) {
-          selectedDates.add(date);
-        }
-      }
-      selectedDates.sort();
-    });
-  }
-
-  bool isSelected(DateTime date) {
-    return selectedDates.contains(date);
-  }
-
-  bool isBetweenSelectedDates(DateTime date) {
-    if (selectedDates.length < 2) return false;
-    return date.isAfter(selectedDates.first) &&
-        date.isBefore(selectedDates.last);
-  }
-
-  Widget buildDateWidget(DateTime date) {
-    final double screenWidth = MediaQuery.of(context).size.width;
-    final double screenHeight = MediaQuery.of(context).size.height;
-
-    bool selected = isSelected(date);
-    bool between = isBetweenSelectedDates(date);
-
-    return GestureDetector(
-      onTap: () => onDateSelected(date),
-      child: Container(
-        margin: EdgeInsets.all(screenWidth * 0.005),
-        width: screenWidth * 0.05, //날짜크기 및 원크기 한번에 조절....
-        height: screenWidth * 0.1, //날짜간 세로 간격조절
-        decoration: BoxDecoration(
-          color: selected ? Colors.grey : Colors.transparent,
-          shape: BoxShape.circle,
-        ),
-        child: Stack(
-          children: [
-            if (between)
-              Positioned.fill(
-                child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.005),
-                  color: Colors.grey,
-                ),
-              ),
-            Center(
-              child: Text(
-                date.day.toString(),
-                style: TextStyle(
-                  color: selected ? Colors.white : Colors.black,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget buildCalendarMonth(int year, int month) {
-    DateTime firstDate = DateTime(year, month, 1);
-    DateTime lastDate =
-        DateTime(year, month + 1, 0); // 다음 달의 0번째 날짜는 해당 달의 마지막 날짜
-    DateTime currentDate = firstDate;
-
-    List<Widget> rows = [];
-
-    rows.add(Padding(
-      padding: const EdgeInsets.only(left: 8.0, top: 8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "$year년",
-            style: TextStyle(color: Colors.grey, fontSize: 16),
-          ),
-          Text(
-            "$month월",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-        ],
-      ),
-    ));
-
-    List<String> daysOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
-    rows.add(Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: daysOfWeek.map((day) {
-        Color textColor = Colors.black;
-        if (day == '일') textColor = Colors.red;
-        if (day == '토') textColor = Colors.blue;
-        return Container(
-          margin: EdgeInsets.all(2),
-          width: 32,
-          height: 32,
-          child: Center(
-            child: Text(day, style: TextStyle(color: textColor)),
-          ),
-        );
-      }).toList(),
-    ));
-
-    while (currentDate.isBefore(lastDate.add(Duration(days: 1)))) {
-      List<Widget> days = [];
-      for (int i = 0; i < 7; i++) {
-        if ((i < currentDate.weekday % 7 && currentDate.day == 1) ||
-            currentDate.month != month) {
-          days.add(Container(width: 32, height: 32));
-        } else {
-          days.add(buildDateWidget(currentDate));
-          currentDate = currentDate.add(Duration(days: 1));
-        }
-      }
-      rows.add(Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: days,
-      ));
-    }
-
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: rows);
-  }
-
-  Widget buildCalendar() {
-    List<Widget> months = [];
-    int year = 2024; // 2024년 한 해만 표시
-    for (int month = 1; month <= 12; month++) {
-      months.add(buildCalendarMonth(year, month));
-    }
-    return Column(children: months);
-  }
-
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
+
+    // 박스의 가로 길이는 화면 너비의 1/10로 설정
+    final double boxWidth = screenWidth * 0.1;
+
+    // 박스의 세로 길이는 화면 높이의 10%로 설정
+    final double boxHeight = screenHeight * 0.06;
+
+    void onDateSelected(DateTime date) {
+      setState(() {
+        if (selectedDates.contains(date)) {
+          selectedDates.remove(date);
+        } else {
+          if (selectedDates.length < 2) {
+            selectedDates.add(date);
+          }
+        }
+        selectedDates.sort();
+      });
+    }
+
+    bool isSelected(DateTime date) {
+      return selectedDates.contains(date);
+    }
+
+    bool isBetweenSelectedDates(DateTime date) {
+      if (selectedDates.length < 2) return false;
+      return date.isAfter(selectedDates.first) &&
+          date.isBefore(selectedDates.last);
+    }
+
+    Widget buildDateWidget(DateTime date, double boxWidth) {
+      bool selected = isSelected(date);
+      bool between = isBetweenSelectedDates(date);
+
+      const double textSize = 16.0; // 상수로 텍스트 크기를 설정
+
+      return GestureDetector(
+        onTap: () => onDateSelected(date),
+        child: Container(
+          width: boxWidth,
+          height: boxHeight,
+          decoration: BoxDecoration(
+            color: selected ? Colors.grey : Colors.white,
+            border: Border.all(color: Colors.white), // 날짜박스 테두리 색상
+          ),
+          child: Center(
+            child: Text(
+              date.day.toString(),
+              style: TextStyle(
+                fontSize: textSize, // 상수로 설정된 텍스트 크기
+                color: selected ? Colors.white : Colors.black, // 날짜 텍스트 색상
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    Widget buildCalendarMonth(int year, int month, double boxWidth) {
+      DateTime firstDate = DateTime(year, month, 1);
+      DateTime lastDate = DateTime(year, month + 1, 0);
+      DateTime currentDate = firstDate;
+
+      List<Widget> rows = [];
+
+      rows.add(Padding(
+        padding: const EdgeInsets.only(left: 8.0, top: 8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "$year년",
+              style: TextStyle(color: Colors.grey, fontSize: 16),
+            ),
+            Text(
+              "$month월",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      ));
+
+      List<String> daysOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
+      rows.add(Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: daysOfWeek.map((day) {
+          Color textColor = Colors.black;
+          if (day == '일') textColor = Colors.red;
+          if (day == '토') textColor = Colors.blue;
+          return Container(
+            width: boxWidth,
+            height: boxHeight,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(color: Colors.white),
+            ),
+            child: Center(
+              child: Text(
+                day,
+                style:
+                    TextStyle(color: textColor, fontSize: 16), // 상수로 텍스트 크기 설정
+              ),
+            ),
+          );
+        }).toList(),
+      ));
+
+      while (currentDate.isBefore(lastDate.add(Duration(days: 1)))) {
+        List<Widget> days = [];
+        for (int i = 0; i < 7; i++) {
+          if ((i < currentDate.weekday % 7 && currentDate.day == 1) ||
+              currentDate.month != month) {
+            days.add(Container(
+              width: boxWidth,
+              height: boxHeight,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: Colors.white),
+              ),
+            ));
+          } else {
+            days.add(buildDateWidget(currentDate, boxWidth));
+            currentDate = currentDate.add(Duration(days: 1));
+          }
+        }
+        rows.add(Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: days,
+        ));
+
+        // 각 날짜 행 사이에 가로로 긴 박스를 추가
+        rows.add(Container(
+          width: double.infinity,
+          height: boxHeight / 2,
+          color: Colors.white,
+        ));
+      }
+
+      return Column(
+          crossAxisAlignment: CrossAxisAlignment.start, children: rows);
+    }
+
+    Widget buildCalendar(double boxWidth) {
+      List<Widget> months = [];
+      int year = 2024;
+      for (int month = 1; month <= 12; month++) {
+        months.add(buildCalendarMonth(year, month, boxWidth));
+      }
+      return Column(children: months);
+    }
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -181,7 +196,7 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Divider(
-              color: Color(0xFFE4E4E4), // 실선 색상 설정
+              color: Color(0xFFE4E4E4),
               thickness: 1,
               height: 1,
             ),
@@ -242,7 +257,7 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: SingleChildScrollView(
-                        child: buildCalendar(),
+                        child: buildCalendar(boxWidth),
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.02),
