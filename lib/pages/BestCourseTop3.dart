@@ -1,75 +1,67 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class BestCourseTop3 extends StatelessWidget {
+  Future<List<Course>> fetchBestCourses() async {
+    final response = await http
+        .get(Uri.parse('https://www.traitcompass.store/api/course/best'));
+
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      return jsonResponse.map((course) => Course.fromJson(course)).toList();
+    } else {
+      throw Exception('Failed to load courses');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
     final PageController controller = PageController(viewportFraction: 0.9);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04),
-          child: Text(
-            '인기 추천코스\nBEST 3',
-            style: TextStyle(
-                fontSize: screenHeight * 0.03, fontWeight: FontWeight.bold),
-          ),
-        ),
-        SizedBox(height: screenHeight * 0.01),
-        Container(
-          height: screenHeight * 0.25,
-          child: PageView(
-            controller: controller,
+    return FutureBuilder<List<Course>>(
+      future: fetchBestCourses(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Failed to load courses'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return Center(child: Text('No courses available'));
+        } else {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              RecommendedCourseCard(
-                imagePath: 'assets/course1.png',
-                title: '해금강해안도로',
-                location: '거제',
-                mbti: 'ENTP',
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04),
+                child: Text(
+                  '인기 추천코스\nBEST 3',
+                  style: TextStyle(
+                      fontSize: screenHeight * 0.03,
+                      fontWeight: FontWeight.bold),
+                ),
               ),
-              RecommendedCourseCard(
-                imagePath: 'assets/course2.png',
-                title: '시간여행마을',
-                location: '창녕',
-                mbti: 'ISTJ',
-              ),
-              RecommendedCourseCard(
-                imagePath: 'assets/course3.png',
-                title: '우포늪',
-                location: '창녕',
-                mbti: 'ESTJ',
-              ),
+              SizedBox(height: screenHeight * 0.01),
               Container(
-                alignment: Alignment.center,
-                child: TextButton(
-                  onPressed: () {},
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        'assets/your_image.png', // 여기에 이미지 경로를 넣으세요
-                        height: screenHeight * 0.04, // 적절한 높이로 조절하세요
-                      ),
-                      SizedBox(
-                          width: screenWidth * 0.02), // 이미지와 텍스트 사이의 간격을 조절하세요
-                      Text(
-                        '다른 코스가 보고 싶다면?',
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: screenHeight * 0.015),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
+                height: screenHeight * 0.25,
+                child: PageView(
+                  controller: controller,
+                  children: snapshot.data!.map((course) {
+                    return RecommendedCourseCard(
+                      imagePath: course.imagePath,
+                      title: course.title,
+                      location: course.location,
+                      mbti: course.mbti,
+                    );
+                  }).toList(),
                 ),
               ),
             ],
-          ),
-        ),
-      ],
+          );
+        }
+      },
     );
   }
 }
@@ -93,25 +85,25 @@ class RecommendedCourseCard extends StatelessWidget {
     final double screenHeight = MediaQuery.of(context).size.height;
 
     return Container(
-      width: screenWidth * 0.9, // 사진 가로크기
-      margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.05), // 양옆 공백
+      width: screenWidth * 0.9,
+      margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10), // 사진 모따기 반경
+        borderRadius: BorderRadius.circular(10),
         image: DecorationImage(
-          image: AssetImage(imagePath),
+          image: NetworkImage(imagePath),
           fit: BoxFit.cover,
         ),
       ),
       child: Stack(
         children: [
           Positioned(
-            bottom: screenHeight * 0.01, // 사진설명텍스트 밑박스에서 거리
-            left: screenWidth * 0.025, // 사진설명텍스트 박스기준왼쪽 거리
+            bottom: screenHeight * 0.01,
+            left: screenWidth * 0.025,
             child: Text(
               '$mbti\n$title\n$location',
               style: TextStyle(
                 color: Colors.white,
-                fontSize: screenHeight * 0.02, // 텍스트 크기
+                fontSize: screenHeight * 0.02,
                 fontWeight: FontWeight.bold,
                 shadows: [
                   Shadow(
@@ -125,6 +117,29 @@ class RecommendedCourseCard extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class Course {
+  final String imagePath;
+  final String title;
+  final String location;
+  final String mbti;
+
+  Course({
+    required this.imagePath,
+    required this.title,
+    required this.location,
+    required this.mbti,
+  });
+
+  factory Course.fromJson(Map<String, dynamic> json) {
+    return Course(
+      imagePath: json['imagePath'],
+      title: json['title'],
+      location: json['location'],
+      mbti: json['mbti'],
     );
   }
 }
