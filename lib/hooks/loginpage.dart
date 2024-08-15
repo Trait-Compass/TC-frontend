@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'creataccount.dart'; // SignupScreen 파일을 import
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart'; // 카카오 SDK import
 import 'package:flutter/services.dart';
+import '../components/basic_frame_page.dart'; // 홈 화면으로 사용할 파일 import
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -64,9 +65,17 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Image.asset(
-              'assets/mbtilogo.jpg', // 로고 이미지 경로
-              height: 100, // 이미지 높이
+            GestureDetector(
+              onTap: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => BasicFramePage()),
+                );
+              },
+              child: Image.asset(
+                'assets/mbtilogo.jpg', // 로고 이미지 경로
+                height: 100, // 이미지 높이
+              ),
             ),
             SizedBox(height: 24),
             TextField(
