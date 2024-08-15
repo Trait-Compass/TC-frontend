@@ -21,18 +21,15 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
 
-    final double boxWidth = screenWidth * 0.1;
+    final double boxWidth = screenWidth / 7.5; // 날짜 박스의 너비 조정
     final double boxHeight = screenHeight * 0.06;
 
     void onDateSelected(DateTime date) {
       setState(() {
-        if (selectedDates.contains(date)) {
-          selectedDates.remove(date);
-        } else {
-          if (selectedDates.length < 2) {
-            selectedDates.add(date);
-          }
+        if (selectedDates.length == 2) {
+          selectedDates.clear();
         }
+        selectedDates.add(date);
         selectedDates.sort();
       });
     }
@@ -47,28 +44,68 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
           date.isBefore(selectedDates.last);
     }
 
+    BoxDecoration buildBoxDecoration(DateTime date) {
+      if (isSelected(date)) {
+        if (selectedDates.first == date) {
+          return BoxDecoration(
+            color: Color(0xFF6699FF),
+            borderRadius: BorderRadius.horizontal(
+              left: Radius.circular(20.0), // 모서리 반경 조정
+              right: Radius.zero,
+            ),
+          );
+        } else if (selectedDates.last == date) {
+          return BoxDecoration(
+            color: Color(0xFF6699FF),
+            borderRadius: BorderRadius.horizontal(
+              left: Radius.zero,
+              right: Radius.circular(20.0), // 모서리 반경 조정
+            ),
+          );
+        }
+        return BoxDecoration(
+          color: Color(0xFF6699FF),
+          shape: BoxShape.circle,
+        );
+      } else if (isBetweenSelectedDates(date)) {
+        return BoxDecoration(
+          color: Color(0xFFBBDDFF),
+          shape: BoxShape.rectangle,
+        );
+      } else {
+        return BoxDecoration(
+          color: Colors.white,
+          shape: BoxShape.circle,
+        );
+      }
+    }
+
+    TextStyle buildTextStyle(DateTime date) {
+      if (isSelected(date)) {
+        return TextStyle(
+          color: Color(0xFFFAFAFA),
+          fontSize: 16.0,
+        );
+      } else if (isBetweenSelectedDates(date)) {
+        return TextStyle(); // 범위 내의 날짜 글자 스타일
+      } else {
+        return TextStyle(
+          color: Colors.black,
+        );
+      }
+    }
+
     Widget buildDateWidget(DateTime date, double boxWidth) {
-      bool selected = isSelected(date);
-      bool between = isBetweenSelectedDates(date);
-
-      const double textSize = 16.0;
-
       return GestureDetector(
         onTap: () => onDateSelected(date),
         child: Container(
           width: boxWidth,
           height: boxHeight,
-          decoration: BoxDecoration(
-            color: selected ? Colors.grey : Colors.white,
-            border: Border.all(color: Colors.white),
-          ),
+          decoration: buildBoxDecoration(date),
           child: Center(
             child: Text(
               date.day.toString(),
-              style: TextStyle(
-                fontSize: textSize,
-                color: selected ? Colors.white : Colors.black,
-              ),
+              style: buildTextStyle(date),
             ),
           ),
         ),
@@ -101,22 +138,28 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
 
       List<String> daysOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
       rows.add(Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly, // 간격 균등 배치
         children: daysOfWeek.map((day) {
           Color textColor = Colors.black;
           if (day == '일') textColor = Colors.red;
           if (day == '토') textColor = Colors.blue;
-          return Container(
-            width: boxWidth,
-            height: boxHeight,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(color: Colors.white),
-            ),
-            child: Center(
-              child: Text(
-                day,
-                style: TextStyle(color: textColor, fontSize: 16),
+          return Expanded(
+            // Expanded로 감싸서 모든 셀이 균등한 공간 차지
+            child: Container(
+              height: boxHeight,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: Colors.white),
+              ),
+              child: FittedBox(
+                // FittedBox로 내용이 상자에 맞게 조정됨
+                fit: BoxFit.scaleDown,
+                child: Center(
+                  child: Text(
+                    day,
+                    style: TextStyle(color: textColor, fontSize: 16),
+                  ),
+                ),
               ),
             ),
           );
@@ -142,7 +185,7 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
           }
         }
         rows.add(Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly, // 여백을 균등하게 설정
           children: days,
         ));
 
@@ -202,7 +245,8 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
               children: [
                 SizedBox(width: screenWidth * 0.05),
                 Image.asset('assets/animation.png',
-                    height: screenHeight * 0.07), // 사람 아이콘 경로
+                    height: screenHeight * 0.07,
+                    fit: BoxFit.contain), // 이미지 크기와 맞춤 설정
                 SizedBox(width: screenWidth * 0.03),
                 Expanded(
                   child: Container(
