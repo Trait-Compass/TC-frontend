@@ -21,7 +21,7 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
 
-    final double boxWidth = screenWidth / 7.5; // 날짜 박스의 너비 조정
+    final double boxWidth = screenWidth / 7.5;
     final double boxHeight = screenHeight * 0.06;
 
     void onDateSelected(DateTime date) {
@@ -50,7 +50,7 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
           return BoxDecoration(
             color: Color(0xFF6699FF),
             borderRadius: BorderRadius.horizontal(
-              left: Radius.circular(20.0), // 모서리 반경 조정
+              left: Radius.circular(20.0),
               right: Radius.zero,
             ),
           );
@@ -59,7 +59,7 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
             color: Color(0xFF6699FF),
             borderRadius: BorderRadius.horizontal(
               left: Radius.zero,
-              right: Radius.circular(20.0), // 모서리 반경 조정
+              right: Radius.circular(20.0),
             ),
           );
         }
@@ -136,35 +136,35 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
         ),
       ));
 
+      // 요일 표시 부분
       List<String> daysOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
-      rows.add(Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly, // 간격 균등 배치
-        children: daysOfWeek.map((day) {
-          Color textColor = Colors.black;
-          if (day == '일') textColor = Colors.red;
-          if (day == '토') textColor = Colors.blue;
-          return Expanded(
-            // Expanded로 감싸서 모든 셀이 균등한 공간 차지
-            child: Container(
-              height: boxHeight,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: Colors.white),
-              ),
-              child: FittedBox(
-                // FittedBox로 내용이 상자에 맞게 조정됨
-                fit: BoxFit.scaleDown,
-                child: Center(
+
+      rows.add(
+        Table(
+          children: [
+            TableRow(
+              children: daysOfWeek.map((day) {
+                Color textColor = Colors.black;
+                if (day == '일') textColor = Colors.red;
+                if (day == '토') textColor = Colors.blue;
+
+                return Container(
+                  alignment: Alignment.center, // 중앙 정렬
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(color: Colors.white),
+                  ),
                   child: Text(
                     day,
-                    style: TextStyle(color: textColor, fontSize: 16),
+                    style:
+                        TextStyle(color: textColor, fontSize: 14), // 폰트 크기 감소
                   ),
-                ),
-              ),
+                );
+              }).toList(),
             ),
-          );
-        }).toList(),
-      ));
+          ],
+        ),
+      );
 
       while (currentDate.isBefore(lastDate.add(Duration(days: 1)))) {
         List<Widget> days = [];
@@ -184,17 +184,21 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
             currentDate = currentDate.add(Duration(days: 1));
           }
         }
-        rows.add(Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly, // 여백을 균등하게 설정
-          children: days,
-        ));
-
-        rows.add(Container(
-          width: double.infinity,
-          height: boxHeight / 2,
-          color: Colors.white,
-        ));
+        rows.add(
+          Table(
+            children: [
+              TableRow(
+                children: days,
+              ),
+            ],
+          ),
+        );
       }
+      rows.add(Container(
+        width: double.infinity,
+        height: boxHeight / 2,
+        color: Colors.white,
+      ));
 
       return Column(
           crossAxisAlignment: CrossAxisAlignment.start, children: rows);
@@ -236,7 +240,7 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Divider(
-              color: Color(0xFFE4E4E4),
+              color: Colors.grey[200],
               thickness: 1,
               height: 1,
             ),
