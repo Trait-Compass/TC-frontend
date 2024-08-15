@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'mbti_selection_page.dart'; // MBTI 선택 페이지 파일을 import
+import 'components/basic_frame_page.dart'; // 기본 프레임 페이지 파일을 import
+import 'package:flutter/services.dart';
+
 import 'package:kakao_flutter_sdk_common/kakao_flutter_sdk_common.dart';
 
 void main() {
@@ -19,11 +21,25 @@ class MBTISelectionApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'MBTI Selection App',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        fontFamily: 'Pretendard',
+        textTheme: TextTheme(
+          bodyLarge: TextStyle(fontWeight: FontWeight.bold),
+          bodyMedium: TextStyle(fontWeight: FontWeight.bold),
+          displayLarge: TextStyle(fontWeight: FontWeight.bold),
+          displayMedium: TextStyle(fontWeight: FontWeight.bold),
+          displaySmall: TextStyle(fontWeight: FontWeight.bold),
+          headlineMedium: TextStyle(fontWeight: FontWeight.bold),
+          headlineSmall: TextStyle(fontWeight: FontWeight.bold),
+          titleLarge: TextStyle(fontWeight: FontWeight.bold),
+          titleMedium: TextStyle(fontWeight: FontWeight.bold),
+          titleSmall: TextStyle(fontWeight: FontWeight.bold),
+          labelLarge: TextStyle(fontWeight: FontWeight.bold),
+          labelMedium: TextStyle(fontWeight: FontWeight.bold),
+          labelSmall: TextStyle(fontWeight: FontWeight.bold),
+        ),
       ),
-      home: MBTISelectionPage(), // 앱의 첫 화면으로 MBTI 선택 페이지를 설정
+      home: BasicFramePage(),
     );
   }
 }
