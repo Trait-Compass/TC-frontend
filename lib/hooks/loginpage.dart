@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'creataccount.dart'; // SignupScreen 파일을 import
+import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart'; // 카카오 SDK import
+import 'package:flutter/services.dart';
+import '../components/basic_frame_page.dart'; // 홈 화면으로 사용할 파일 import
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -16,10 +19,41 @@ class _LoginScreenState extends State<LoginScreen> {
     final String password = _passwordController.text;
 
     // 로그인 로직을 여기에 추가합니다.
-    // 예를 들어, 토스트 메시지를 표시할 수 있습니다.
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('로그인 시도: $id')),
     );
+  }
+
+  Future<void> signInWithKakao() async {
+    // 카카오 로그인 구현 예제
+
+    // 카카오톡 실행 가능 여부 확인
+    if (await isKakaoTalkInstalled()) {
+      try {
+        await UserApi.instance.loginWithKakaoTalk();
+        print('카카오톡으로 로그인 성공');
+      } catch (error) {
+        print('카카오톡으로 로그인 실패 $error');
+
+        if (error is PlatformException && error.code == 'CANCELED') {
+          return;
+        }
+
+        try {
+          await UserApi.instance.loginWithKakaoAccount();
+          print('카카오계정으로 로그인 성공');
+        } catch (error) {
+          print('카카오계정으로 로그인 실패 $error');
+        }
+      }
+    } else {
+      try {
+        await UserApi.instance.loginWithKakaoAccount();
+        print('카카오계정으로 로그인 성공');
+      } catch (error) {
+        print('카카오계정으로 로그인 실패 $error');
+      }
+    }
   }
 
   @override
@@ -31,9 +65,17 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Image.asset(
-              'assets/mbtilogo.jpg', // 여기에 로고 이미지의 경로를 넣으세요.
-              height: 100, // 이미지의 높이를 적절히 조절하세요.
+            GestureDetector(
+              onTap: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => BasicFramePage()),
+                );
+              },
+              child: Image.asset(
+                'assets/mbtilogo.jpg', // 로고 이미지 경로
+                height: 100, // 이미지 높이
+              ),
             ),
             SizedBox(height: 24),
             TextField(
@@ -68,8 +110,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           _isRememberMeChecked = value ?? false;
                         });
                       },
-                      activeColor: Colors.black, // 체크박스의 배경 색상을 검정색으로 설정
-                      checkColor: Colors.white, // 체크박스의 체크 색상을 흰색으로 설정
+                      activeColor: Colors.black,
+                      checkColor: Colors.white,
                     ),
                     Text(
                       '로그인 유지',
@@ -87,35 +129,31 @@ class _LoginScreenState extends State<LoginScreen> {
               onPressed: _login,
               child: Text('로그인하기'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey, // Background color
-                foregroundColor: Colors.white, // Text color
+                backgroundColor: Colors.grey,
+                foregroundColor: Colors.white,
                 padding: EdgeInsets.symmetric(vertical: 16),
                 minimumSize: Size(double.infinity, 48),
                 shape: RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.circular(4), // TextField와 동일한 모서리 반경
-                  side: BorderSide(color: Colors.grey), // TextField와 동일한 테두리 색상
+                  borderRadius: BorderRadius.circular(4),
+                  side: BorderSide(color: Colors.grey),
                 ),
               ),
             ),
             SizedBox(height: 16),
-            ElevatedButton.icon(
-              onPressed: () {
-                // 카카오 로그인 로직 추가
-              },
-              icon: Image.asset('assets/kakao_icon.png',
-                  height: 24), // 카카오 아이콘 추가
-              label: Text('카카오로 시작하기'),
+            ElevatedButton(
+              onPressed: signInWithKakao,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.yellow, // Background color
-                foregroundColor: Colors.black, // Text color
+                backgroundColor: Colors.yellow,
                 padding: EdgeInsets.symmetric(vertical: 16),
                 minimumSize: Size(double.infinity, 48),
                 shape: RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.circular(4), // TextField와 동일한 모서리 반경
-                  side: BorderSide(color: Colors.grey), // TextField와 동일한 테두리 색상
+                  borderRadius: BorderRadius.circular(4),
+                  side: BorderSide(color: Colors.grey),
                 ),
+              ),
+              child: Image.asset(
+                '../assets/kakao.png', // 요청하신 이미지 경로
+                height: 24,
               ),
             ),
             SizedBox(height: 24),
@@ -128,13 +166,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   },
                   child: Text('아이디 찾기'),
                   style: TextButton.styleFrom(
-                    foregroundColor: Colors.grey, // 텍스트 색상을 검정색으로 변경
-                    textStyle: TextStyle(fontSize: 12), // 글씨 크기를 작게 설정
+                    foregroundColor: Colors.grey,
+                    textStyle: TextStyle(fontSize: 12),
                   ),
                 ),
                 Text(
                   '|',
-                  style: TextStyle(color: Colors.grey), // 텍스트 색상을 회색으로 변경
+                  style: TextStyle(color: Colors.grey),
                 ),
                 TextButton(
                   onPressed: () {
@@ -142,13 +180,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   },
                   child: Text('비밀번호 찾기'),
                   style: TextButton.styleFrom(
-                    foregroundColor: Colors.grey, // 텍스트 색상을 검정색으로 변경
-                    textStyle: TextStyle(fontSize: 12), // 글씨 크기를 작게 설정
+                    foregroundColor: Colors.grey,
+                    textStyle: TextStyle(fontSize: 12),
                   ),
                 ),
                 Text(
                   '|',
-                  style: TextStyle(color: Colors.grey), // 텍스트 색상을 회색으로 변경
+                  style: TextStyle(color: Colors.grey),
                 ),
                 TextButton(
                   onPressed: () {
@@ -159,8 +197,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   },
                   child: Text('회원가입'),
                   style: TextButton.styleFrom(
-                    foregroundColor: Colors.grey, // 텍스트 색상을 검정색으로 변경
-                    textStyle: TextStyle(fontSize: 12), // 글씨 크기를 작게 설정
+                    foregroundColor: Colors.grey,
+                    textStyle: TextStyle(fontSize: 12),
                   ),
                 ),
               ],

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'components/basic_frame_page.dart'; // 기본 프레임 페이지 파일을 import
-import 'package:flutter/services.dart';
-
 import 'package:kakao_flutter_sdk_common/kakao_flutter_sdk_common.dart';
 
-void main() {
+void main() async {
   // Flutter 앱의 runApp() 호출 전 초기화를 위해서 필요한 메서드 호출
   WidgetsFlutterBinding.ensureInitialized();
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'mbti_selection_page.dart'; // MBTI 선택 페이지 파일을 import
 import '../pages/BestCourseTop3.dart'; // 인기 추천코스 파일을 import
 import '../pages/GyeongNamRecommend.dart'; // 경상남도 행사 & 축제 파일을 import
+import '../hooks/loginpage.dart'; // LoginScreen 파일을 import
 
 class BasicFramePage extends StatefulWidget {
   @override
@@ -67,7 +68,15 @@ class _BasicFramePageState extends State<BasicFramePage> {
         ],
         currentIndex: 0,
         onTap: (index) {
-          // 추후 구현할 동작을 위한 빈 함수
+          if (index == 2) {
+            // 내 정보 페이지로 이동
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => LoginScreen()),
+            );
+          } else {
+            // 추후 다른 페이지 이동 로직을 여기에 추가
+          }
         },
       ),
     );
