@@ -4,14 +4,14 @@ import 'dart:convert';
 
 class BestCourseTop3 extends StatelessWidget {
   Future<List<Course>> fetchBestCourses() async {
-    final response = await http
-        .get(Uri.parse('https://www.traitcompass.store/api/course/best'));
+    final response =
+        await http.get(Uri.parse('https://www.traitcompass.store/course/best'));
 
     if (response.statusCode == 200) {
-      List jsonResponse = json.decode(response.body);
+      List jsonResponse = json.decode(response.body)['result'];
       return jsonResponse.map((course) => Course.fromJson(course)).toList();
     } else {
-      throw Exception('Failed to load courses');
+      throw Exception('코스 로드 실패');
     }
   }
 
@@ -27,9 +27,9 @@ class BestCourseTop3 extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
-          return Center(child: Text('Failed to load courses'));
+          return Center(child: Text('코스 로드 실패'));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return Center(child: Text('No courses available'));
+          return Center(child: Text('이용 가능한 코스가 없습니다'));
         } else {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -66,6 +66,7 @@ class BestCourseTop3 extends StatelessWidget {
   }
 }
 
+// 추천 코스 카드 위젯
 class RecommendedCourseCard extends StatelessWidget {
   final String imagePath;
   final String title;
@@ -121,6 +122,7 @@ class RecommendedCourseCard extends StatelessWidget {
   }
 }
 
+// Course 클래스 정의
 class Course {
   final String imagePath;
   final String title;
@@ -134,11 +136,12 @@ class Course {
     required this.mbti,
   });
 
+  // JSON 데이터를 Course 객체로 변환하는 팩토리 생성자
   factory Course.fromJson(Map<String, dynamic> json) {
     return Course(
-      imagePath: json['imagePath'],
+      imagePath: json['image'],
       title: json['title'],
-      location: json['location'],
+      location: json['city'],
       mbti: json['mbti'],
     );
   }

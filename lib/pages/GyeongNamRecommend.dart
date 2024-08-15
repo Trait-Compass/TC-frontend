@@ -5,10 +5,10 @@ import 'dart:convert';
 class GyeongNamRecommend extends StatelessWidget {
   Future<List<Festival>> fetchFestivals() async {
     final response = await http
-        .get(Uri.parse('https://www.traitcompass.store/api/course/festival'));
+        .get(Uri.parse('https://www.traitcompass.store/course/festival'));
 
     if (response.statusCode == 200) {
-      List jsonResponse = json.decode(response.body);
+      List jsonResponse = json.decode(response.body)['result'];
       return jsonResponse
           .map((festival) => Festival.fromJson(festival))
           .toList();
@@ -48,7 +48,6 @@ class GyeongNamRecommend extends StatelessWidget {
                     return EventFestivalCard(
                       imagePath: festival.imagePath,
                       title: festival.title,
-                      description: festival.description,
                     );
                   }).toList(),
                 ),
@@ -64,12 +63,10 @@ class GyeongNamRecommend extends StatelessWidget {
 class EventFestivalCard extends StatelessWidget {
   final String imagePath;
   final String title;
-  final String description;
 
   const EventFestivalCard({
     required this.imagePath,
     required this.title,
-    required this.description,
   });
 
   @override
@@ -83,10 +80,13 @@ class EventFestivalCard extends StatelessWidget {
           EdgeInsets.only(left: screenWidth * 0.05, right: screenWidth * 0.025),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        image: DecorationImage(
-          image: NetworkImage(imagePath),
-          fit: BoxFit.cover,
-        ),
+        image: imagePath.isNotEmpty
+            ? DecorationImage(
+                image: NetworkImage(imagePath),
+                fit: BoxFit.cover,
+              )
+            : null,
+        color: imagePath.isEmpty ? Colors.grey : null,
       ),
       child: Stack(
         children: [
@@ -94,7 +94,7 @@ class EventFestivalCard extends StatelessWidget {
             bottom: screenHeight * 0.01,
             left: screenWidth * 0.025,
             child: Text(
-              '$title\n$description',
+              title,
               style: TextStyle(
                 color: Colors.white,
                 fontSize: screenHeight * 0.02,
@@ -118,19 +118,16 @@ class EventFestivalCard extends StatelessWidget {
 class Festival {
   final String imagePath;
   final String title;
-  final String description;
 
   Festival({
     required this.imagePath,
     required this.title,
-    required this.description,
   });
 
   factory Festival.fromJson(Map<String, dynamic> json) {
     return Festival(
-      imagePath: json['imagePath'],
+      imagePath: json['image'] ?? '',
       title: json['title'],
-      description: json['description'],
     );
   }
 }
