@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'dart:math';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class ResultPage extends StatelessWidget {
   final String mbti;
@@ -75,7 +76,7 @@ class ResultPage extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  RecommendedCourses(), // 4개의 이미지를 표시하는 부분
+                  RecommendedCourses(mbti: mbti), // 4개의 이미지를 표시하는 부분
                   SizedBox(height: 10),
                   Center(
                     child: ElevatedButton(
@@ -143,36 +144,72 @@ class ResultPage extends StatelessWidget {
 }
 
 class RecommendedCourses extends StatelessWidget {
+  final String mbti;
+
+  RecommendedCourses({required this.mbti});
+
+  Future<List<Course>> fetchCourses() async {
+    final response = await http.get(Uri.parse(
+        'https://www.traitcompass.store/course/simple?mbti=$mbti&startDate=24-07-12&endDate=24-07-15'));
+
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body)['result'];
+      return jsonResponse.map((course) => Course.fromJson(course)).toList();
+    } else {
+      throw Exception('Failed to load courses');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    List<String> images = [
-      'assets/tour1.png',
-      'assets/tour2.png',
-      'assets/tour3.png',
-      'assets/tour4.png',
-    ];
-
-    images.shuffle(Random());
-
-    return Container(
-      height: 250, // 높이 줄임
-      child: GridView.count(
-        crossAxisCount: 2,
-        childAspectRatio: 1.0,
-        padding: EdgeInsets.all(5), // 여백을 줄임
-        children: images.map((image) {
-          return Container(
-            margin: EdgeInsets.all(5), // 이미지 간격을 줄임
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              image: DecorationImage(
-                image: AssetImage(image), // 이미지 경로를 설정하세요
-                fit: BoxFit.cover,
-              ),
-            ),
+    return FutureBuilder<List<Course>>(
+      future: fetchCourses(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Failed to load courses'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return Center(child: Text('No courses available'));
+        } else {
+          List<Course> courses = snapshot.data!;
+          return GridView.count(
+            crossAxisCount: 2,
+            childAspectRatio: 1.0,
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            padding: EdgeInsets.all(5),
+            children: courses.map((course) {
+              return Container(
+                margin: EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  image: DecorationImage(
+                    image: NetworkImage(course.image),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              );
+            }).toList(),
           );
-        }).toList(),
-      ),
+        }
+      },
+    );
+  }
+}
+
+class Course {
+  final String city;
+  final String title;
+  final String image;
+
+  Course({required this.city, required this.title, required this.image});
+
+  factory Course.fromJson(Map<String, dynamic> json) {
+    return Course(
+      city: json['city'],
+      title: json['title'],
+      image: json['image'],
     );
   }
 }
