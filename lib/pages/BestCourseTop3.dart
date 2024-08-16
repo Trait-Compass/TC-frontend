@@ -11,7 +11,7 @@ class BestCourseTop3 extends StatelessWidget {
       List jsonResponse = json.decode(response.body)['result'];
       return jsonResponse.map((course) => Course.fromJson(course)).toList();
     } else {
-      throw Exception('코스 로드 실패');
+      throw Exception('코스 생성중입니다! 잠시만 기다려주세요!');
     }
   }
 
@@ -19,7 +19,7 @@ class BestCourseTop3 extends StatelessWidget {
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
-    final PageController controller = PageController(viewportFraction: 0.9);
+    final PageController controller = PageController(viewportFraction: 0.95);
 
     return FutureBuilder<List<Course>>(
       future: fetchBestCourses(),
@@ -27,7 +27,7 @@ class BestCourseTop3 extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
-          return Center(child: Text('코스 로드 실패'));
+          return Center(child: Text('코스 생성중입니다! 잠시만 기다려주세요!'));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return Center(child: Text('이용 가능한 코스가 없습니다'));
         } else {
@@ -35,7 +35,8 @@ class BestCourseTop3 extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04),
+                padding:
+                    EdgeInsets.symmetric(horizontal: 20), // 화면 가장자리 여백 20px 설정
                 child: Text(
                   '인기 추천코스\nBEST 3',
                   style: TextStyle(
@@ -46,16 +47,21 @@ class BestCourseTop3 extends StatelessWidget {
               SizedBox(height: screenHeight * 0.01),
               Container(
                 height: screenHeight * 0.25,
-                child: PageView(
+                child: PageView.builder(
                   controller: controller,
-                  children: snapshot.data!.map((course) {
-                    return RecommendedCourseCard(
-                      imagePath: course.imagePath,
-                      title: course.title,
-                      location: course.location,
-                      mbti: course.mbti,
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 5), // 사진 사이의 여백 10px 설정 (양쪽에 5px씩)
+                      child: RecommendedCourseCard(
+                        imagePath: snapshot.data![index].imagePath,
+                        title: snapshot.data![index].title,
+                        location: snapshot.data![index].location,
+                        mbti: snapshot.data![index].mbti,
+                      ),
                     );
-                  }).toList(),
+                  },
                 ),
               ),
             ],
@@ -86,8 +92,7 @@ class RecommendedCourseCard extends StatelessWidget {
     final double screenHeight = MediaQuery.of(context).size.height;
 
     return Container(
-      width: screenWidth * 0.9,
-      margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+      width: screenWidth * 0.85,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         image: DecorationImage(

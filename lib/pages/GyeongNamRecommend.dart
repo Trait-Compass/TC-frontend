@@ -42,6 +42,8 @@ class GyeongNamRecommend extends StatelessWidget {
               SizedBox(height: 10),
               Container(
                 height: 200,
+                padding: EdgeInsets.symmetric(
+                    horizontal: 15), // 화면과의 여백을 20px로 설정 (기본 5px + 15px 추가)
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: snapshot.data!.map((festival) {
@@ -77,7 +79,7 @@ class EventFestivalCard extends StatelessWidget {
     return Container(
       width: screenWidth * 0.4,
       margin:
-          EdgeInsets.only(left: screenWidth * 0.05, right: screenWidth * 0.025),
+          EdgeInsets.symmetric(horizontal: 5), // 사진 사이의 여백을 10px로 설정 (양쪽에 5px씩)
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         image: imagePath.isNotEmpty
