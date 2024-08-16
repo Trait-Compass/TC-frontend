@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'BestCourseTop3.dart';
+import 'GyeongNamRecommend.dart';
 
 class ResultPage extends StatelessWidget {
   final String mbti;
@@ -101,21 +103,10 @@ class ResultPage extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: 30),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    '경상남도 행사 & 축제',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  SortOptions(),
-                ],
-              ),
-            ),
-            EventsAndFestivals(),
+            SizedBox(height: 20),
+            BestCourseTop3(), // BestCourseTop3 위젯 추가
+            SizedBox(height: 20),
+            GyeongNamRecommend(), // GyeongNamRecommend 위젯 추가
             SizedBox(height: 20),
           ],
         ),
@@ -156,7 +147,7 @@ class RecommendedCourses extends StatelessWidget {
       List jsonResponse = json.decode(response.body)['result'];
       return jsonResponse.map((course) => Course.fromJson(course)).toList();
     } else {
-      throw Exception('Failed to load courses');
+      throw Exception('코스를 불러오는 중입니다! 잠시만 기다려주세요!');
     }
   }
 
@@ -210,149 +201,6 @@ class Course {
       city: json['city'],
       title: json['title'],
       image: json['image'],
-    );
-  }
-}
-
-class EventsAndFestivals extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        SizedBox(height: 10),
-        Container(
-          height: 200,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            children: [
-              EventFestivalCard(
-                imagePath: 'assets/event1.png',
-                title: '거제 바다로 세계로',
-                description: '거제의 대표적인 여름 축제',
-              ),
-              EventFestivalCard(
-                imagePath: 'assets/event2.png',
-                title: '창녕 남지 유채꽃 축제',
-                description: '봄에 즐기는 아름다운 유채꽃',
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class EventFestivalCard extends StatelessWidget {
-  final String imagePath;
-  final String title;
-  final String description;
-
-  const EventFestivalCard({
-    required this.imagePath,
-    required this.title,
-    required this.description,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 160,
-      margin: EdgeInsets.only(left: 20, right: 10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        image: DecorationImage(
-          image: AssetImage(imagePath),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: Stack(
-        children: [
-          Positioned(
-            bottom: 10,
-            left: 10,
-            child: Text(
-              '$title\n$description',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                shadows: [
-                  Shadow(
-                    offset: Offset(0, 1),
-                    blurRadius: 2,
-                    color: Colors.black.withOpacity(0.5),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class SortOptions extends StatefulWidget {
-  @override
-  _SortOptionsState createState() => _SortOptionsState();
-}
-
-class _SortOptionsState extends State<SortOptions> {
-  String selectedOption = 'latest';
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        SortOption(
-          text: '최신순',
-          isSelected: selectedOption == 'latest',
-          onTap: () {
-            setState(() {
-              selectedOption = 'latest';
-            });
-          },
-        ),
-        SizedBox(width: 10),
-        SortOption(
-          text: '인기순',
-          isSelected: selectedOption == 'popular',
-          onTap: () {
-            setState(() {
-              selectedOption = 'popular';
-            });
-          },
-        ),
-      ],
-    );
-  }
-}
-
-class SortOption extends StatelessWidget {
-  final String text;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  const SortOption({
-    required this.text,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Text(
-        text,
-        style: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          color: isSelected ? Colors.black : Colors.grey,
-        ),
-      ),
     );
   }
 }
