@@ -339,6 +339,25 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
           ],
         ),
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.white, // 하단바 배경색을 흰색으로 설정
+        items: [
+          BottomNavigationBarItem(
+            icon: Image.asset('assets/home.jpg', height: 30), // 홈 아이콘 경로
+            label: '홈',
+          ),
+          BottomNavigationBarItem(
+            icon:
+                Image.asset('assets/location1.png', height: 30), // 여행 일정 아이콘 경로
+            label: '여행 일정',
+          ),
+          BottomNavigationBarItem(
+            icon:
+                Image.asset('assets/myprofile.png', height: 30), // 내 정보 아이콘 경로
+            label: '내 정보',
+          ),
+        ],
+      ),
     );
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'result_page.dart'; // 새로운 페이지를 import
+import 'result_page.dart';
 
 class CourseGenerationPage extends StatelessWidget {
   final String mbti;
@@ -27,12 +27,12 @@ class CourseGenerationPage extends StatelessWidget {
           color: Colors.white,
           child: AppBar(
             centerTitle: true,
-            title: Image.asset('assets/mbtilogo.jpg', height: 40), // MBTI 로고 경로
+            title: Image.asset('assets/mbtilogo.jpg', height: 40),
             backgroundColor: Colors.white,
             elevation: 0,
             actions: [
               IconButton(
-                icon: Image.asset('assets/alarm.jpg'), // 알림 아이콘 경로
+                icon: Image.asset('assets/alarm.jpg'),
                 onPressed: () {},
               ),
             ],
@@ -44,7 +44,7 @@ class CourseGenerationPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Divider(
-              color: Color(0xFFE4E4E4), // 실선 색상 설정
+              color: Color(0xFFE4E4E4),
               thickness: 1,
               height: 1,
             ),
@@ -52,7 +52,7 @@ class CourseGenerationPage extends StatelessWidget {
             Row(
               children: [
                 SizedBox(width: 20),
-                Image.asset('assets/animation.png', height: 50), // 사람 아이콘 경로
+                Image.asset('assets/animation.png', height: 50),
                 SizedBox(width: 10),
                 Expanded(
                   child: Container(
@@ -86,7 +86,7 @@ class CourseGenerationPage extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
-                    Image.asset('assets/map.png'), // 지도 이미지 경로
+                    Image.asset('assets/map.png'),
                     SizedBox(height: 10),
                     Text(
                       '생성중...',
@@ -97,9 +97,9 @@ class CourseGenerationPage extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 20), // 추가 여백
-            RecommendedCourses(),
-            SizedBox(height: 20), // 추가 여백
+            SizedBox(height: 20),
+            RecommendedCourses(mbti: mbti),
+            SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: Row(
