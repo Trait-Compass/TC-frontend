@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'creataccount.dart'; // SignupScreen 파일을 import
-import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart'; // 카카오 SDK import
+import 'creataccount.dart';
+import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:flutter/services.dart';
-import '../components/basic_frame_page.dart'; // 홈 화면으로 사용할 파일 import
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import '../components/basic_frame_page.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -13,6 +15,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isRememberMeChecked = false;
+  String _userInfo = '';
 
   void _login() {
     final String id = _idController.text;
@@ -25,34 +28,88 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> signInWithKakao() async {
-    // 카카오 로그인 구현 예제
+    try {
+      OAuthToken? token;
 
-    // 카카오톡 실행 가능 여부 확인
-    if (await isKakaoTalkInstalled()) {
-      try {
-        await UserApi.instance.loginWithKakaoTalk();
-        print('카카오톡으로 로그인 성공');
-      } catch (error) {
-        print('카카오톡으로 로그인 실패 $error');
-
-        if (error is PlatformException && error.code == 'CANCELED') {
-          return;
-        }
-
+      // 카카오톡 실행 가능 여부 확인
+      if (await isKakaoTalkInstalled()) {
         try {
-          await UserApi.instance.loginWithKakaoAccount();
-          print('카카오계정으로 로그인 성공');
+          token = await UserApi.instance.loginWithKakaoTalk();
+          print('카카오톡으로 로그인 성공');
         } catch (error) {
-          print('카카오계정으로 로그인 실패 $error');
+          print('카카오톡으로 로그인 실패 $error');
+          if (error is PlatformException && error.code == 'CANCELED') {
+            return;
+          }
+          token = await _loginWithKakaoAccount();
         }
+      } else {
+        token = await _loginWithKakaoAccount();
       }
+
+      // 로그인 성공 시 사용자 정보 가져오기
+      await _getUserInfo();
+
+      // 카카오에서 받은 액세스 토큰을 서버로 전송
+      if (token != null) {
+        await _sendTokenToServer(token.accessToken);
+      }
+    } catch (error) {
+      print('카카오 로그인 실패: $error');
+      setState(() {
+        _userInfo = '카카오 로그인 실패: $error';
+      });
+    }
+  }
+
+  Future<OAuthToken?> _loginWithKakaoAccount() async {
+    try {
+      OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
+      print('카카오계정으로 로그인 성공');
+      return token;
+    } catch (error) {
+      print('카카오계정으로 로그인 실패 $error');
+      setState(() {
+        _userInfo = '카카오계정으로 로그인 실패: $error';
+      });
+      return null;
+    }
+  }
+
+  Future<void> _getUserInfo() async {
+    try {
+      final user = await UserApi.instance.me();
+      setState(() {
+        _userInfo =
+            '닉네임: ${user.kakaoAccount?.profile?.nickname}, 이메일: ${user.kakaoAccount?.email}';
+      });
+      print('사용자 정보: $_userInfo');
+    } catch (error) {
+      print('사용자 정보 요청 실패: $error');
+      setState(() {
+        _userInfo = '사용자 정보 요청 실패: $error';
+      });
+    }
+  }
+
+  Future<void> _sendTokenToServer(String accessToken) async {
+    final response = await http.post(
+      Uri.parse('https://your-backend.com/oauth/kakao'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'accessToken': accessToken,
+        'vendor': 'kakao',
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      print('서버로 토큰 전송 성공');
+      // 서버로부터 받은 응답을 처리
+      // 예: 서버가 새로운 세션 토큰을 반환하면 그것을 저장하는 등의 작업
     } else {
-      try {
-        await UserApi.instance.loginWithKakaoAccount();
-        print('카카오계정으로 로그인 성공');
-      } catch (error) {
-        print('카카오계정으로 로그인 실패 $error');
-      }
+      print('서버로 토큰 전송 실패: ${response.statusCode}');
     }
   }
 
@@ -156,6 +213,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 height: 24,
               ),
             ),
+            SizedBox(height: 24),
+            if (_userInfo.isNotEmpty)
+              Text(
+                _userInfo,
+                style: TextStyle(fontSize: 16, color: Colors.black),
+                textAlign: TextAlign.center,
+              ),
             SizedBox(height: 24),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
