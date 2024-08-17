@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'creataccount.dart'; // SignupScreen 파일을 import
-import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart'; // 카카오 SDK import
-import 'package:flutter/services.dart';
-import '../components/basic_frame_page.dart'; // 홈 화면으로 사용할 파일 import
+import '../styles/loginstyles.dart';
+import '../services/auth_services.dart';
+import 'creataccount.dart';
+import '../components/basic_frame_page.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -12,47 +12,37 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final AuthService _authService = AuthService();
   bool _isRememberMeChecked = false;
+  String _userInfo = '';
 
   void _login() {
     final String id = _idController.text;
     final String password = _passwordController.text;
 
-    // 로그인 로직을 여기에 추가합니다.
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('로그인 시도: $id')),
     );
   }
 
-  Future<void> signInWithKakao() async {
-    // 카카오 로그인 구현 예제
+  Future<void> _signInWithKakao() async {
+    final token = await _authService.signInWithKakao();
 
-    // 카카오톡 실행 가능 여부 확인
-    if (await isKakaoTalkInstalled()) {
-      try {
-        await UserApi.instance.loginWithKakaoTalk();
-        print('카카오톡으로 로그인 성공');
-      } catch (error) {
-        print('카카오톡으로 로그인 실패 $error');
+    if (token != null) {
+      setState(() {
+        _userInfo = '로그인 성공!';
+      });
 
-        if (error is PlatformException && error.code == 'CANCELED') {
-          return;
-        }
+      final userInfo = await _authService.getUserInfo();
+      setState(() {
+        _userInfo = userInfo ?? '사용자 정보 요청 실패';
+      });
 
-        try {
-          await UserApi.instance.loginWithKakaoAccount();
-          print('카카오계정으로 로그인 성공');
-        } catch (error) {
-          print('카카오계정으로 로그인 실패 $error');
-        }
-      }
+      await _authService.sendTokenToServer(token.accessToken);
     } else {
-      try {
-        await UserApi.instance.loginWithKakaoAccount();
-        print('카카오계정으로 로그인 성공');
-      } catch (error) {
-        print('카카오계정으로 로그인 실패 $error');
-      }
+      setState(() {
+        _userInfo = '로그인 실패';
+      });
     }
   }
 
@@ -73,28 +63,20 @@ class _LoginScreenState extends State<LoginScreen> {
                 );
               },
               child: Image.asset(
-                'assets/mbtilogo.jpg', // 로고 이미지 경로
-                height: 100, // 이미지 높이
+                'assets/mbtilogo.jpg',
+                height: 100,
               ),
             ),
             SizedBox(height: 24),
             TextField(
               controller: _idController,
-              decoration: InputDecoration(
-                hintText: '아이디',
-                border: OutlineInputBorder(),
-                contentPadding: EdgeInsets.symmetric(horizontal: 16),
-              ),
+              decoration: textFieldDecoration.copyWith(hintText: '아이디'),
               keyboardType: TextInputType.emailAddress,
             ),
             SizedBox(height: 16),
             TextField(
               controller: _passwordController,
-              decoration: InputDecoration(
-                hintText: '비밀번호',
-                border: OutlineInputBorder(),
-                contentPadding: EdgeInsets.symmetric(horizontal: 16),
-              ),
+              decoration: textFieldDecoration.copyWith(hintText: '비밀번호'),
               obscureText: true,
             ),
             SizedBox(height: 16),
@@ -128,34 +110,24 @@ class _LoginScreenState extends State<LoginScreen> {
             ElevatedButton(
               onPressed: _login,
               child: Text('로그인하기'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey,
-                foregroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(vertical: 16),
-                minimumSize: Size(double.infinity, 48),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4),
-                  side: BorderSide(color: Colors.grey),
-                ),
-              ),
+              style: loginButtonStyle,
             ),
             SizedBox(height: 16),
             ElevatedButton(
-              onPressed: signInWithKakao,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.yellow,
-                padding: EdgeInsets.symmetric(vertical: 16),
-                minimumSize: Size(double.infinity, 48),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4),
-                  side: BorderSide(color: Colors.grey),
-                ),
-              ),
+              onPressed: _signInWithKakao,
+              style: kakaoButtonStyle,
               child: Image.asset(
-                '../assets/kakao.png', // 요청하신 이미지 경로
+                '../assets/kakao.png',
                 height: 24,
               ),
             ),
+            SizedBox(height: 24),
+            if (_userInfo.isNotEmpty)
+              Text(
+                _userInfo,
+                style: TextStyle(fontSize: 16, color: Colors.black),
+                textAlign: TextAlign.center,
+              ),
             SizedBox(height: 24),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,

@@ -57,7 +57,7 @@ class CourseGenerationPage extends StatelessWidget {
             Row(
               children: [
                 SizedBox(width: 20),
-                Image.asset('assets/animation.png', height: 50),
+                Image.asset('assets/img.png', height: 50),
                 SizedBox(width: 10),
                 Expanded(
                   child: Container(
