@@ -3,6 +3,7 @@ import '../styles/loginstyles.dart';
 import '../services/auth_services.dart';
 import 'creataccount.dart';
 import '../components/basic_frame_page.dart';
+import 'accountdetail.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -50,132 +51,136 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.all(32.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            GestureDetector(
-              onTap: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => BasicFramePage()),
-                );
-              },
-              child: Image.asset(
-                'assets/mbtilogo.jpg',
-                height: 100,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(32.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => BasicFramePage()),
+                  );
+                },
+                child: Image.asset(
+                  'assets/mbtilogo.jpg',
+                  height: 100,
+                ),
               ),
-            ),
-            SizedBox(height: 24),
-            TextField(
-              controller: _idController,
-              decoration: textFieldDecoration.copyWith(hintText: '아이디'),
-              keyboardType: TextInputType.emailAddress,
-            ),
-            SizedBox(height: 16),
-            TextField(
-              controller: _passwordController,
-              decoration: textFieldDecoration.copyWith(hintText: '비밀번호'),
-              obscureText: true,
-            ),
-            SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Checkbox(
-                      value: _isRememberMeChecked,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          _isRememberMeChecked = value ?? false;
-                        });
-                      },
-                      activeColor: Colors.black,
-                      checkColor: Colors.white,
-                    ),
-                    Text(
-                      '로그인 유지',
-                      style: TextStyle(
-                        color:
-                            _isRememberMeChecked ? Colors.black : Colors.grey,
+              SizedBox(height: 24),
+              TextField(
+                controller: _idController,
+                decoration: textFieldDecoration.copyWith(hintText: '아이디'),
+                keyboardType: TextInputType.emailAddress,
+              ),
+              SizedBox(height: 16),
+              TextField(
+                controller: _passwordController,
+                decoration: textFieldDecoration.copyWith(hintText: '비밀번호'),
+                obscureText: true,
+              ),
+              SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: _isRememberMeChecked,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            _isRememberMeChecked = value ?? false;
+                          });
+                        },
+                        activeColor: Colors.black,
+                        checkColor: Colors.white,
                       ),
+                      Text(
+                        '로그인 유지',
+                        style: TextStyle(
+                          color:
+                              _isRememberMeChecked ? Colors.black : Colors.grey,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: _login,
+                child: Text('로그인하기'),
+                style: loginButtonStyle,
+              ),
+              SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _signInWithKakao,
+                style: kakaoButtonStyle,
+                child: Image.asset(
+                  '../assets/kakao.png',
+                  height: 24,
+                ),
+              ),
+              SizedBox(height: 24),
+              if (_userInfo.isNotEmpty)
+                Text(
+                  _userInfo,
+                  style: TextStyle(fontSize: 16, color: Colors.black),
+                  textAlign: TextAlign.center,
+                ),
+              SizedBox(height: 24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      // 아이디 찾기 로직 추가
+                    },
+                    child: Text('아이디 찾기'),
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.grey,
+                      textStyle: TextStyle(fontSize: 12),
                     ),
-                  ],
-                ),
-              ],
-            ),
-            SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: _login,
-              child: Text('로그인하기'),
-              style: loginButtonStyle,
-            ),
-            SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _signInWithKakao,
-              style: kakaoButtonStyle,
-              child: Image.asset(
-                '../assets/kakao.png',
-                height: 24,
+                  ),
+                  Text(
+                    '|',
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      // 비밀번호 찾기 로직 추가
+                    },
+                    child: Text('비밀번호 찾기'),
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.grey,
+                      textStyle: TextStyle(fontSize: 12),
+                    ),
+                  ),
+                  Text(
+                    '|',
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                SignupScreen()), // 수정: SignupScreen으로 이동
+                      );
+                    },
+                    child: Text('회원가입'),
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.grey,
+                      textStyle: TextStyle(fontSize: 12),
+                    ),
+                  ),
+                ],
               ),
-            ),
-            SizedBox(height: 24),
-            if (_userInfo.isNotEmpty)
-              Text(
-                _userInfo,
-                style: TextStyle(fontSize: 16, color: Colors.black),
-                textAlign: TextAlign.center,
-              ),
-            SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                TextButton(
-                  onPressed: () {
-                    // 아이디 찾기 로직 추가
-                  },
-                  child: Text('아이디 찾기'),
-                  style: TextButton.styleFrom(
-                    foregroundColor: Colors.grey,
-                    textStyle: TextStyle(fontSize: 12),
-                  ),
-                ),
-                Text(
-                  '|',
-                  style: TextStyle(color: Colors.grey),
-                ),
-                TextButton(
-                  onPressed: () {
-                    // 비밀번호 찾기 로직 추가
-                  },
-                  child: Text('비밀번호 찾기'),
-                  style: TextButton.styleFrom(
-                    foregroundColor: Colors.grey,
-                    textStyle: TextStyle(fontSize: 12),
-                  ),
-                ),
-                Text(
-                  '|',
-                  style: TextStyle(color: Colors.grey),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => SignupScreen()),
-                    );
-                  },
-                  child: Text('회원가입'),
-                  style: TextButton.styleFrom(
-                    foregroundColor: Colors.grey,
-                    textStyle: TextStyle(fontSize: 12),
-                  ),
-                ),
-              ],
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

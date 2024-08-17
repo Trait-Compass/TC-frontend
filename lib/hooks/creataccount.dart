@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'accountdetail.dart'; // accountdetail.dart 파일을 import
+import 'package:http/http.dart' as http;
+import 'accountdetail.dart';
 
 class SignupScreen extends StatefulWidget {
   @override
@@ -13,26 +14,63 @@ class _SignupScreenState extends State<SignupScreen> {
       TextEditingController();
 
   bool isButtonEnabled = false;
+  bool isIdUnique = false;
 
   void _signup() {
     final String id = _idController.text;
     final String password = _passwordController.text;
-    final String passwordConfirm = _passwordConfirmController.text;
 
-    // 모든 필드가 올바르게 입력되면 accountdetail.dart로 이동합니다.
-    if (isButtonEnabled) {
+    if (isButtonEnabled && isIdUnique) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => UserInfoScreen()),
+        MaterialPageRoute(
+          builder: (context) => UserInfoScreen(
+            id: id,
+            password: password,
+          ),
+        ),
       );
     }
   }
 
-  void _checkDuplicate() {
-    // 중복 확인 로직을 여기에 추가합니다.
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('중복 확인')),
-    );
+  Future<void> _checkDuplicateId() async {
+    final String id = _idController.text;
+
+    final response =
+        await http.get(Uri.parse('https://www.traitcompass.store/user/id/$id'));
+
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
+    if (response.statusCode == 200) {
+      final String responseBody = response.body;
+      final bool isIdTaken = responseBody.contains('"result":false');
+
+      if (isIdTaken) {
+        setState(() {
+          isIdUnique = true;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('사용 가능한 아이디입니다.')),
+        );
+        print('사용 가능한 아이디입니다.');
+      } else {
+        setState(() {
+          isIdUnique = false; // 이미 사용 중인 ID
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('이미 사용 중인 아이디입니다.')),
+        );
+        print('이미 사용 중인 아이디입니다.');
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('아이디 중복 확인에 실패했습니다.')),
+      );
+      print('아이디 중복 확인 실패');
+    }
+
+    _updateButtonState();
   }
 
   void _updateButtonState() {
@@ -40,7 +78,8 @@ class _SignupScreenState extends State<SignupScreen> {
       isButtonEnabled = _idController.text.isNotEmpty &&
           _passwordController.text.isNotEmpty &&
           _passwordConfirmController.text.isNotEmpty &&
-          _passwordController.text == _passwordConfirmController.text;
+          _passwordController.text == _passwordConfirmController.text &&
+          isIdUnique;
     });
   }
 
@@ -67,7 +106,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
     return MaterialApp(
       theme: ThemeData(
-        fontFamily: 'Pretendard', // 전체 글씨체를 Pretendard로 설정
+        fontFamily: 'Pretendard',
       ),
       home: Scaffold(
         backgroundColor: Colors.white,
@@ -81,8 +120,8 @@ class _SignupScreenState extends State<SignupScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Image.asset(
-                    'assets/mbtilogo.jpg', // 여기에 로고 이미지의 경로를 넣으세요.
-                    height: screenHeight * 0.1, // 이미지의 높이를 적절히 조절하세요.
+                    'assets/mbtilogo.jpg',
+                    height: screenHeight * 0.1,
                   ),
                   SizedBox(height: screenHeight * 0.03),
                   Text(
@@ -119,20 +158,17 @@ class _SignupScreenState extends State<SignupScreen> {
                                   fillColor: Color(0xFFF1F2F3),
                                   border: OutlineInputBorder(
                                     borderSide: BorderSide(
-                                      color:
-                                          Color(0xFFF1F2F3), // 테두리 색상을 변경합니다.
+                                      color: Color(0xFFF1F2F3),
                                     ),
                                   ),
                                   enabledBorder: OutlineInputBorder(
                                     borderSide: BorderSide(
-                                      color:
-                                          Color(0xFFF1F2F3), // 테두리 색상을 변경합니다.
+                                      color: Color(0xFFF1F2F3),
                                     ),
                                   ),
                                   focusedBorder: OutlineInputBorder(
                                     borderSide: BorderSide(
-                                      color:
-                                          Color(0xFFF1F2F3), // 테두리 색상을 변경합니다.
+                                      color: Color(0xFFF1F2F3),
                                     ),
                                   ),
                                   contentPadding: EdgeInsets.symmetric(
@@ -147,7 +183,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             width: screenWidth * 0.2,
                             height: screenHeight * 0.06,
                             child: ElevatedButton(
-                              onPressed: _checkDuplicate,
+                              onPressed: _checkDuplicateId,
                               child: Text(
                                 '중복 확인',
                                 style: TextStyle(
@@ -156,8 +192,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                 ),
                               ),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    Color(0xFFD9D9D9), // Background color
+                                backgroundColor: Color(0xFFD9D9D9),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(4),
                                   side: BorderSide(color: Color(0xFFD9D9D9)),
@@ -188,17 +223,17 @@ class _SignupScreenState extends State<SignupScreen> {
                             fillColor: Color(0xFFF1F2F3),
                             border: OutlineInputBorder(
                               borderSide: BorderSide(
-                                color: Color(0xFFF1F2F3), // 테두리 색상을 변경합니다.
+                                color: Color(0xFFF1F2F3),
                               ),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(
-                                color: Color(0xFFF1F2F3), // 테두리 색상을 변경합니다.
+                                color: Color(0xFFF1F2F3),
                               ),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderSide: BorderSide(
-                                color: Color(0xFFF1F2F3), // 테두리 색상을 변경합니다.
+                                color: Color(0xFFF1F2F3),
                               ),
                             ),
                             contentPadding: EdgeInsets.symmetric(
@@ -228,17 +263,17 @@ class _SignupScreenState extends State<SignupScreen> {
                             fillColor: Color(0xFFF1F2F3),
                             border: OutlineInputBorder(
                               borderSide: BorderSide(
-                                color: Color(0xFFF1F2F3), // 테두리 색상을 변경합니다.
+                                color: Color(0xFFF1F2F3),
                               ),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(
-                                color: Color(0xFFF1F2F3), // 테두리 색상을 변경합니다.
+                                color: Color(0xFFF1F2F3),
                               ),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderSide: BorderSide(
-                                color: Color(0xFFF1F2F3), // 테두리 색상을 변경합니다.
+                                color: Color(0xFFF1F2F3),
                               ),
                             ),
                             contentPadding: EdgeInsets.symmetric(
