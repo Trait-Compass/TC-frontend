@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'mbti_selection_page.dart'; // MBTI 선택 페이지 파일을 import
 import '../pages/BestCourseTop3.dart'; // 인기 추천코스 파일을 import
 import '../pages/GyeongNamRecommend.dart'; // 경상남도 행사 & 축제 파일을 import
-import '../hooks/loginpage.dart'; // LoginScreen 파일을 import
+import '../hooks/loginscreen.dart'; // LoginScreen 파일을 import
 
 class BasicFramePage extends StatefulWidget {
   @override
