@@ -1,26 +1,47 @@
 import 'package:flutter/material.dart';
-import 'MBTIselection.dart'; // MBTIselection.dart 파일을 import
-import 'MBTItestpage.dart'; // MBTItestpage.dart 파일을 import
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class UserInfoScreen extends StatefulWidget {
+  final String id; // 사용자가 입력한 id
+  final String password; // 사용자가 입력한 password
+
+  UserInfoScreen({required this.id, required this.password});
+
   @override
   _UserInfoScreenState createState() => _UserInfoScreenState();
 }
 
 class _UserInfoScreenState extends State<UserInfoScreen> {
   final TextEditingController _nicknameController = TextEditingController();
-  final TextEditingController _mbtiController = TextEditingController();
-  String _gender = '';
-  bool isButtonEnabled = false;
-  bool isMBTISelectionVisible = false;
-  bool isDuplicateCheckEnabled = false;
+  String _mbti = ''; // MBTI 선택을 저장하는 변수
+  String _gender = ''; // 성별을 저장하는 변수 ("M" 또는 "F")
+  bool isButtonEnabled = false; // 시작 버튼 활성화 상태를 저장하는 변수
+
+  final List<String> _mbtiList = [
+    'INTJ',
+    'INTP',
+    'ENTJ',
+    'ENTP',
+    'INFJ',
+    'INFP',
+    'ENFJ',
+    'ENFP',
+    'ISTJ',
+    'ISFJ',
+    'ESTJ',
+    'ESFJ',
+    'ISTP',
+    'ISFP',
+    'ESTP',
+    'ESFP'
+  ]; // 16가지 MBTI 목록
 
   void _updateButtonState() {
     setState(() {
       isButtonEnabled = _nicknameController.text.isNotEmpty &&
-          _mbtiController.text.isNotEmpty &&
+          _mbti.isNotEmpty &&
           _gender.isNotEmpty;
-      isDuplicateCheckEnabled = _nicknameController.text.isNotEmpty;
     });
   }
 
@@ -28,54 +49,53 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   void initState() {
     super.initState();
     _nicknameController.addListener(_updateButtonState);
-    _mbtiController.addListener(_updateButtonState);
   }
 
   @override
   void dispose() {
     _nicknameController.dispose();
-    _mbtiController.dispose();
     super.dispose();
   }
 
-  void _checkDuplicate() {
-    // 닉네임 중복 확인 로직을 여기에 추가합니다.
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          '중복확인 되었습니다',
-          textAlign: TextAlign.center,
-          style: TextStyle(color: Colors.white), // 텍스트 색상 설정
-        ),
-        backgroundColor: Color(0xFFE0E0E0),
-        behavior: SnackBarBehavior.floating,
-        margin: EdgeInsets.all(20.0),
-        duration: Duration(seconds: 2),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-      ),
+  Future<void> _submitUserInfo() async {
+    final String nickname = _nicknameController.text;
+    final String mbti = _mbti;
+    final String gender = _gender;
+    final bool isOauth = true;
+
+    // 로그를 추가하여 성별 값이 제대로 설정되는지 확인합니다.
+    print('Submitting user info: Gender = $gender');
+
+    final response = await http.post(
+      Uri.parse('https://www.traitcompass.store/user'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'id': widget.id,
+        'password': widget.password,
+        'nickname': nickname,
+        'mbti': mbti,
+        'gender': gender,
+        'isOauth': isOauth,
+      }),
     );
-  }
 
-  void _goToMBTItestpage() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => MBTItestpage()),
-    );
-  }
+    print('Status code: ${response.statusCode}');
+    print('Response body: ${response.body}');
 
-  void _showMBTISelection() {
-    setState(() {
-      isMBTISelectionVisible = !isMBTISelectionVisible;
-    });
-  }
-
-  void _selectMBTI(String mbti) {
-    setState(() {
-      _mbtiController.text = mbti;
-      isMBTISelectionVisible = false;
-    });
+    if (response.statusCode == 201) {
+      print('User info submitted successfully.');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('회원정보가 성공적으로 제출되었습니다.')),
+      );
+    } else {
+      print('Failed to submit user info. Status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('회원정보 제출에 실패했습니다.')),
+      );
+    }
   }
 
   @override
@@ -95,8 +115,8 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Image.asset(
-                  'assets/mbtilogo.jpg', // 여기에 로고 이미지의 경로를 넣으세요.
-                  height: screenHeight * 0.1, // 이미지의 높이를 적절히 조절하세요.
+                  'assets/mbtilogo.jpg',
+                  height: screenHeight * 0.1,
                 ),
                 SizedBox(height: screenHeight * 0.03),
                 Text(
@@ -133,54 +153,21 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                 fillColor: Color(0xFFF1F2F3),
                                 border: OutlineInputBorder(
                                   borderSide: BorderSide(
-                                    color: Color(0xFFF1F2F3), // 테두리 색상을 변경합니다.
+                                    color: Color(0xFFF1F2F3),
                                   ),
                                 ),
                                 enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
-                                    color: Color(0xFFF1F2F3), // 테두리 색상을 변경합니다.
+                                    color: Color(0xFFF1F2F3),
                                   ),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
-                                    color: Color(0xFFF1F2F3), // 테두리 색상을 변경합니다.
+                                    color: Color(0xFFF1F2F3),
                                   ),
                                 ),
                                 contentPadding: EdgeInsets.symmetric(
                                     horizontal: screenWidth * 0.04),
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: screenWidth * 0.02),
-                        Container(
-                          width: screenWidth * 0.2,
-                          height: screenHeight * 0.06,
-                          child: ElevatedButton(
-                            onPressed: isDuplicateCheckEnabled
-                                ? _checkDuplicate
-                                : null,
-                            child: Center(
-                              child: Text(
-                                '중복 확인',
-                                style: TextStyle(
-                                  fontSize: screenHeight * 0.017,
-                                  color: Colors.black,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: isDuplicateCheckEnabled
-                                  ? Colors.black.withOpacity(0.28)
-                                  : Color(0xFFE0E0E0), // 비활성화 색상 추가
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(4),
-                                side: BorderSide(
-                                  color: isDuplicateCheckEnabled
-                                      ? Colors.black.withOpacity(0.28)
-                                      : Color(0xFFE0E0E0),
-                                ),
                               ),
                             ),
                           ),
@@ -202,89 +189,47 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                     fontSize: screenHeight * 0.02,
                                     fontWeight: FontWeight.bold),
                               ),
-                              GestureDetector(
-                                onTap: _showMBTISelection,
-                                child: Container(
-                                  height: screenHeight * 0.06,
-                                  width: screenWidth * 0.4,
-                                  decoration: BoxDecoration(
-                                    color: Color(0xFFF1F2F3),
-                                    border: Border.all(
-                                      color: Color(0xFFF1F2F3),
-                                    ),
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                  alignment: Alignment.centerLeft,
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: screenWidth * 0.04),
-                                  child: Text(
-                                    _mbtiController.text.isEmpty
-                                        ? 'MBTI를 설정해주세요'
-                                        : _mbtiController.text,
-                                    style: TextStyle(
-                                      fontSize: screenHeight * 0.017,
-                                      color: _mbtiController.text.isEmpty
-                                          ? Color(0xFF676767)
-                                          : Colors.black,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              if (isMBTISelectionVisible)
-                                Column(
-                                  children: [
-                                    SizedBox(height: screenHeight * 0.01),
-                                    Container(
-                                      height: screenHeight * 0.24, // 4개의 박스 높이
-                                      child: MBTISelection(
-                                        onSelectMBTI: _selectMBTI,
-                                        boxHeight: screenHeight * 0.06,
-                                        boxWidth: double.infinity,
-                                        textStyle: TextStyle(
-                                          fontSize: screenHeight * 0.017,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
                               Container(
-                                alignment: Alignment.centerRight,
-                                padding: EdgeInsets.only(
-                                    right:
-                                        screenWidth * 0.04), // 오른쪽 정렬을 위한 패딩 추가
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      '아직 내 MBTI를 모른다면?',
-                                      style: TextStyle(
-                                          fontSize: screenHeight * 0.015,
-                                          color: Color(0xFF676767)),
-                                    ),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Text(
-                                          '내 MBTI 알아보러 가기',
-                                          style: TextStyle(
-                                              fontSize: screenHeight * 0.015,
-                                              color: Color(0xFF676767)),
-                                        ),
-                                        GestureDetector(
-                                          onTap: _goToMBTItestpage,
-                                          child: Text(
-                                            ' GO',
-                                            style: TextStyle(
-                                              fontSize: screenHeight * 0.015,
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                                height: screenHeight * 0.06,
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: screenWidth * 0.04),
+                                decoration: BoxDecoration(
+                                  color: Color(0xFFF1F2F3),
+                                  borderRadius: BorderRadius.circular(4),
+                                  border: Border.all(
+                                    color: Color(0xFFF1F2F3),
+                                  ),
+                                ),
+                                child: DropdownButton<String>(
+                                  isExpanded: true,
+                                  value: _mbti.isEmpty ? null : _mbti,
+                                  hint: Text(
+                                    'MBTI를 설정해주세요',
+                                    style: TextStyle(
+                                        fontSize: screenHeight * 0.017,
+                                        color: Color(0xFF676767)),
+                                  ),
+                                  icon: Icon(Icons.arrow_drop_down),
+                                  iconSize: screenHeight * 0.03,
+                                  elevation: 16,
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: screenHeight * 0.017),
+                                  underline: Container(),
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      _mbti = newValue!;
+                                      _updateButtonState();
+                                    });
+                                  },
+                                  items: _mbtiList
+                                      .map<DropdownMenuItem<String>>(
+                                          (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
                                 ),
                               ),
                             ],
@@ -313,12 +258,14 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                           fontSize: screenHeight * 0.015),
                                     ),
                                     Radio<String>(
-                                      value: '남성',
+                                      value: 'M',
                                       groupValue: _gender,
                                       onChanged: (String? value) {
                                         setState(() {
                                           _gender = value!;
                                           _updateButtonState();
+                                          // 로그 추가
+                                          print('남성임');
                                         });
                                       },
                                       materialTapTargetSize:
@@ -332,12 +279,14 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                           fontSize: screenHeight * 0.015),
                                     ),
                                     Radio<String>(
-                                      value: '여성',
+                                      value: 'F',
                                       groupValue: _gender,
                                       onChanged: (String? value) {
                                         setState(() {
                                           _gender = value!;
                                           _updateButtonState();
+                                          // 로그 추가
+                                          print('여성임');
                                         });
                                       },
                                       materialTapTargetSize:
@@ -361,8 +310,9 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                     width: screenWidth * 0.5,
                     height: screenHeight * 0.06,
                     child: ElevatedButton(
-                      onPressed:
-                          isButtonEnabled ? () {} : null, // 여기서 아무것도 하지 않음
+                      onPressed: isButtonEnabled
+                          ? _submitUserInfo
+                          : null, // 버튼 클릭 시 서버에 정보 전송
                       child: Text(
                         '시작',
                         style: TextStyle(
@@ -374,8 +324,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: isButtonEnabled
                             ? Colors.black.withOpacity(0.28)
-                            : Color(
-                                0xFFD9D9D9), // Background color with 28% opacity or disabled color
+                            : Color(0xFFD9D9D9), // 활성화/비활성화 상태에 따른 색상 설정
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(4),
                           side: BorderSide(
