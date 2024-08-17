@@ -3,8 +3,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class UserInfoScreen extends StatefulWidget {
-  final String id; // 사용자가 입력한 id
-  final String password; // 사용자가 입력한 password
+  final String id;
+  final String password;
 
   UserInfoScreen({required this.id, required this.password});
 
@@ -14,9 +14,10 @@ class UserInfoScreen extends StatefulWidget {
 
 class _UserInfoScreenState extends State<UserInfoScreen> {
   final TextEditingController _nicknameController = TextEditingController();
-  String _mbti = ''; // MBTI 선택을 저장하는 변수
-  String _gender = ''; // 성별을 저장하는 변수 ("M" 또는 "F")
-  bool isButtonEnabled = false; // 시작 버튼 활성화 상태를 저장하는 변수
+  String _mbti = '';
+  String _gender = '';
+  bool isButtonEnabled = false;
+  bool isnicknameUnique = false;
 
   final List<String> _mbtiList = [
     'INTJ',
@@ -35,13 +36,14 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
     'ISFP',
     'ESTP',
     'ESFP'
-  ]; // 16가지 MBTI 목록
+  ];
 
   void _updateButtonState() {
     setState(() {
       isButtonEnabled = _nicknameController.text.isNotEmpty &&
           _mbti.isNotEmpty &&
-          _gender.isNotEmpty;
+          _gender.isNotEmpty &&
+          isnicknameUnique;
     });
   }
 
@@ -63,7 +65,6 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
     final String gender = _gender;
     final bool isOauth = true;
 
-    // 로그를 추가하여 성별 값이 제대로 설정되는지 확인합니다.
     print('Submitting user info: Gender = $gender');
 
     final response = await http.post(
@@ -96,6 +97,46 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
         SnackBar(content: Text('회원정보 제출에 실패했습니다.')),
       );
     }
+  }
+
+  Future<void> _checkDuplicateNickname() async {
+    final String nickname = _nicknameController.text;
+
+    final response = await http.get(
+        Uri.parse('https://www.traitcompass.store/user/nickname/$nickname'));
+
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseData = jsonDecode(response.body);
+      final bool isNicknameTaken = responseData['result'];
+
+      if (isNicknameTaken) {
+        setState(() {
+          isnicknameUnique = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('이미 사용 중인 닉네임입니다.')),
+        );
+        print('닉네임 중복 확인 결과: 이미 사용 중인 닉네임입니다.');
+      } else {
+        setState(() {
+          isnicknameUnique = true;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('사용 가능한 닉네임입니다.')),
+        );
+        print('닉네임 중복 확인 결과: 사용 가능한 닉네임입니다.');
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('닉네임 중복 확인에 실패했습니다.')),
+      );
+      print('닉네임 중복 확인 실패: 서버에서 알 수 없는 오류가 발생했습니다.');
+    }
+
+    _updateButtonState();
   }
 
   @override
@@ -168,6 +209,28 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                 ),
                                 contentPadding: EdgeInsets.symmetric(
                                     horizontal: screenWidth * 0.04),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: screenWidth * 0.02),
+                        Container(
+                          width: screenWidth * 0.2,
+                          height: screenHeight * 0.06,
+                          child: ElevatedButton(
+                            onPressed: _checkDuplicateNickname,
+                            child: Text(
+                              '중복 확인',
+                              style: TextStyle(
+                                fontSize: screenHeight * 0.017,
+                                color: Colors.black,
+                              ),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xFFD9D9D9),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                                side: BorderSide(color: Color(0xFFD9D9D9)),
                               ),
                             ),
                           ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'accountdetail.dart'; // accountdetail.dart 파일을 import
+import 'package:http/http.dart' as http;
+import 'accountdetail.dart';
 
 class SignupScreen extends StatefulWidget {
   @override
@@ -13,28 +14,63 @@ class _SignupScreenState extends State<SignupScreen> {
       TextEditingController();
 
   bool isButtonEnabled = false;
+  bool isIdUnique = false;
 
   void _signup() {
     final String id = _idController.text;
     final String password = _passwordController.text;
 
-    if (isButtonEnabled) {
+    if (isButtonEnabled && isIdUnique) {
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => UserInfoScreen(
-            id: id, // 사용자가 입력한 id 전달
-            password: password, // 사용자가 입력한 password 전달
+            id: id,
+            password: password,
           ),
         ),
       );
     }
   }
 
-  void _checkDuplicate() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('중복 확인')),
-    );
+  Future<void> _checkDuplicateId() async {
+    final String id = _idController.text;
+
+    final response =
+        await http.get(Uri.parse('https://www.traitcompass.store/user/id/$id'));
+
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
+    if (response.statusCode == 200) {
+      final String responseBody = response.body;
+      final bool isIdTaken = responseBody.contains('"result":false');
+
+      if (isIdTaken) {
+        setState(() {
+          isIdUnique = true;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('사용 가능한 아이디입니다.')),
+        );
+        print('사용 가능한 아이디입니다.');
+      } else {
+        setState(() {
+          isIdUnique = false; // 이미 사용 중인 ID
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('이미 사용 중인 아이디입니다.')),
+        );
+        print('이미 사용 중인 아이디입니다.');
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('아이디 중복 확인에 실패했습니다.')),
+      );
+      print('아이디 중복 확인 실패');
+    }
+
+    _updateButtonState();
   }
 
   void _updateButtonState() {
@@ -42,7 +78,8 @@ class _SignupScreenState extends State<SignupScreen> {
       isButtonEnabled = _idController.text.isNotEmpty &&
           _passwordController.text.isNotEmpty &&
           _passwordConfirmController.text.isNotEmpty &&
-          _passwordController.text == _passwordConfirmController.text;
+          _passwordController.text == _passwordConfirmController.text &&
+          isIdUnique;
     });
   }
 
@@ -146,7 +183,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             width: screenWidth * 0.2,
                             height: screenHeight * 0.06,
                             child: ElevatedButton(
-                              onPressed: _checkDuplicate,
+                              onPressed: _checkDuplicateId,
                               child: Text(
                                 '중복 확인',
                                 style: TextStyle(
