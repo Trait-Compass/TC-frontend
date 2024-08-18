@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../hooks/loginscreen.dart';
 import '../components/mbti_selection_page.dart';
-import '../hooks/travelplan.dart';
+import '../pages/travelplan.dart';
 
 class BasicFramePage extends StatelessWidget {
   final Widget body; // body 매개변수를 추가합니다.

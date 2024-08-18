@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import '../components/basic_frame_page.dart';
+import '../hooks/top3course.dart'; // 추가된 Top3Courses 파일 import
 
 class MyNewPage extends StatefulWidget {
   @override
@@ -185,55 +186,7 @@ class _MyNewPageState extends State<MyNewPage> {
               ),
             ),
             SizedBox(height: 30),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    '인기 코스 TOP 3',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    '더보기',
-                    style: TextStyle(
-                        fontSize: 13, color: Colors.black.withOpacity(0.5)),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Column(
-                children: [
-                  Container(
-                    width: double.infinity,
-                    margin: EdgeInsets.symmetric(vertical: 5),
-                    child: Image.asset(
-                      '../assets/changwon.png',
-                      fit: BoxFit.cover, // 이미지를 너비에 맞추기 위해 BoxFit 설정
-                    ),
-                  ),
-                  Container(
-                    width: double.infinity,
-                    margin: EdgeInsets.symmetric(vertical: 5),
-                    child: Image.asset(
-                      '../assets/namhae.png',
-                      fit: BoxFit.cover, // 이미지를 너비에 맞추기 위해 BoxFit 설정
-                    ),
-                  ),
-                  Container(
-                    width: double.infinity,
-                    margin: EdgeInsets.symmetric(vertical: 5),
-                    child: Image.asset(
-                      '../assets/geoje.png',
-                      fit: BoxFit.cover, // 이미지를 너비에 맞추기 위해 BoxFit 설정
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            Top3Courses(), // 분리된 Top3Courses 위젯 호출
           ],
         ),
       ),
