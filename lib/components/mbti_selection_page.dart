@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../pages/calendar_selection_page.dart'; // 달력 선택 페이지 파일을 import
+import '../pages/BestCourseTop3.dart'; // BestCourseTop3 페이지 파일을 import
+import '../pages/GyeongNamRecommend.dart'; // GyeongNamRecommend 페이지 파일을 import
 
 class MBTISelectionPage extends StatefulWidget {
   @override
@@ -89,11 +91,16 @@ class _MBTISelectionPageState extends State<MBTISelectionPage> {
           toggleSelection: toggleSelection,
           onNextPressed: navigateToCalendarPage,
         ),
+        SizedBox(height: screenHeight * 0.02),
+        BestCourseTop3(), // BestCourseTop3 위젯 추가
+        SizedBox(height: screenHeight * 0.02),
+        GyeongNamRecommend(), // GyeongNamRecommend 위젯 추가
       ],
     );
   }
 }
 
+// 아래 StepOneWidget 정의를 추가합니다.
 class StepOneWidget extends StatelessWidget {
   final Map<String, String?> selectedMBTI;
   final Function(String, String) toggleSelection;

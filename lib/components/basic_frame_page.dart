@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
-import 'mbti_selection_page.dart'; // MBTI 선택 페이지 파일을 import
-import '../pages/BestCourseTop3.dart'; // 인기 추천코스 파일을 import
-import '../pages/GyeongNamRecommend.dart'; // 경상남도 행사 & 축제 파일을 import
-import '../hooks/loginscreen.dart'; // LoginScreen 파일을 import
+import '../hooks/loginscreen.dart';
+import '../components/mbti_selection_page.dart';
+import '../hooks/travelplan.dart';
 
-class BasicFramePage extends StatefulWidget {
-  @override
-  _BasicFramePageState createState() => _BasicFramePageState();
-}
+class BasicFramePage extends StatelessWidget {
+  final Widget body; // body 매개변수를 추가합니다.
 
-class _BasicFramePageState extends State<BasicFramePage> {
+  BasicFramePage({required this.body});
+
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
@@ -35,34 +33,22 @@ class _BasicFramePageState extends State<BasicFramePage> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            MBTISelectionPage(),
-            SizedBox(height: screenHeight * 0.04), // 위젯 간 간격
-            BestCourseTop3(),
-            SizedBox(height: screenHeight * 0.04), // 위젯 간 간격
-            GyeongNamRecommend(),
-            SizedBox(height: screenHeight * 0.04) // 밑 공간 여유주기
-          ],
-        ),
-      ),
+      body: body, // 전달된 body 위젯을 여기에 배치합니다.
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white, // 하단바 배경색을 흰색으로 설정
         items: [
           BottomNavigationBarItem(
-            icon: Image.asset('assets/home.jpg',
-                height: screenHeight * 0.04), // 홈 아이콘 경로
+            icon: Image.asset('assets/home.jpg', height: screenHeight * 0.04),
             label: '홈',
           ),
           BottomNavigationBarItem(
             icon: Image.asset('assets/location1.png',
-                height: screenHeight * 0.04), // 여행 일정 아이콘 경로
+                height: screenHeight * 0.04),
             label: '여행 일정',
           ),
           BottomNavigationBarItem(
             icon: Image.asset('assets/myprofile.png',
-                height: screenHeight * 0.04), // 내 정보 아이콘 경로
+                height: screenHeight * 0.04),
             label: '내 정보',
           ),
         ],
@@ -75,7 +61,17 @@ class _BasicFramePageState extends State<BasicFramePage> {
               MaterialPageRoute(builder: (context) => LoginScreen()),
             );
           } else {
-            // 추후 다른 페이지 이동 로직을 여기에 추가
+            // 홈 또는 여행 일정 페이지로 이동
+            index == 0
+                ? Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => MBTISelectionPage()),
+                  )
+                : Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => MyNewPage()),
+                  );
           }
         },
       ),
