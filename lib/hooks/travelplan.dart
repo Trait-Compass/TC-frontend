@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_svg/svg.dart';
 import '../components/basic_frame_page.dart';
 
 class MyNewPage extends StatefulWidget {
@@ -164,11 +166,14 @@ class _MyNewPageState extends State<MyNewPage> {
                     Center(
                       child: ElevatedButton(
                         onPressed: () {
-                          // 여기서 기능을 추가할 수 있습니다.
+                          // '다음' 버튼 눌렀을 때 동작 추가
                         },
-                        child: Text('다음'),
+                        child: Text(
+                          '다음',
+                          style: TextStyle(fontSize: 15, color: Colors.white),
+                        ),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue, // '다음' 버튼 색상을 지정
+                          backgroundColor: Colors.grey[800], // '다음' 버튼 색상을 지정
                           padding: EdgeInsets.symmetric(
                               horizontal: 40, vertical: 15),
                           shape: RoundedRectangleBorder(
@@ -203,11 +208,11 @@ class _MyNewPageState extends State<MyNewPage> {
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
                 children: [
-                  Image.asset('assets/changwon.png'), // 창원시 이미지
+                  Image.asset('../assets/changwon.png'), // 창원시 이미지
                   SizedBox(height: 10),
-                  Image.asset('assets/namhae.png'), // 남해군 이미지
+                  Image.asset('../assets/namhae.png'), // 남해군 이미지
                   SizedBox(height: 10),
-                  Image.asset('assets/geoje.png'), // 거제시 이미지
+                  Image.asset('../assets/geoje.png'), // 거제시 이미지
                 ],
               ),
             ),
