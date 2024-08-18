@@ -50,7 +50,7 @@ class _MyNewPageState extends State<MyNewPage> {
                 SizedBox(width: 20),
               ],
             ),
-            SizedBox(height: 20), // 캐릭터 나오고 무조건 20px 여백
+            SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: Text(
@@ -60,9 +60,8 @@ class _MyNewPageState extends State<MyNewPage> {
             ),
             SizedBox(height: 10),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 0),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 20), // 양옆 마진 20px 설정
                 padding: EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   color: Colors.grey[200],
@@ -102,7 +101,7 @@ class _MyNewPageState extends State<MyNewPage> {
                                     Text(
                                       'P',
                                       style: TextStyle(
-                                        fontSize: 80, // P와 J 크기를 50으로 설정
+                                        fontSize: 80, // P와 J 크기를 80으로 설정
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
@@ -146,7 +145,7 @@ class _MyNewPageState extends State<MyNewPage> {
                                     Text(
                                       'J',
                                       style: TextStyle(
-                                        fontSize: 80, // P와 J 크기를 50으로 설정
+                                        fontSize: 80, // P와 J 크기를 80으로 설정
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
@@ -187,7 +186,7 @@ class _MyNewPageState extends State<MyNewPage> {
             ),
             SizedBox(height: 30),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -197,21 +196,41 @@ class _MyNewPageState extends State<MyNewPage> {
                   ),
                   Text(
                     '더보기',
-                    style: TextStyle(color: Colors.blue),
+                    style: TextStyle(
+                        fontSize: 13, color: Colors.black.withOpacity(0.5)),
                   ),
                 ],
               ),
             ),
             SizedBox(height: 10),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: Column(
                 children: [
-                  Image.asset('../assets/changwon.png'), // 창원시 이미지
-                  SizedBox(height: 10),
-                  Image.asset('../assets/namhae.png'), // 남해군 이미지
-                  SizedBox(height: 10),
-                  Image.asset('../assets/geoje.png'), // 거제시 이미지
+                  Container(
+                    width: double.infinity,
+                    margin: EdgeInsets.symmetric(vertical: 5),
+                    child: Image.asset(
+                      '../assets/changwon.png',
+                      fit: BoxFit.cover, // 이미지를 너비에 맞추기 위해 BoxFit 설정
+                    ),
+                  ),
+                  Container(
+                    width: double.infinity,
+                    margin: EdgeInsets.symmetric(vertical: 5),
+                    child: Image.asset(
+                      '../assets/namhae.png',
+                      fit: BoxFit.cover, // 이미지를 너비에 맞추기 위해 BoxFit 설정
+                    ),
+                  ),
+                  Container(
+                    width: double.infinity,
+                    margin: EdgeInsets.symmetric(vertical: 5),
+                    child: Image.asset(
+                      '../assets/geoje.png',
+                      fit: BoxFit.cover, // 이미지를 너비에 맞추기 위해 BoxFit 설정
+                    ),
+                  ),
                 ],
               ),
             ),
