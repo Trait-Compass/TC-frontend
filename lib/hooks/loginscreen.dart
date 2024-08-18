@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import '../components/mbti_selection_page.dart';
 import '../styles/loginstyles.dart';
 import '../services/auth_services.dart';
 import 'creataccount.dart';
 import '../components/basic_frame_page.dart';
-import 'accountdetail.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -61,7 +61,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 onTap: () {
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => BasicFramePage()),
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          BasicFramePage(body: MBTISelectionPage()),
+                    ),
                   );
                 },
                 child: Image.asset(
