@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../pages/calendar_selection_page.dart'; // 달력 선택 페이지 파일을 import
-import '../pages/BestCourseTop3.dart'; // BestCourseTop3 페이지 파일을 import
-import '../pages/GyeongNamRecommend.dart'; // GyeongNamRecommend 페이지 파일을 import
+import '../pages/calendar_selection_page.dart';
+import '../pages/BestCourseTop3.dart';
+import '../pages/GyeongNamRecommend.dart';
 
 class MBTISelectionPage extends StatefulWidget {
   @override
@@ -44,58 +44,60 @@ class _MBTISelectionPageState extends State<MBTISelectionPage> {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Divider(
-          color: Color(0xFFE4E4E4), // 실선 색상 설정
-          thickness: 1,
-          height: 1,
-        ),
-        SizedBox(height: screenHeight * 0.03),
-        Row(
-          children: [
-            SizedBox(width: screenWidth * 0.05),
-            Image.asset('assets/animation.png',
-                height: screenHeight * 0.07), // 사람 아이콘 경로
-            SizedBox(width: screenWidth * 0.02),
-            Expanded(
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                    vertical: screenHeight * 0.015,
-                    horizontal: screenWidth * 0.05),
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  allGroupsSelected()
-                      ? '${selectedMBTI.values.join()} OOO님!\n오늘은 경상남도 어디로 떠나볼까요?'
-                      : '경상남도 추천지를 원하시면 MBTI를 선택해주세요 !!',
-                  style: TextStyle(fontSize: screenHeight * 0.02),
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Divider(
+            color: Color(0xFFE4E4E4), // 실선 색상 설정
+            thickness: 1,
+            height: 1,
+          ),
+          SizedBox(height: screenHeight * 0.03),
+          Row(
+            children: [
+              SizedBox(width: screenWidth * 0.05),
+              Image.asset('assets/animation.png',
+                  height: screenHeight * 0.07), // 사람 아이콘 경로
+              SizedBox(width: screenWidth * 0.02),
+              Expanded(
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                      vertical: screenHeight * 0.015,
+                      horizontal: screenWidth * 0.05),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    allGroupsSelected()
+                        ? '${selectedMBTI.values.join()} OOO님!\n오늘은 경상남도 어디로 떠나볼까요?'
+                        : '경상남도 추천지를 원하시면 MBTI를 선택해주세요 !!',
+                    style: TextStyle(fontSize: screenHeight * 0.02),
+                  ),
                 ),
               ),
-            ),
-            SizedBox(width: screenWidth * 0.05),
-          ],
-        ),
-        SizedBox(height: screenHeight * 0.02),
-        Text(
-          'MBTI 맞춤형 간단 추천 코스',
-          style: TextStyle(
-              fontSize: screenHeight * 0.03, fontWeight: FontWeight.bold),
-          textAlign: TextAlign.center,
-        ),
-        StepOneWidget(
-          selectedMBTI: selectedMBTI,
-          toggleSelection: toggleSelection,
-          onNextPressed: navigateToCalendarPage,
-        ),
-        SizedBox(height: screenHeight * 0.02),
-        BestCourseTop3(), // BestCourseTop3 위젯 추가
-        SizedBox(height: screenHeight * 0.02),
-        GyeongNamRecommend(), // GyeongNamRecommend 위젯 추가
-      ],
+              SizedBox(width: screenWidth * 0.05),
+            ],
+          ),
+          SizedBox(height: screenHeight * 0.02),
+          Text(
+            'MBTI 맞춤형 간단 추천 코스',
+            style: TextStyle(
+                fontSize: screenHeight * 0.03, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center,
+          ),
+          StepOneWidget(
+            selectedMBTI: selectedMBTI,
+            toggleSelection: toggleSelection,
+            onNextPressed: navigateToCalendarPage,
+          ),
+          SizedBox(height: screenHeight * 0.02),
+          BestCourseTop3(), // BestCourseTop3 위젯 추가
+          SizedBox(height: screenHeight * 0.02),
+          GyeongNamRecommend(), // GyeongNamRecommend 위젯 추가
+        ],
+      ),
     );
   }
 }
