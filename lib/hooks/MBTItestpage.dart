@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class MBTItestpage extends StatelessWidget {
+class MBTITestPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

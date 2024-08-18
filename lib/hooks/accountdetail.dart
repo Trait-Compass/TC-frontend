@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'MBTItestpage.dart';
 
 class UserInfoScreen extends StatefulWidget {
   final String id;
@@ -65,8 +66,6 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
     final String gender = _gender;
     final bool isOauth = true;
 
-    print('Submitting user info: Gender = $gender');
-
     final response = await http.post(
       Uri.parse('https://www.traitcompass.store/user'),
       headers: <String, String>{
@@ -82,17 +81,11 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
       }),
     );
 
-    print('Status code: ${response.statusCode}');
-    print('Response body: ${response.body}');
-
     if (response.statusCode == 201) {
-      print('User info submitted successfully.');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('회원정보가 성공적으로 제출되었습니다.')),
       );
     } else {
-      print('Failed to submit user info. Status code: ${response.statusCode}');
-      print('Response body: ${response.body}');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('회원정보 제출에 실패했습니다.')),
       );
@@ -105,9 +98,6 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
     final response = await http.get(
         Uri.parse('https://www.traitcompass.store/user/nickname/$nickname'));
 
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
-
     if (response.statusCode == 200) {
       final Map<String, dynamic> responseData = jsonDecode(response.body);
       final bool isNicknameTaken = responseData['result'];
@@ -119,7 +109,6 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('이미 사용 중인 닉네임입니다.')),
         );
-        print('닉네임 중복 확인 결과: 이미 사용 중인 닉네임입니다.');
       } else {
         setState(() {
           isnicknameUnique = true;
@@ -127,16 +116,23 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('사용 가능한 닉네임입니다.')),
         );
-        print('닉네임 중복 확인 결과: 사용 가능한 닉네임입니다.');
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('닉네임 중복 확인에 실패했습니다.')),
       );
-      print('닉네임 중복 확인 실패: 서버에서 알 수 없는 오류가 발생했습니다.');
     }
 
     _updateButtonState();
+  }
+
+  void _navigateToMBTITest() {
+    // MBTI 테스트 페이지로 이동하는 코드 작성
+    // 예시:
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => MBTITestPage()), // 실제 테스트 페이지로 변경
+    );
   }
 
   @override
@@ -295,6 +291,28 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                   }).toList(),
                                 ),
                               ),
+                              SizedBox(height: screenHeight * 0.01),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    '아직 내 MBTI를 모른다면',
+                                    style: TextStyle(
+                                        fontSize: screenHeight * 0.017,
+                                        color: Color(0xFF676767)),
+                                  ),
+                                  TextButton(
+                                    onPressed: _navigateToMBTITest,
+                                    child: Text(
+                                      '내 MBTI 알아보러 가기 GO',
+                                      style: TextStyle(
+                                          fontSize: screenHeight * 0.017,
+                                          color: Colors.blue),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ],
                           ),
                         ),
@@ -327,8 +345,6 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                         setState(() {
                                           _gender = value!;
                                           _updateButtonState();
-                                          // 로그 추가
-                                          print('남성임');
                                         });
                                       },
                                       materialTapTargetSize:
@@ -348,8 +364,6 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                         setState(() {
                                           _gender = value!;
                                           _updateButtonState();
-                                          // 로그 추가
-                                          print('여성임');
                                         });
                                       },
                                       materialTapTargetSize:
@@ -373,9 +387,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                     width: screenWidth * 0.5,
                     height: screenHeight * 0.06,
                     child: ElevatedButton(
-                      onPressed: isButtonEnabled
-                          ? _submitUserInfo
-                          : null, // 버튼 클릭 시 서버에 정보 전송
+                      onPressed: isButtonEnabled ? _submitUserInfo : null,
                       child: Text(
                         '시작',
                         style: TextStyle(
@@ -387,7 +399,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: isButtonEnabled
                             ? Colors.black.withOpacity(0.28)
-                            : Color(0xFFD9D9D9), // 활성화/비활성화 상태에 따른 색상 설정
+                            : Color(0xFFD9D9D9),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(4),
                           side: BorderSide(
