@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:untitled/hooks/calendar.dart';
 import '../components/basic_frame_page.dart';
 import '../hooks/top3course.dart';
-import '../hooks/calendar_selection_page.dart';
 
 class Jselection extends StatefulWidget {
   @override
@@ -9,8 +9,18 @@ class Jselection extends StatefulWidget {
 }
 
 class _JselectionState extends State<Jselection> {
+  List<DateTime> selectedDates = [];
+
+  void _onDatesSelected(List<DateTime> dates) {
+    setState(() {
+      selectedDates = dates;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final double screenHeight = MediaQuery.of(context).size.height;
+
     return BasicFramePage(
       body: SingleChildScrollView(
         child: Column(
@@ -52,12 +62,58 @@ class _JselectionState extends State<Jselection> {
               ),
             ),
             SizedBox(height: 10),
-            // CalendarSelectionPage 위젯 추가
-            CalendarSelectionPage(
-              mbti: 'P',
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Container(
+                padding: EdgeInsets.all(screenHeight * 0.03),
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      'STEP 01 | 여행 기간 선택',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Container(
+                      height: screenHeight * 0.5,
+                      padding: EdgeInsets.all(screenHeight * 0.02),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: CustomCalendar(
+                        onDatesSelected: _onDatesSelected,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: selectedDates.isNotEmpty
+                          ? () {
+                              // 다음 단계로 이동
+                            }
+                          : null,
+                      child: Text('다음'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: selectedDates.isNotEmpty
+                            ? Colors.grey[800]
+                            : Colors.grey[400],
+                        foregroundColor: Colors.white,
+                        padding:
+                            EdgeInsets.symmetric(vertical: 15, horizontal: 30),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-            SizedBox(height: 10),
-            // Top3Courses 위젯 추가
+            SizedBox(height: 20),
             Top3Courses(),
           ],
         ),
