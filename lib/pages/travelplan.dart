@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:untitled/pages/Pselection.dart';
 import '../components/basic_frame_page.dart';
 import '../hooks/top3course.dart'; // 추가된 Top3Courses 파일 import
 
@@ -169,8 +170,8 @@ class _MyNewPageState extends State<MyNewPage> {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => BasicFramePage(
-                                  body: MyNewPage(),
+                                builder: (context) =>(
+                                  body: Pselection(),
                                 ),
                               ),
                             );
@@ -178,8 +179,8 @@ class _MyNewPageState extends State<MyNewPage> {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => BasicFramePage(
-                                  body: MyNewPage(),
+                                builder: (context) => (
+                                  body: Jselection(),
                                 ),
                               ),
                             );
