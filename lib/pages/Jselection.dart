@@ -96,7 +96,7 @@ class _JselectionState extends State<Jselection> {
                     ElevatedButton(
                       onPressed: selectedDates.isNotEmpty
                           ? () {
-                              // 다음 단계로 이동
+                              // 다음 단계로 이동하는거 추가해야함
                             }
                           : null,
                       child: Text('다음'),
