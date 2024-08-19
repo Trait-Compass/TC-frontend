@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:untitled/pages/Jselection.dart';
+import 'package:untitled/pages/Pselection.dart';
 import '../components/basic_frame_page.dart';
 import '../hooks/top3course.dart'; // 추가된 Top3Courses 파일 import
 
@@ -165,7 +167,22 @@ class _MyNewPageState extends State<MyNewPage> {
                     Center(
                       child: ElevatedButton(
                         onPressed: () {
-                          // '다음' 버튼 눌렀을 때 동작 추가
+                          if (selectedOption == 'P') {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    Pselection(), // Pselection 페이지로 이동
+                              ),
+                            );
+                          } else {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => Jselection(),
+                              ), // Jselection 페이지로 이동
+                            );
+                          }
                         },
                         child: Text(
                           '다음',
