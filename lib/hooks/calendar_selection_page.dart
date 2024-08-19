@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'course_generation_page.dart';
-import 'BestCourseTop3.dart';
-import 'GyeongNamRecommend.dart';
+import '../pages/course_generation_page.dart';
+import '../pages/BestCourseTop3.dart';
+import '../pages/GyeongNamRecommend.dart';
 
 class CalendarSelectionPage extends StatefulWidget {
   final String mbti;

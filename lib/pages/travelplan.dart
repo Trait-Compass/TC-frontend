@@ -165,7 +165,25 @@ class _MyNewPageState extends State<MyNewPage> {
                     Center(
                       child: ElevatedButton(
                         onPressed: () {
-                          // '다음' 버튼 눌렀을 때 동작 추가
+                          if (selectedOption == 'P') {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => BasicFramePage(
+                                  body: MyNewPage(),
+                                ),
+                              ),
+                            );
+                          } else {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => BasicFramePage(
+                                  body: MyNewPage(),
+                                ),
+                              ),
+                            );
+                          }
                         },
                         child: Text(
                           '다음',
