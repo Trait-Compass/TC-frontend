@@ -44,7 +44,7 @@ class AuthService {
 
   Future<void> sendTokenToServer(String accessToken) async {
     final response = await http.post(
-      Uri.parse('https://your-backend.com/oauth/kakao'),
+      Uri.parse('https://www.traitcompass.store/oauth/kakao'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

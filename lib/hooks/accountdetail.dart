@@ -64,7 +64,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
     final String nickname = _nicknameController.text;
     final String mbti = _mbti;
     final String gender = _gender;
-    final bool isOauth = true;
+    final bool isOauth = false;
 
     final response = await http.post(
       Uri.parse('https://www.traitcompass.store/user'),

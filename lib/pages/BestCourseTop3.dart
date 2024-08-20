@@ -17,7 +17,7 @@ class BestCourseTop3 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double screenWidth = MediaQuery.of(context).size.width;
+    // final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
     final PageController controller = PageController(viewportFraction: 0.95);
 

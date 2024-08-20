@@ -19,7 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _login() {
     final String id = _idController.text;
-    final String password = _passwordController.text;
+    // final String password = _passwordController.text;
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('로그인 시도: $id')),
