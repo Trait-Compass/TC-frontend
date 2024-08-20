@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:untitled/hooks/LocationAndPersonSelection.dart';
 import 'package:untitled/hooks/calendar.dart';
 import '../components/basic_frame_page.dart';
 import '../hooks/top3course.dart';
@@ -96,7 +97,10 @@ class _PselectionState extends State<Pselection> {
                     ElevatedButton(
                       onPressed: selectedDates.isNotEmpty
                           ? () {
-                              // 다음 단계로 이동
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) {
+                                return LocationAndPersonSelectionPage();
+                              }));
                             }
                           : null,
                       child: Text('다음'),
