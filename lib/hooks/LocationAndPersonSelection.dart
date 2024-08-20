@@ -14,6 +14,33 @@ class _LocationAndPersonSelectionPageState
   String? selectedLocation;
   String? selectedGroup;
 
+  List<DropdownMenuItem<String>> _buildLocationItems() {
+    return [
+      DropdownMenuItem(value: '창원시', child: Text('창원시')),
+      DropdownMenuItem(value: '김해시', child: Text('김해시')),
+      DropdownMenuItem(value: '진주시', child: Text('진주시')),
+      DropdownMenuItem(value: '양산시', child: Text('양산시')),
+      DropdownMenuItem(value: '거제시', child: Text('거제시')),
+      DropdownMenuItem(value: '사천시', child: Text('사천시')),
+    ];
+  }
+
+  final List<String> groups = ['혼자', '커플', '친구', '친구들', '아이와 함께', '부모님과 함께'];
+
+  List<Widget> _buildGroupChips() {
+    return groups.map((group) {
+      return ChoiceChip(
+        label: Text(group),
+        selected: selectedGroup == group,
+        onSelected: (selected) {
+          setState(() {
+            selectedGroup = group;
+          });
+        },
+      );
+    }).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
@@ -89,32 +116,7 @@ class _LocationAndPersonSelectionPageState
                       ),
                       value: selectedLocation,
                       hint: Text('여행 장소를 선택하세요'),
-                      items: [
-                        DropdownMenuItem(
-                          value: '창원시',
-                          child: Text('창원시'),
-                        ),
-                        DropdownMenuItem(
-                          value: '김해시',
-                          child: Text('김해시'),
-                        ),
-                        DropdownMenuItem(
-                          value: '진주시',
-                          child: Text('진주시'),
-                        ),
-                        DropdownMenuItem(
-                          value: '양산시',
-                          child: Text('양산시'),
-                        ),
-                        DropdownMenuItem(
-                          value: '거제시',
-                          child: Text('거제시'),
-                        ),
-                        DropdownMenuItem(
-                          value: '사천시',
-                          child: Text('사천시'),
-                        ),
-                      ],
+                      items: _buildLocationItems(),
                       onChanged: (value) {
                         setState(() {
                           selectedLocation = value;
@@ -133,62 +135,7 @@ class _LocationAndPersonSelectionPageState
                     Wrap(
                       spacing: 10.0,
                       runSpacing: 10.0,
-                      children: [
-                        ChoiceChip(
-                          label: Text('혼자'),
-                          selected: selectedGroup == '혼자',
-                          onSelected: (selected) {
-                            setState(() {
-                              selectedGroup = '혼자';
-                            });
-                          },
-                        ),
-                        ChoiceChip(
-                          label: Text('커플'),
-                          selected: selectedGroup == '커플',
-                          onSelected: (selected) {
-                            setState(() {
-                              selectedGroup = '커플';
-                            });
-                          },
-                        ),
-                        ChoiceChip(
-                          label: Text('친구'),
-                          selected: selectedGroup == '친구',
-                          onSelected: (selected) {
-                            setState(() {
-                              selectedGroup = '친구';
-                            });
-                          },
-                        ),
-                        ChoiceChip(
-                          label: Text('친구들'),
-                          selected: selectedGroup == '친구들',
-                          onSelected: (selected) {
-                            setState(() {
-                              selectedGroup = '친구들';
-                            });
-                          },
-                        ),
-                        ChoiceChip(
-                          label: Text('아이와 함께'),
-                          selected: selectedGroup == '아이와 함께',
-                          onSelected: (selected) {
-                            setState(() {
-                              selectedGroup = '아이와 함께';
-                            });
-                          },
-                        ),
-                        ChoiceChip(
-                          label: Text('부모님과 함께'),
-                          selected: selectedGroup == '부모님과 함께',
-                          onSelected: (selected) {
-                            setState(() {
-                              selectedGroup = '부모님과 함께';
-                            });
-                          },
-                        ),
-                      ],
+                      children: _buildGroupChips(),
                     ),
                     SizedBox(height: 20),
                     ElevatedButton(
