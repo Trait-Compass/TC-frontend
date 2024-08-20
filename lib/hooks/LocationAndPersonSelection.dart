@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:untitled/pages/coursemake.dart';
 import '../components/basic_frame_page.dart';
 import '../hooks/top3course.dart';
 
@@ -113,7 +114,6 @@ class _LocationAndPersonSelectionPageState
                           value: '사천시',
                           child: Text('사천시'),
                         ),
-                        // 일단 냅두고 코드 따로 빼서 작업해야함
                       ],
                       onChanged: (value) {
                         setState(() {
@@ -194,9 +194,12 @@ class _LocationAndPersonSelectionPageState
                     ElevatedButton(
                       onPressed:
                           selectedLocation != null && selectedGroup != null
-                              ? () {
-                                  // 선택한 위치 및 인원에 따라 진행하게 해야함
-                                }
+                              ? () => Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Coursemake(),
+                                    ),
+                                  )
                               : null,
                       child: Text('완료'),
                       style: ElevatedButton.styleFrom(
