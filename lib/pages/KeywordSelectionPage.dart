@@ -74,7 +74,7 @@ class _KeywordSelectionPageState extends State<KeywordSelectionPage> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
-                      'STEP 04 | 키워드 선택',
+                      'STEP 03 | 키워드 선택',
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
