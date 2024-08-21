@@ -9,14 +9,13 @@ class KeywordSelectionPage extends StatefulWidget {
 }
 
 class _KeywordSelectionPageState extends State<KeywordSelectionPage> {
-  String? selectedTheme;
-  final List<String> themes = ['음식', '관광지', '액티비티', '힐링', '파티'];
+  String? selectedKeyword;
 
-  List<DropdownMenuItem<String>> _buildThemeItems() {
-    return themes
-        .map((theme) => DropdownMenuItem(value: theme, child: Text(theme)))
-        .toList();
-  }
+  final Map<String, List<String>> keywordGroups = {
+    '느긋하게': ['자연', '산', '강', '공원', '경치'],
+    '신나게': ['축제', '놀이공원', '레포츠', '야경', '전시'],
+    '색다르게': ['체험', '역사', '드라이브', '시장', '항구', '마을'],
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -82,35 +81,57 @@ class _KeywordSelectionPageState extends State<KeywordSelectionPage> {
                       ),
                     ),
                     SizedBox(height: 10),
-                    DropdownButtonFormField<String>(
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
-                      value: selectedTheme,
-                      hint: Text('테마를 선택하세요'),
-                      items: _buildThemeItems(),
-                      onChanged: (value) {
-                        setState(() {
-                          selectedTheme = value;
-                        });
-                      },
-                    ),
-                    SizedBox(height: 20),
-                    // SizedBox(height: 20),
+                    // 키워드 그룹별로 UI 생성
+                    ...keywordGroups.entries.map((entry) {
+                      String groupTitle = entry.key;
+                      List<String> groupKeywords = entry.value;
+
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            groupTitle,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Wrap(
+                            spacing: 10,
+                            runSpacing: 10,
+                            children: groupKeywords.map((keyword) {
+                              return ChoiceChip(
+                                label: Text(keyword),
+                                selected: selectedKeyword == keyword,
+                                onSelected: (bool selected) {
+                                  setState(() {
+                                    selectedKeyword = selected ? keyword : null;
+                                  });
+                                },
+                                selectedColor: Colors.grey[800],
+                                backgroundColor: Colors.grey[200],
+                                labelStyle: TextStyle(
+                                  color: selectedKeyword == keyword
+                                      ? Colors.white
+                                      : Colors.black,
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                          SizedBox(height: 20),
+                        ],
+                      );
+                    }).toList(),
                     ElevatedButton(
-                      onPressed: selectedTheme != null
+                      onPressed: selectedKeyword != null
                           ? () {
-                              // 키워드를 선택하고 완료를 눌렀을 때의 동작을 정의하세요.
+                              // 키워드를 선택하고 완료후 만들어야됨
                             }
                           : null,
                       child: Text('AI에게 추천코스 받기'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: selectedTheme != null
+                        backgroundColor: selectedKeyword != null
                             ? Colors.grey[800]
                             : Colors.grey[400],
                         foregroundColor: Colors.white,
@@ -120,14 +141,14 @@ class _KeywordSelectionPageState extends State<KeywordSelectionPage> {
                     ),
                     SizedBox(height: 10),
                     ElevatedButton(
-                      onPressed: selectedTheme != null
+                      onPressed: selectedKeyword != null
                           ? () {
-                              // 키워드를 선택하고 완료를 눌렀을 때의 동작을 정의하세요.
+                              // 키워드를 선택하고 완료후 만들어야됨
                             }
                           : null,
                       child: Text('직접 코스 만들기'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: selectedTheme != null
+                        backgroundColor: selectedKeyword != null
                             ? Colors.grey[800]
                             : Colors.grey[400],
                         foregroundColor: Colors.white,
