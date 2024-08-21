@@ -9,7 +9,7 @@ class KeywordSelectionPage extends StatefulWidget {
 }
 
 class _KeywordSelectionPageState extends State<KeywordSelectionPage> {
-  String? selectedKeyword;
+  List<String> selectedKeywords = [];
 
   final Map<String, List<String>> keywordGroups = {
     '느긋하게': ['자연', '산', '강', '공원', '경치'],
@@ -101,18 +101,22 @@ class _KeywordSelectionPageState extends State<KeywordSelectionPage> {
                             spacing: 10,
                             runSpacing: 10,
                             children: groupKeywords.map((keyword) {
-                              return ChoiceChip(
+                              return FilterChip(
                                 label: Text(keyword),
-                                selected: selectedKeyword == keyword,
+                                selected: selectedKeywords.contains(keyword),
                                 onSelected: (bool selected) {
                                   setState(() {
-                                    selectedKeyword = selected ? keyword : null;
+                                    if (selected) {
+                                      selectedKeywords.add(keyword);
+                                    } else {
+                                      selectedKeywords.remove(keyword);
+                                    }
                                   });
                                 },
                                 selectedColor: Colors.grey[800],
                                 backgroundColor: Colors.grey[200],
                                 labelStyle: TextStyle(
-                                  color: selectedKeyword == keyword
+                                  color: selectedKeywords.contains(keyword)
                                       ? Colors.white
                                       : Colors.black,
                                 ),
@@ -124,14 +128,14 @@ class _KeywordSelectionPageState extends State<KeywordSelectionPage> {
                       );
                     }).toList(),
                     ElevatedButton(
-                      onPressed: selectedKeyword != null
+                      onPressed: selectedKeywords.isNotEmpty
                           ? () {
-                              // 키워드를 선택하고 완료후 만들어야됨
+                              // 선택된 키워드를 이용해 코스를 만들어야 함
                             }
                           : null,
                       child: Text('AI에게 추천코스 받기'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: selectedKeyword != null
+                        backgroundColor: selectedKeywords.isNotEmpty
                             ? Colors.grey[800]
                             : Colors.grey[400],
                         foregroundColor: Colors.white,
@@ -141,14 +145,14 @@ class _KeywordSelectionPageState extends State<KeywordSelectionPage> {
                     ),
                     SizedBox(height: 10),
                     ElevatedButton(
-                      onPressed: selectedKeyword != null
+                      onPressed: selectedKeywords.isNotEmpty
                           ? () {
-                              // 키워드를 선택하고 완료후 만들어야됨
+                              // 선택된 키워드를 이용해 코스를 만들어야 함
                             }
                           : null,
                       child: Text('직접 코스 만들기'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: selectedKeyword != null
+                        backgroundColor: selectedKeywords.isNotEmpty
                             ? Colors.grey[800]
                             : Colors.grey[400],
                         foregroundColor: Colors.white,
