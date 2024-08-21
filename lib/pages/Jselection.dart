@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:untitled/hooks/calendar.dart';
+import 'package:untitled/pages/LocationAndPersonSelectionJ.dart';
 import '../components/basic_frame_page.dart';
 import '../hooks/top3course.dart';
+import '../hooks/LocationAndPersonSelection.dart';
 
 class Jselection extends StatefulWidget {
   @override
@@ -96,7 +98,10 @@ class _JselectionState extends State<Jselection> {
                     ElevatedButton(
                       onPressed: selectedDates.isNotEmpty
                           ? () {
-                              // 다음 단계로 이동하는거 추가해야함
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) {
+                                return LocationAndPersonSelectionJ();
+                              }));
                             }
                           : null,
                       child: Text('다음'),
