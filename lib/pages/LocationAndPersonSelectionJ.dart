@@ -81,7 +81,7 @@ class _LocationAndPersonSelectionJState
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Text(
-                'P형 코스 만들기',
+                'J형 코스 만들기',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),

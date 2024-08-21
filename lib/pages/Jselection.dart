@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:untitled/hooks/calendar.dart';
+import 'package:untitled/pages/LocationAndPersonSelectionJ.dart';
 import '../components/basic_frame_page.dart';
 import '../hooks/top3course.dart';
 import '../hooks/LocationAndPersonSelection.dart';
@@ -99,7 +100,7 @@ class _JselectionState extends State<Jselection> {
                           ? () {
                               Navigator.push(context,
                                   MaterialPageRoute(builder: (context) {
-                                return LocationAndPersonSelectionPage();
+                                return LocationAndPersonSelectionJ();
                               }));
                             }
                           : null,
