@@ -1,45 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:untitled/pages/KeywordSelectionPage.dart';
 import 'package:untitled/pages/coursemake.dart';
-import '../components/basic_frame_page.dart';
-import '../hooks/top3course.dart';
+import '../hooks/top3course.dart'; // Top3Courses를 가져오는 부분 추가
+import '../components/basic_frame_page.dart'; // BasicFramePage 임포트
 
-class LocationAndPersonSelectionJ extends StatefulWidget {
+class KeywordSelectionPage extends StatefulWidget {
   @override
-  _LocationAndPersonSelectionJState createState() =>
-      _LocationAndPersonSelectionJState();
+  _KeywordSelectionPageState createState() => _KeywordSelectionPageState();
 }
 
-class _LocationAndPersonSelectionJState
-    extends State<LocationAndPersonSelectionJ> {
-  String? selectedLocation;
-  String? selectedGroup;
+class _KeywordSelectionPageState extends State<KeywordSelectionPage> {
+  String? selectedTheme;
+  final List<String> themes = ['음식', '관광지', '액티비티', '힐링', '파티'];
 
-  List<DropdownMenuItem<String>> _buildLocationItems() {
-    return [
-      DropdownMenuItem(value: '창원시', child: Text('창원시')),
-      DropdownMenuItem(value: '김해시', child: Text('김해시')),
-      DropdownMenuItem(value: '진주시', child: Text('진주시')),
-      DropdownMenuItem(value: '양산시', child: Text('양산시')),
-      DropdownMenuItem(value: '거제시', child: Text('거제시')),
-      DropdownMenuItem(value: '사천시', child: Text('사천시')),
-    ];
-  }
-
-  final List<String> groups = ['혼자', '커플', '친구', '친구들', '아이와 함께', '부모님과 함께'];
-
-  List<Widget> _buildGroupChips() {
-    return groups.map((group) {
-      return ChoiceChip(
-        label: Text(group),
-        selected: selectedGroup == group,
-        onSelected: (selected) {
-          setState(() {
-            selectedGroup = group;
-          });
-        },
-      );
-    }).toList();
+  List<DropdownMenuItem<String>> _buildThemeItems() {
+    return themes
+        .map((theme) => DropdownMenuItem(value: theme, child: Text(theme)))
+        .toList();
   }
 
   @override
@@ -99,7 +75,7 @@ class _LocationAndPersonSelectionJState
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
-                      'STEP 02 | 여행 장소 선택',
+                      'STEP 04 | 키워드 선택',
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
@@ -115,57 +91,57 @@ class _LocationAndPersonSelectionJState
                           borderSide: BorderSide.none,
                         ),
                       ),
-                      value: selectedLocation,
-                      hint: Text('여행 장소를 선택하세요'),
-                      items: _buildLocationItems(),
+                      value: selectedTheme,
+                      hint: Text('테마를 선택하세요'),
+                      items: _buildThemeItems(),
                       onChanged: (value) {
                         setState(() {
-                          selectedLocation = value;
+                          selectedTheme = value;
                         });
                       },
                     ),
                     SizedBox(height: 20),
-                    Text(
-                      'STEP 03 | 인원 선택',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    Wrap(
-                      spacing: 10.0,
-                      runSpacing: 10.0,
-                      children: _buildGroupChips(),
-                    ),
-                    SizedBox(height: 20),
+                    // SizedBox(height: 20),
                     ElevatedButton(
-                      onPressed:
-                          selectedLocation != null && selectedGroup != null
-                              ? () {
-                                  Navigator.push(context,
-                                      MaterialPageRoute(builder: (context) {
-                                    return KeywordSelectionPage();
-                                  }));
-                                }
-                              : null,
-                      child: Text('완료'),
+                      onPressed: selectedTheme != null
+                          ? () {
+                              // 키워드를 선택하고 완료를 눌렀을 때의 동작을 정의하세요.
+                            }
+                          : null,
+                      child: Text('AI에게 추천코스 받기'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            selectedLocation != null && selectedGroup != null
-                                ? Colors.grey[800]
-                                : Colors.grey[400],
+                        backgroundColor: selectedTheme != null
+                            ? Colors.grey[800]
+                            : Colors.grey[400],
                         foregroundColor: Colors.white,
                         padding:
                             EdgeInsets.symmetric(vertical: 15, horizontal: 30),
                       ),
                     ),
+                    SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: selectedTheme != null
+                          ? () {
+                              // 키워드를 선택하고 완료를 눌렀을 때의 동작을 정의하세요.
+                            }
+                          : null,
+                      child: Text('직접 코스 만들기'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: selectedTheme != null
+                            ? Colors.grey[800]
+                            : Colors.grey[400],
+                        foregroundColor: Colors.white,
+                        padding:
+                            EdgeInsets.symmetric(vertical: 15, horizontal: 30),
+                      ),
+                    ),
+                    SizedBox(height: 20),
                   ],
                 ),
               ),
             ),
             SizedBox(height: 20),
-            Top3Courses(),
+            Top3Courses(), // Top3Courses 위젯 사용
           ],
         ),
       ),
