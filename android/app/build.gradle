@@ -56,3 +56,7 @@ android {
 flutter {
     source = "../.."
 }
+
+dependencies {
+    implementation 'net.daum.android.map:open:2.11.9'
+}
