@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'components/basic_frame_page.dart'; // 기본 프레임 페이지 파일을 import
 import 'package:kakao_flutter_sdk_common/kakao_flutter_sdk_common.dart';
 import '../components/mbti_selection_page.dart';
+import '../services/webview.dart';
 
 void main() async {
   // Flutter 앱의 runApp() 호출 전 초기화를 위해서 필요한 메서드 호출
@@ -18,9 +18,6 @@ void main() async {
 }
 
 class MBTISelectionApp extends StatelessWidget {
-  // MethodChannel 정의
-  static const platform = MethodChannel('kakao/map');
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -42,24 +39,8 @@ class MBTISelectionApp extends StatelessWidget {
           labelSmall: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Kakao Map Example'),
-        ),
-        body: BasicFramePage(
-          body: MBTISelectionPage(),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            try {
-              final result = await platform.invokeMethod('showKakaoMap');
-              print(result);
-            } on PlatformException catch (e) {
-              print("Failed to show Kakao Map: '${e.message}'.");
-            }
-          },
-          child: Icon(Icons.map),
-        ),
+      home: BasicFramePage(
+        body: MBTISelectionPage(),
       ),
     );
   }
