@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:untitled/pages/coursemake.dart';
+// import 'package:untitled/pages/coursemake.dart';
 import '../hooks/top3course.dart'; // Top3Courses를 가져오는 부분 추가
 import '../components/basic_frame_page.dart'; // BasicFramePage 임포트
 
