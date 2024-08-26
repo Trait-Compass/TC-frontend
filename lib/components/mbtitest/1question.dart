@@ -17,7 +17,7 @@ class TravelPreferencePage extends StatelessWidget {
         Text(
           '여행을 가고 싶은 곳은?',
           style: TextStyle(
-            fontSize: 22,
+            fontSize: 25,
             fontWeight: FontWeight.bold,
           ),
         ),
