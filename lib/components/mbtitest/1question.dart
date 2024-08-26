@@ -22,99 +22,107 @@ class TravelPreferencePage extends StatelessWidget {
           ),
         ),
         SizedBox(height: 20),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+        Stack(
+          alignment: Alignment.center,
           children: [
-            Expanded(
-              child: GestureDetector(
-                onTap: () => onOptionSelected('nature'),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.3),
-                        blurRadius: 10,
-                        offset: Offset(0, 5),
-                      ),
-                    ],
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.all(10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => onOptionSelected('nature'),
                     child: Container(
-                      height: 150,
                       decoration: BoxDecoration(
-                        color: selectedOption == 'nature'
-                            ? Colors.grey[300]
-                            : Colors.white,
+                        color: Colors.white,
                         borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            '../assets/nature.png',
-                            height: 60,
-                          ),
-                          SizedBox(height: 10),
-                          Text(
-                            '한적한 자연',
-                            style: TextStyle(fontSize: 18),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.3),
+                            blurRadius: 10,
+                            offset: Offset(0, 5),
                           ),
                         ],
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Container(
+                          height: 150,
+                          decoration: BoxDecoration(
+                            color: selectedOption == 'nature'
+                                ? Colors.grey[300]
+                                : Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                '../assets/nature.png',
+                                height: 60,
+                              ),
+                              SizedBox(height: 10),
+                              Text(
+                                '한적한 자연',
+                                style: TextStyle(fontSize: 18),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ),
-            Image.asset(
-              '../assets/vs.png',
-              height: 50,
-            ),
-            Expanded(
-              child: GestureDetector(
-                onTap: () => onOptionSelected('city'),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.3),
-                        blurRadius: 10,
-                        offset: Offset(0, 5),
-                      ),
-                    ],
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.all(10),
+                SizedBox(width: 20),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => onOptionSelected('city'),
                     child: Container(
-                      height: 150,
                       decoration: BoxDecoration(
-                        color: selectedOption == 'city'
-                            ? Colors.grey[300]
-                            : Colors.white,
+                        color: Colors.white,
                         borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            '../assets/city.png',
-                            height: 60,
-                          ),
-                          SizedBox(height: 10),
-                          Text(
-                            '신나는 도시',
-                            style: TextStyle(fontSize: 18),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.3),
+                            blurRadius: 10,
+                            offset: Offset(0, 5),
                           ),
                         ],
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Container(
+                          height: 150,
+                          decoration: BoxDecoration(
+                            color: selectedOption == 'city'
+                                ? Colors.grey[300]
+                                : Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                '../assets/city.png',
+                                height: 60,
+                              ),
+                              SizedBox(height: 10),
+                              Text(
+                                '신나는 도시',
+                                style: TextStyle(fontSize: 18),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                   ),
                 ),
+              ],
+            ),
+            Positioned(
+              child: Image.asset(
+                '../assets/vs.png',
+                height: 100,
               ),
             ),
           ],
