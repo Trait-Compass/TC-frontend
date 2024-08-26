@@ -127,11 +127,10 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   }
 
   void _navigateToMBTITest() {
-    // MBTI 테스트 페이지로 이동하는 코드 작성
-    // 예시:
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => MBTITestPage()), // 실제 테스트 페이지로 변경
+      MaterialPageRoute(
+          builder: (context) => MBTItestselection()), // 실제 테스트 페이지로 변경
     );
   }
 
