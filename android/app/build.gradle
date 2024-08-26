@@ -1,6 +1,5 @@
 plugins {
     id "com.android.application"
-    id "kotlin-android"
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id "dev.flutter.flutter-gradle-plugin"
 }
@@ -58,5 +57,5 @@ flutter {
 }
 
 dependencies {
-    implementation 'net.daum.android.map:open:2.11.9'
+    implementation 'com.kakao.maps.open:android:2.11.9'
 }
