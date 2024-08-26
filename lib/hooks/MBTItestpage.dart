@@ -43,7 +43,7 @@ class _MBTItestselectionState extends State<MBTItestselection> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 10),
               // 시작 버튼을 눌렀을 때 변경되는 UI
               Container(
                 width: screenWidth - 40,
