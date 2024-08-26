@@ -1,36 +1,19 @@
-import 'dart:io';
-import 'package:flutter/material.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+// import 'package:flutter/material.dart';
+// import 'package:kakaomap_webview/kakaomap_webview.dart';
 
-class WebViewPage extends StatefulWidget {
-  final String url;
-
-  WebViewPage({required this.url});
-
-  @override
-  _WebViewPageState createState() => _WebViewPageState();
-}
-
-class _WebViewPageState extends State<WebViewPage> {
-  @override
-  void initState() {
-    super.initState();
-    // Android에서 WebView 사용을 위해 초기화
-    if (Platform.isAndroid) {
-      WebView.platform = SurfaceAndroidWebView();
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Kakao Map'),
-      ),
-      body: WebView(
-        initialUrl: widget.url,
-        javascriptMode: JavascriptMode.unrestricted,
-      ),
-    );
-  }
-}
+// class KakaoMapPage extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(title: Text('Kakao Map')),
+//       body: KakaoMapView(
+//         width: MediaQuery.of(context).size.width,
+//         height: MediaQuery.of(context).size.height,
+//         kakaoMapKey: 'YOUR_KAKAO_MAP_KEY',
+//         lat: 37.5665,
+//         lng: 126.9780,
+//         overlayText: "서울특별시 중구",
+//       ),
+//     );
+//   }
+// }
