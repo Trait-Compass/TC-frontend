@@ -69,7 +69,10 @@ class TravelPreferencePage extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(width: 20),
+            Image.asset(
+              '../assets/vs.png',
+              height: 50,
+            ),
             Expanded(
               child: GestureDetector(
                 onTap: () => onOptionSelected('city'),
