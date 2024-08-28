@@ -99,9 +99,7 @@ class ResultPage extends StatelessWidget {
                             ),
                           ),
                           ElevatedButton(
-                            onPressed: () {
-                              // 자세히 보기 기능 추가
-                            },
+                            onPressed: () {},
                             child: Text(
                               '자세히 보기',
                               style:
