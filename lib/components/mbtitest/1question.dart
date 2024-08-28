@@ -31,7 +31,9 @@ class TravelPreferencePage extends StatelessWidget {
               children: [
                 Expanded(
                   child: GestureDetector(
-                    onTap: () => onOptionSelected('I'),
+                    onTap: () {
+                      onOptionSelected(selectedOption + 'I');
+                    },
                     child: Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -49,7 +51,7 @@ class TravelPreferencePage extends StatelessWidget {
                         child: Container(
                           height: 150,
                           decoration: BoxDecoration(
-                            color: selectedOption == 'I'
+                            color: selectedOption.endsWith('I')
                                 ? Colors.grey[300]
                                 : Colors.white,
                             borderRadius: BorderRadius.circular(10),
@@ -76,7 +78,9 @@ class TravelPreferencePage extends StatelessWidget {
                 SizedBox(width: 20),
                 Expanded(
                   child: GestureDetector(
-                    onTap: () => onOptionSelected('E'),
+                    onTap: () {
+                      onOptionSelected(selectedOption + 'E');
+                    },
                     child: Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -94,7 +98,7 @@ class TravelPreferencePage extends StatelessWidget {
                         child: Container(
                           height: 150,
                           decoration: BoxDecoration(
-                            color: selectedOption == 'E'
+                            color: selectedOption.endsWith('E')
                                 ? Colors.grey[300]
                                 : Colors.white,
                             borderRadius: BorderRadius.circular(10),
