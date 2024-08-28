@@ -3,6 +3,7 @@ import 'dart:async';
 import 'result_page.dart';
 import 'BestCourseTop3.dart';
 import 'GyeongNamRecommend.dart';
+import '../components/basic_frame_page.dart';
 
 class CourseGenerationPage extends StatelessWidget {
   final String mbti;
@@ -21,29 +22,9 @@ class CourseGenerationPage extends StatelessWidget {
       );
     });
 
-    final double screenHeight =
-        MediaQuery.of(context).size.height; // screenHeight 정의
+    final double screenHeight = MediaQuery.of(context).size.height;
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(60.0),
-        child: Container(
-          color: Colors.white,
-          child: AppBar(
-            centerTitle: true,
-            title: Image.asset('assets/mbtilogo.jpg', height: 40),
-            backgroundColor: Colors.white,
-            elevation: 0,
-            actions: [
-              IconButton(
-                icon: Image.asset('assets/alarm.jpg'),
-                onPressed: () {},
-              ),
-            ],
-          ),
-        ),
-      ),
+    return BasicFramePage(
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -57,7 +38,7 @@ class CourseGenerationPage extends StatelessWidget {
             Row(
               children: [
                 SizedBox(width: 20),
-                Image.asset('assets/img.png', height: 50),
+                Image.asset('assets/animation.png', height: 50),
                 SizedBox(width: 10),
                 Expanded(
                   child: Container(
@@ -108,25 +89,6 @@ class CourseGenerationPage extends StatelessWidget {
             GyeongNamRecommend(), // GyeongNamRecommend.dart 위젯 추가
           ],
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white, // 하단바 배경색을 흰색으로 설정
-        items: [
-          BottomNavigationBarItem(
-            icon: Image.asset('assets/home.jpg', height: 30), // 홈 아이콘 경로
-            label: '홈',
-          ),
-          BottomNavigationBarItem(
-            icon:
-                Image.asset('assets/location1.png', height: 30), // 여행 일정 아이콘 경로
-            label: '여행 일정',
-          ),
-          BottomNavigationBarItem(
-            icon:
-                Image.asset('assets/myprofile.png', height: 30), // 내 정보 아이콘 경로
-            label: '내 정보',
-          ),
-        ],
       ),
     );
   }

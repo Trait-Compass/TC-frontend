@@ -56,14 +56,12 @@ class _MBTISelectionPageState extends State<MBTISelectionPage> {
           SizedBox(height: screenHeight * 0.03),
           Row(
             children: [
-              SizedBox(width: screenWidth * 0.05),
-              Image.asset('assets/animation.png', height: screenHeight * 0.07),
-              SizedBox(width: screenWidth * 0.02),
+              SizedBox(width: 20),
+              Image.asset('assets/animation.png', height: 50),
+              SizedBox(width: 10),
               Expanded(
                 child: Container(
-                  padding: EdgeInsets.symmetric(
-                      vertical: screenHeight * 0.015,
-                      horizontal: screenWidth * 0.05),
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                   decoration: BoxDecoration(
                     color: Colors.grey[200],
                     borderRadius: BorderRadius.circular(20),
@@ -72,13 +70,14 @@ class _MBTISelectionPageState extends State<MBTISelectionPage> {
                     allGroupsSelected()
                         ? '${selectedMBTI.values.join()} OOO님!\n오늘은 경상남도 어디로 떠나볼까요?'
                         : '경상남도 추천지를 원하시면 MBTI를 선택해주세요 !!',
-                    style: TextStyle(fontSize: screenHeight * 0.02),
+                    style: TextStyle(fontSize: 16),
                   ),
                 ),
               ),
-              SizedBox(width: screenWidth * 0.05),
+              SizedBox(width: 20),
             ],
           ),
+
           SizedBox(height: screenHeight * 0.02),
           Text(
             'MBTI 맞춤형 간단 추천 코스',
