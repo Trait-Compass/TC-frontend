@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:untitled/components/basicframe.dart';
-import '4question.dart';
+// import '4question.dart';
 
-class Questions3 extends StatefulWidget {
+class Questions4 extends StatefulWidget {
   final Function(String) onOptionSelected;
   final String selectedOption;
 
-  Questions3({
+  Questions4({
     required this.onOptionSelected,
     required this.selectedOption,
   });
@@ -15,7 +15,7 @@ class Questions3 extends StatefulWidget {
   _Questions2State createState() => _Questions2State();
 }
 
-class _Questions2State extends State<Questions3> {
+class _Questions2State extends State<Questions4> {
   String selectedOption = '';
 
   @override
@@ -189,7 +189,7 @@ class _Questions2State extends State<Questions3> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => Questions3(
+                                  builder: (context) => Questions4(
                                     onOptionSelected: widget.onOptionSelected,
                                     selectedOption: selectedOption,
                                   ),
