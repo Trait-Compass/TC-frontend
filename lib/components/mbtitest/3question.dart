@@ -83,7 +83,7 @@ class _Questions2State extends State<Questions3> {
                           children: [
                             Expanded(
                               child: GestureDetector(
-                                onTap: () => handleOptionSelected('nature'),
+                                onTap: () => handleOptionSelected('T'),
                                 child: Container(
                                   decoration: BoxDecoration(
                                     color: Colors.white,
@@ -129,7 +129,7 @@ class _Questions2State extends State<Questions3> {
                             SizedBox(width: 20),
                             Expanded(
                               child: GestureDetector(
-                                onTap: () => handleOptionSelected('city'),
+                                onTap: () => handleOptionSelected('F'),
                                 child: Container(
                                   decoration: BoxDecoration(
                                     color: Colors.white,
