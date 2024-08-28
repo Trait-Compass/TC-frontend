@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:untitled/components/basicframe.dart';
+import '3question.dart';
 
-class Questions3 extends StatelessWidget {
+class Questions3 extends StatefulWidget {
   final Function(String) onOptionSelected;
   final String selectedOption;
 
@@ -9,6 +10,26 @@ class Questions3 extends StatelessWidget {
     required this.onOptionSelected,
     required this.selectedOption,
   });
+
+  @override
+  _Questions2State createState() => _Questions2State();
+}
+
+class _Questions2State extends State<Questions3> {
+  String selectedOption = '';
+
+  @override
+  void initState() {
+    super.initState();
+    selectedOption = widget.selectedOption;
+  }
+
+  void handleOptionSelected(String option) {
+    setState(() {
+      selectedOption = option;
+    });
+    widget.onOptionSelected(option);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,141 +56,162 @@ class Questions3 extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 10),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    '밤에 산책을 하다가 별을 발견했어!',
-                    style: TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () => onOptionSelected('nature'),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(10),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.3),
-                                      blurRadius: 10,
-                                      offset: Offset(0, 5),
-                                    ),
-                                  ],
-                                ),
-                                child: Padding(
-                                  padding: EdgeInsets.all(10),
-                                  child: Container(
-                                    height: 150,
-                                    decoration: BoxDecoration(
-                                      color: selectedOption == 'nature'
-                                          ? Colors.grey[300]
-                                          : Colors.white,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Image.asset(
-                                          'assets/star1.png',
-                                          height: 60,
-                                        ),
-                                        SizedBox(height: 10),
-                                        Text(
-                                          '왔던 길로 되돌아가자',
-                                          style: TextStyle(fontSize: 18),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: 20),
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () => onOptionSelected('city'),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(10),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.3),
-                                      blurRadius: 10,
-                                      offset: Offset(0, 5),
-                                    ),
-                                  ],
-                                ),
-                                child: Padding(
-                                  padding: EdgeInsets.all(10),
-                                  child: Container(
-                                    height: 150,
-                                    decoration: BoxDecoration(
-                                      color: selectedOption == 'city'
-                                          ? Colors.grey[300]
-                                          : Colors.white,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Image.asset(
-                                          'assets/star2.png',
-                                          height: 60,
-                                        ),
-                                        SizedBox(height: 10),
-                                        Text(
-                                          '일단 가보자',
-                                          style: TextStyle(fontSize: 18),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
+              Container(
+                width: screenWidth - 40,
+                height: 350,
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                padding: EdgeInsets.all(20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      '밤에 산책하다가 별을 발견했어!',
+                      style: TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
                       ),
-                      Positioned(
-                        child: Image.asset(
-                          'assets/vs.png',
-                          height: 100,
+                    ),
+                    SizedBox(height: 20),
+                    Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () => handleOptionSelected('nature'),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.3),
+                                        blurRadius: 10,
+                                        offset: Offset(0, 5),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Padding(
+                                    padding: EdgeInsets.all(10),
+                                    child: Container(
+                                      height: 150,
+                                      decoration: BoxDecoration(
+                                        color: selectedOption == 'nature'
+                                            ? Colors.grey[300]
+                                            : Colors.white,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Image.asset(
+                                            'assets/star1.png',
+                                            height: 60,
+                                          ),
+                                          SizedBox(height: 10),
+                                          Text(
+                                            '별은 무슨 인공위성이겠지',
+                                            style: TextStyle(fontSize: 18),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 20),
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () => handleOptionSelected('city'),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.3),
+                                        blurRadius: 10,
+                                        offset: Offset(0, 5),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Padding(
+                                    padding: EdgeInsets.all(10),
+                                    child: Container(
+                                      height: 150,
+                                      decoration: BoxDecoration(
+                                        color: selectedOption == 'city'
+                                            ? Colors.grey[300]
+                                            : Colors.white,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Image.asset(
+                                            'assets/star2.png',
+                                            height: 60,
+                                          ),
+                                          SizedBox(height: 10),
+                                          Text(
+                                            '와 너무 예뻐',
+                                            style: TextStyle(fontSize: 18),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Positioned(
+                          child: Image.asset(
+                            'assets/vs.png',
+                            height: 100,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: selectedOption.isNotEmpty
+                          ? () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Questions3(
+                                    onOptionSelected: widget.onOptionSelected,
+                                    selectedOption: selectedOption,
+                                  ),
+                                ),
+                              );
+                            }
+                          : null,
+                      child: Text(
+                        '다음',
+                        style: TextStyle(fontSize: 18, color: Colors.white),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                    ],
-                  ),
-                  SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () {},
-                    child: Text(
-                      '다음',
-                      style: TextStyle(fontSize: 18, color: Colors.white),
                     ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.grey,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               SizedBox(height: 20),
               Container(
