@@ -100,7 +100,7 @@ class _Questions4State extends State<Questions4> {
                                     child: Container(
                                       height: 150,
                                       decoration: BoxDecoration(
-                                        color: selectedOption == 'nature'
+                                        color: selectedOption == 'P'
                                             ? Colors.grey[300]
                                             : Colors.white,
                                         borderRadius: BorderRadius.circular(10),
@@ -146,7 +146,7 @@ class _Questions4State extends State<Questions4> {
                                     child: Container(
                                       height: 150,
                                       decoration: BoxDecoration(
-                                        color: selectedOption == 'city'
+                                        color: selectedOption == 'J'
                                             ? Colors.grey[300]
                                             : Colors.white,
                                         borderRadius: BorderRadius.circular(10),
