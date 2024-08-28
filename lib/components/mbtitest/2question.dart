@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import '../mbtitest/2question.dart';
 
-class TravelPreferencePage extends StatelessWidget {
+class Questions2 extends StatelessWidget {
   final Function(String) onOptionSelected;
   final String selectedOption;
 
-  TravelPreferencePage({
+  Questions2({
     required this.onOptionSelected,
     required this.selectedOption,
   });
@@ -16,7 +15,7 @@ class TravelPreferencePage extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          '여행을 가고 싶은 곳은?',
+          '여행지에서 길을 잃었을 때',
           style: TextStyle(
             fontSize: 25,
             fontWeight: FontWeight.bold,
@@ -58,12 +57,12 @@ class TravelPreferencePage extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Image.asset(
-                                '../assets/nature.png',
+                                '../assets/a.png',
                                 height: 60,
                               ),
                               SizedBox(height: 10),
                               Text(
-                                '한적한 자연',
+                                '왔던 길로 되돌아가자',
                                 style: TextStyle(fontSize: 18),
                               ),
                             ],
@@ -103,12 +102,12 @@ class TravelPreferencePage extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Image.asset(
-                                '../assets/city.png',
+                                '../assets/b.png',
                                 height: 60,
                               ),
                               SizedBox(height: 10),
                               Text(
-                                '신나는 도시',
+                                '일단 가보자',
                                 style: TextStyle(fontSize: 18),
                               ),
                             ],
@@ -131,15 +130,7 @@ class TravelPreferencePage extends StatelessWidget {
         SizedBox(height: 20),
         ElevatedButton(
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => Questions2(
-                  onOptionSelected: onOptionSelected,
-                  selectedOption: selectedOption,
-                ),
-              ),
-            );
+            // 다음 버튼을 눌렀을 때의 로직 추가
           },
           child: Text(
             '다음',

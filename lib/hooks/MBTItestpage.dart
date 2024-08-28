@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../components/basicframe.dart';
+import '../components/mbtitest/0question.dart';
 import '../components/mbtitest/1question.dart';
+import '../components/mbtitest/2question.dart';
 
 // StatefulWidget 구현
 class MBTItestselection extends StatefulWidget {
@@ -11,11 +13,17 @@ class MBTItestselection extends StatefulWidget {
 // State 클래스 구현
 class _MBTItestselectionState extends State<MBTItestselection> {
   bool isStarted = false;
-  String selectedOption = ''; // 현재 선택된 옵션을 저장
+  String selectedOption = '';
 
   void _handleOptionSelected(String option) {
     setState(() {
       selectedOption = option;
+    });
+  }
+
+  void _startTest() {
+    setState(() {
+      isStarted = true;
     });
   }
 
@@ -44,86 +52,13 @@ class _MBTItestselectionState extends State<MBTItestselection> {
                 ),
               ),
               SizedBox(height: 10),
-              // 시작 버튼을 눌렀을 때 변경되는 UI
-              Container(
-                width: screenWidth - 40,
-                height: 350,
-                padding: EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: isStarted
-                    ? TravelPreferencePage(
-                        onOptionSelected: _handleOptionSelected,
-                        selectedOption: selectedOption,
-                      )
-                    : Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          GestureDetector(
-                            onTap: () {},
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.zero,
-                                  child: Image.asset(
-                                    '../assets/airplane.png',
-                                    height: 50,
-                                    fit: BoxFit.contain,
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.zero,
-                                  child: Text(
-                                    'MBTI 테스트',
-                                    style: TextStyle(
-                                      fontSize: 35,
-                                      fontWeight: FontWeight.bold,
-                                      height: 1.0,
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.zero,
-                                  child: Image.asset(
-                                    '../assets/airplane2.png',
-                                    height: 40,
-                                    fit: BoxFit.contain,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: 20),
-                          ElevatedButton(
-                            onPressed: () {
-                              setState(() {
-                                isStarted = true; // 시작 버튼 클릭 시 UI 변경
-                              });
-                            },
-                            child: Text(
-                              '시작하기',
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.white,
-                              ),
-                            ),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.grey,
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 50, vertical: 15),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+              StartTestSection(
+                onStartPressed: _startTest,
+                isStarted: isStarted,
+                onOptionSelected: _handleOptionSelected,
+                selectedOption: selectedOption,
               ),
               SizedBox(height: 20),
-              // 마스코트 섹션
               Container(
                 width: screenWidth - 40,
                 height: 400,
