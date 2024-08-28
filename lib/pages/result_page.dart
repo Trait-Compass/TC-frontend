@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'BestCourseTop3.dart';
 import 'GyeongNamRecommend.dart';
+import '../components/basic_frame_page.dart';
 
 class ResultPage extends StatelessWidget {
   final String mbti;
@@ -11,32 +12,13 @@ class ResultPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(60.0),
-        child: Container(
-          color: Colors.white,
-          child: AppBar(
-            centerTitle: true,
-            title: Image.asset('assets/mbtilogo.jpg', height: 40), // MBTI 로고 경로
-            backgroundColor: Colors.white,
-            elevation: 0,
-            actions: [
-              IconButton(
-                icon: Image.asset('assets/alarm.jpg'), // 알림 아이콘 경로
-                onPressed: () {},
-              ),
-            ],
-          ),
-        ),
-      ),
+    return BasicFramePage(
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Divider(
-              color: Color(0xFFE4E4E4), // 실선 색상 설정
+              color: Color(0xFFE4E4E4),
               thickness: 1,
               height: 1,
             ),
@@ -44,7 +26,7 @@ class ResultPage extends StatelessWidget {
             Row(
               children: [
                 SizedBox(width: 20),
-                Image.asset('assets/animation.png', height: 50), // 사람 아이콘 경로
+                Image.asset('assets/animation.png', height: 50),
                 SizedBox(width: 10),
                 Expanded(
                   child: Container(
@@ -78,7 +60,7 @@ class ResultPage extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  RecommendedCourses(mbti: mbti), // 4개의 이미지를 표시하는 부분
+                  RecommendedCourses(mbti: mbti),
                   SizedBox(height: 10),
                   Center(
                     child: ElevatedButton(
@@ -110,25 +92,6 @@ class ResultPage extends StatelessWidget {
             SizedBox(height: 20),
           ],
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white, // 하단바 배경색을 흰색으로 설정
-        items: [
-          BottomNavigationBarItem(
-            icon: Image.asset('assets/home.jpg', height: 30), // 홈 아이콘 경로
-            label: '홈',
-          ),
-          BottomNavigationBarItem(
-            icon:
-                Image.asset('assets/location1.png', height: 30), // 여행 일정 아이콘 경로
-            label: '여행 일정',
-          ),
-          BottomNavigationBarItem(
-            icon:
-                Image.asset('assets/myprofile.png', height: 30), // 내 정보 아이콘 경로
-            label: '내 정보',
-          ),
-        ],
       ),
     );
   }
