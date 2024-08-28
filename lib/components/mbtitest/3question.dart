@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:untitled/components/basicframe.dart';
-import '3question.dart';
 
-class Questions2 extends StatelessWidget {
+class Questions3 extends StatelessWidget {
   final Function(String) onOptionSelected;
   final String selectedOption;
 
-  Questions2({
+  Questions3({
     required this.onOptionSelected,
     required this.selectedOption,
   });
@@ -40,7 +39,7 @@ class Questions2 extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    '여행지에서 길을 잃었을 때',
+                    '밤에 산책을 하다가 별을 발견했어!',
                     style: TextStyle(
                       fontSize: 25,
                       fontWeight: FontWeight.bold,
@@ -83,7 +82,7 @@ class Questions2 extends StatelessWidget {
                                           MainAxisAlignment.center,
                                       children: [
                                         Image.asset(
-                                          'assets/a.png',
+                                          'assets/star1.png',
                                           height: 60,
                                         ),
                                         SizedBox(height: 10),
@@ -129,7 +128,7 @@ class Questions2 extends StatelessWidget {
                                           MainAxisAlignment.center,
                                       children: [
                                         Image.asset(
-                                          'assets/b.png',
+                                          'assets/star2.png',
                                           height: 60,
                                         ),
                                         SizedBox(height: 10),
@@ -156,17 +155,7 @@ class Questions2 extends StatelessWidget {
                   ),
                   SizedBox(height: 20),
                   ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Questions3(
-                            onOptionSelected: onOptionSelected,
-                            selectedOption: selectedOption,
-                          ),
-                        ),
-                      );
-                    },
+                    onPressed: () {},
                     child: Text(
                       '다음',
                       style: TextStyle(fontSize: 18, color: Colors.white),
