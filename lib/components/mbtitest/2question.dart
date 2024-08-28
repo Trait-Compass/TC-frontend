@@ -26,9 +26,9 @@ class _Questions2State extends State<Questions2> {
 
   void handleOptionSelected(String option) {
     setState(() {
-      selectedOption = option;
+      selectedOption = widget.selectedOption + option; // 누적된 옵션
     });
-    widget.onOptionSelected(option);
+    widget.onOptionSelected(selectedOption); // 누적된 옵션 전달
   }
 
   @override
@@ -83,7 +83,9 @@ class _Questions2State extends State<Questions2> {
                           children: [
                             Expanded(
                               child: GestureDetector(
-                                onTap: () => handleOptionSelected('S'),
+                                onTap: () {
+                                  handleOptionSelected('S');
+                                },
                                 child: Container(
                                   decoration: BoxDecoration(
                                     color: Colors.white,
@@ -101,7 +103,7 @@ class _Questions2State extends State<Questions2> {
                                     child: Container(
                                       height: 150,
                                       decoration: BoxDecoration(
-                                        color: selectedOption == 'S'
+                                        color: selectedOption.endsWith('S')
                                             ? Colors.grey[300]
                                             : Colors.white,
                                         borderRadius: BorderRadius.circular(10),
@@ -147,7 +149,7 @@ class _Questions2State extends State<Questions2> {
                                     child: Container(
                                       height: 150,
                                       decoration: BoxDecoration(
-                                        color: selectedOption == 'N'
+                                        color: selectedOption.endsWith('N')
                                             ? Colors.grey[300]
                                             : Colors.white,
                                         borderRadius: BorderRadius.circular(10),

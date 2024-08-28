@@ -12,10 +12,10 @@ class Questions3 extends StatefulWidget {
   });
 
   @override
-  _Questions2State createState() => _Questions2State();
+  _Questions3State createState() => _Questions3State();
 }
 
-class _Questions2State extends State<Questions3> {
+class _Questions3State extends State<Questions3> {
   String selectedOption = '';
 
   @override
@@ -26,9 +26,9 @@ class _Questions2State extends State<Questions3> {
 
   void handleOptionSelected(String option) {
     setState(() {
-      selectedOption = option;
+      selectedOption = widget.selectedOption + option; // 누적된 옵션
     });
-    widget.onOptionSelected(option);
+    widget.onOptionSelected(selectedOption); // 누적된 옵션 전달
   }
 
   @override
@@ -101,7 +101,7 @@ class _Questions2State extends State<Questions3> {
                                     child: Container(
                                       height: 150,
                                       decoration: BoxDecoration(
-                                        color: selectedOption == 'T'
+                                        color: selectedOption.endsWith('T')
                                             ? Colors.grey[300]
                                             : Colors.white,
                                         borderRadius: BorderRadius.circular(10),
@@ -147,7 +147,7 @@ class _Questions2State extends State<Questions3> {
                                     child: Container(
                                       height: 150,
                                       decoration: BoxDecoration(
-                                        color: selectedOption == 'F'
+                                        color: selectedOption.endsWith('F')
                                             ? Colors.grey[300]
                                             : Colors.white,
                                         borderRadius: BorderRadius.circular(10),
