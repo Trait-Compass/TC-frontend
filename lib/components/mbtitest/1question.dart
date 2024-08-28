@@ -49,7 +49,7 @@ class TravelPreferencePage extends StatelessWidget {
                         child: Container(
                           height: 150,
                           decoration: BoxDecoration(
-                            color: selectedOption == 'nature'
+                            color: selectedOption == 'I'
                                 ? Colors.grey[300]
                                 : Colors.white,
                             borderRadius: BorderRadius.circular(10),
@@ -94,7 +94,7 @@ class TravelPreferencePage extends StatelessWidget {
                         child: Container(
                           height: 150,
                           decoration: BoxDecoration(
-                            color: selectedOption == 'city'
+                            color: selectedOption == 'E'
                                 ? Colors.grey[300]
                                 : Colors.white,
                             borderRadius: BorderRadius.circular(10),

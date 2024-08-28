@@ -53,7 +53,7 @@ class ResultPage extends StatelessWidget {
                     ),
                     SizedBox(height: 50),
                     Text(
-                      'ENTP',
+                      selectedOption,
                       style: TextStyle(
                         fontSize: 25,
                         fontWeight: FontWeight.bold,
@@ -61,7 +61,7 @@ class ResultPage extends StatelessWidget {
                     ),
                     SizedBox(height: 20),
                     Text(
-                      '독창적인 아이디어 탐험가',
+                      getDescription(selectedOption),
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.normal,
@@ -128,5 +128,44 @@ class ResultPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String getDescription(String option) {
+    switch (option) {
+      case 'ISTJ':
+        return '꼼꼼한 계획형 여행자';
+      case 'ISFJ':
+        return '배려 넘치는 동행자';
+      case 'INFJ':
+        return '내면을 탐구하는 여행자';
+      case 'INTJ':
+        return '전략적인 미지 탐험가';
+      case 'ISTP':
+        return '즉흥적인 탐험가';
+      case 'ISFP':
+        return '감성적인 자연 애호가';
+      case 'INFP':
+        return '꿈을 찾아 떠나는 방랑자';
+      case 'INTP':
+        return '깊이 있는 지식 탐구자';
+      case 'ESTP':
+        return '스릴을 즐기는 모험가';
+      case 'ESFP':
+        return '파티를 즐기는 여행자';
+      case 'ENFP':
+        return '텐션 높은 인싸 여행자';
+      case 'ENTP':
+        return '독창적인 아이디어 탐험가';
+      case 'ESTJ':
+        return '효율적인 여행 리더';
+      case 'ESFJ':
+        return '모두를 챙기는 세심한 동반자';
+      case 'ENFJ':
+        return '인연을 찾는 열정 여행자';
+      case 'ENTJ':
+        return '목표 지향적인 정복자';
+      default:
+        return '다시 한번 진행해주세요!';
+    }
   }
 }
