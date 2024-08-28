@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import '../mbtitest/2question.dart';
 
 class TravelPreferencePage extends StatelessWidget {
-  final Function(String) onOptionSelected; // 선택된 옵션을 전달하는 콜백 함수
-  final String selectedOption; // 현재 선택된 옵션
+  final Function(String) onOptionSelected;
+  final String selectedOption;
 
   TravelPreferencePage({
     required this.onOptionSelected,
@@ -30,7 +31,7 @@ class TravelPreferencePage extends StatelessWidget {
               children: [
                 Expanded(
                   child: GestureDetector(
-                    onTap: () => onOptionSelected('nature'),
+                    onTap: () => onOptionSelected('I'),
                     child: Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -48,7 +49,7 @@ class TravelPreferencePage extends StatelessWidget {
                         child: Container(
                           height: 150,
                           decoration: BoxDecoration(
-                            color: selectedOption == 'nature'
+                            color: selectedOption == 'I'
                                 ? Colors.grey[300]
                                 : Colors.white,
                             borderRadius: BorderRadius.circular(10),
@@ -75,7 +76,7 @@ class TravelPreferencePage extends StatelessWidget {
                 SizedBox(width: 20),
                 Expanded(
                   child: GestureDetector(
-                    onTap: () => onOptionSelected('city'),
+                    onTap: () => onOptionSelected('E'),
                     child: Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -93,7 +94,7 @@ class TravelPreferencePage extends StatelessWidget {
                         child: Container(
                           height: 150,
                           decoration: BoxDecoration(
-                            color: selectedOption == 'city'
+                            color: selectedOption == 'E'
                                 ? Colors.grey[300]
                                 : Colors.white,
                             borderRadius: BorderRadius.circular(10),
@@ -130,7 +131,15 @@ class TravelPreferencePage extends StatelessWidget {
         SizedBox(height: 20),
         ElevatedButton(
           onPressed: () {
-            // 다음 버튼을 눌렀을 때의 로직 추가
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Questions2(
+                  onOptionSelected: onOptionSelected,
+                  selectedOption: selectedOption,
+                ),
+              ),
+            );
           },
           child: Text(
             '다음',
