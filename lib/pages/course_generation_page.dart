@@ -3,7 +3,7 @@ import 'dart:async';
 import 'result_page.dart';
 import 'BestCourseTop3.dart';
 import 'GyeongNamRecommend.dart';
-import '../components/basic_frame_page.dart'; // BasicFramePage를 임포트합니다.
+import '../components/basic_frame_page.dart';
 
 class CourseGenerationPage extends StatelessWidget {
   final String mbti;
