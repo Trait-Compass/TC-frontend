@@ -49,35 +49,30 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
   }
 
   Widget _buildIntro(double screenHeight) {
-    final double screenWidth = MediaQuery.of(context).size.width;
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
+      padding: EdgeInsets.symmetric(vertical: 10),
       child: Row(
         children: [
-          SizedBox(width: screenWidth * 0.05),
+          SizedBox(width: 20),
           Image.asset(
             'assets/animation.png',
-            height: screenHeight * 0.07,
-            fit: BoxFit.contain,
+            height: 50,
           ),
-          SizedBox(width: screenWidth * 0.03),
+          SizedBox(width: 10),
           Expanded(
             child: Container(
-              padding: EdgeInsets.symmetric(
-                vertical: screenHeight * 0.01,
-                horizontal: screenWidth * 0.04,
-              ),
+              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
               decoration: BoxDecoration(
                 color: Colors.grey[200],
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text(
                 '${widget.mbti} OOO님!\n오늘은 경상남도 어디로 떠나볼까요?',
-                style: TextStyle(fontSize: screenHeight * 0.018),
+                style: TextStyle(fontSize: 16),
               ),
             ),
           ),
-          SizedBox(width: screenWidth * 0.05),
+          SizedBox(width: 20),
         ],
       ),
     );
