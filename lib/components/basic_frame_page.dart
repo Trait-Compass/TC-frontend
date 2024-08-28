@@ -3,10 +3,43 @@ import '../hooks/loginscreen.dart';
 import '../components/mbti_selection_page.dart';
 import '../pages/travelplan.dart';
 
-class BasicFramePage extends StatelessWidget {
-  final Widget body; // body 매개변수를 추가합니다.
+class BasicFramePage extends StatefulWidget {
+  final Widget body;
 
   BasicFramePage({required this.body});
+
+  @override
+  _BasicFramePageState createState() => _BasicFramePageState();
+}
+
+class _BasicFramePageState extends State<BasicFramePage> {
+  int _currentIndex = 0;
+
+  void _onTabTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+
+    if (index == 2) {
+      // 내 정보 페이지로 이동
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => LoginScreen()),
+      );
+    } else if (index == 0) {
+      // 홈 페이지로 이동
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => MBTISelectionPage()),
+      );
+    } else {
+      // 여행 일정 페이지로 이동
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => MyNewPage()),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,60 +53,51 @@ class BasicFramePage extends StatelessWidget {
           color: Colors.white,
           child: AppBar(
             centerTitle: true,
-            title: Image.asset('assets/mbtilogo.jpg',
-                height: screenHeight * 0.05), // MBTI 로고 경로
+            title:
+                Image.asset('assets/mbtilogo.jpg', height: screenHeight * 0.05),
             backgroundColor: Colors.white,
             elevation: 0,
             actions: [
               IconButton(
-                icon: Image.asset('assets/alarm.jpg'), // 알림 아이콘 경로
+                icon: Image.asset('assets/alarm.jpg'),
                 onPressed: () {},
               ),
             ],
           ),
         ),
       ),
-      body: body, // 전달된 body 위젯을 여기에 배치합니다.
+      body: widget.body,
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white, // 하단바 배경색을 흰색으로 설정
+        backgroundColor: Colors.white,
         items: [
           BottomNavigationBarItem(
-            icon: Image.asset('assets/home.jpg', height: screenHeight * 0.04),
+            icon: Image.asset(
+              _currentIndex == 0 ? 'assets/house.png' : 'assets/house.png',
+              height: screenHeight * 0.04,
+            ),
             label: '홈',
           ),
           BottomNavigationBarItem(
-            icon: Image.asset('assets/location1.png',
-                height: screenHeight * 0.04),
+            icon: Image.asset(
+              _currentIndex == 1
+                  ? 'assets/location2.png'
+                  : 'assets/location1.png',
+              height: screenHeight * 0.04,
+            ),
             label: '여행 일정',
           ),
           BottomNavigationBarItem(
-            icon: Image.asset('assets/myprofile.png',
-                height: screenHeight * 0.04),
+            icon: Image.asset(
+              _currentIndex == 2
+                  ? 'assets/myprofile1.png'
+                  : 'assets/myprofile.png',
+              height: screenHeight * 0.04,
+            ),
             label: '내 정보',
           ),
         ],
-        currentIndex: 0,
-        onTap: (index) {
-          if (index == 2) {
-            // 내 정보 페이지로 이동
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => LoginScreen()),
-            );
-          } else {
-            // 홈 또는 여행 일정 페이지로 이동
-            index == 0
-                ? Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => MBTISelectionPage()),
-                  )
-                : Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => MyNewPage()),
-                  );
-          }
-        },
+        currentIndex: _currentIndex,
+        onTap: _onTabTapped,
       ),
     );
   }
