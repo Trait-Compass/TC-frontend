@@ -28,7 +28,7 @@ class ResultCard extends StatelessWidget {
                 ),
                 SizedBox(height: 10),
                 Container(
-                  margin: EdgeInsets.only(top: 10),
+                  margin: EdgeInsets.only(top: 10, bottom: 20),
                   padding: EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     color: Colors.grey[200],
@@ -73,7 +73,7 @@ class ResultCard extends StatelessWidget {
                                       mbtiData.description,
                                       style: TextStyle(
                                         fontSize: 18,
-                                        color: Colors.black54,
+                                        color: Colors.green,
                                       ),
                                     ),
                                   ],
@@ -105,6 +105,7 @@ class ResultCard extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 20),
+                      // 찰떡궁합 MBTI 섹션
                       buildMBTICard(
                         title: '찰떡궁합 MBTI',
                         mbtiType: mbtiData.bestMatchType,
@@ -114,6 +115,7 @@ class ResultCard extends StatelessWidget {
                         color: Colors.orange[100]!,
                       ),
                       SizedBox(height: 20),
+                      // 환장궁합 MBTI 섹션
                       buildMBTICard(
                         title: '환장궁합 MBTI',
                         mbtiType: mbtiData.worstMatchType,
@@ -123,20 +125,23 @@ class ResultCard extends StatelessWidget {
                         color: Colors.red[100]!,
                       ),
                       SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: () {
-                          // 저장 기능
-                        },
-                        child: Text(
-                          'MBTI 저장하기',
-                          style: TextStyle(fontSize: 18, color: Colors.white),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey,
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 50, vertical: 15),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                      Container(
+                        margin: EdgeInsets.only(bottom: 10),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            // 저장 기능
+                          },
+                          child: Text(
+                            'MBTI 저장하기',
+                            style: TextStyle(fontSize: 18, color: Colors.white),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.grey,
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 50, vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                           ),
                         ),
                       ),
@@ -160,14 +165,19 @@ Widget buildMBTICard({
   required List<String> traits,
   required Color color,
 }) {
+  final Color textColor = title == '찰떡궁합 MBTI' ? Colors.orange : Colors.red;
+  final Color containerColor =
+      title == '찰떡궁합 MBTI' ? Colors.orange[100]! : Colors.red[100]!;
+
   return Container(
+    margin: EdgeInsets.symmetric(vertical: 10),
     padding: EdgeInsets.all(20),
     decoration: BoxDecoration(
       color: Colors.white,
       borderRadius: BorderRadius.circular(15),
     ),
     child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
           title,
@@ -179,42 +189,67 @@ Widget buildMBTICard({
         ),
         SizedBox(height: 10),
         Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(
-              mascotImage,
-              height: 50,
-            ),
-            SizedBox(width: 10),
             Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  mbtiType,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: color,
-                  ),
-                ),
-                SizedBox(height: 5),
-                Text(
-                  description,
-                  style: TextStyle(fontSize: 14, color: Colors.black54),
+                Image.asset(
+                  mascotImage,
+                  height: 80,
                 ),
               ],
             ),
-          ],
-        ),
-        SizedBox(height: 20),
-        ...traits.map(
-          (trait) => Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5.0),
-            child: Text(
-              trait,
-              style: TextStyle(fontSize: 14, color: Colors.black),
-              textAlign: TextAlign.left,
+            SizedBox(width: 20),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                        decoration: BoxDecoration(
+                          color: textColor,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Text(
+                          mbtiType,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                      Text(
+                        description,
+                        style: TextStyle(fontSize: 16, color: textColor),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  ...traits.map(
+                    (trait) => Container(
+                      width: double.infinity,
+                      margin: EdgeInsets.symmetric(vertical: 5),
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: containerColor,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Text(
+                        trait,
+                        style: TextStyle(fontSize: 14, color: Colors.black),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
+          ],
         ),
       ],
     ),

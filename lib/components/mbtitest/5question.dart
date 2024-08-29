@@ -58,13 +58,13 @@ class ResultPage extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 30),
+                      SizedBox(height: 20),
                       Text(
                         selectedOption,
                         style: TextStyle(
                           fontSize: 50,
                           fontWeight: FontWeight.bold,
-                          color: Colors.green,
+                          color: Colors.black,
                         ),
                       ),
                       SizedBox(height: 10),
@@ -73,7 +73,7 @@ class ResultPage extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.normal,
-                          color: Colors.green,
+                          color: Colors.black,
                         ),
                         textAlign: TextAlign.center,
                       ),
