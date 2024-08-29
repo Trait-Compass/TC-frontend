@@ -43,7 +43,66 @@ class ResultCard extends StatelessWidget {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(15),
                         ),
-                        child: buildMainResultBox(mbtiData),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Column(
+                                  children: [
+                                    Image.asset(
+                                      mbtiData.mascotImage,
+                                      height: 60,
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(width: 20),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      mbtiData.type,
+                                      style: TextStyle(
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.green,
+                                      ),
+                                    ),
+                                    Text(
+                                      mbtiData.description,
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.black54,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 20),
+                            ...mbtiData.traits.map(
+                              (trait) => Container(
+                                width: double.infinity,
+                                margin: EdgeInsets.symmetric(vertical: 5),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 10),
+                                decoration: BoxDecoration(
+                                  color: Colors.green[100],
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Text(
+                                  trait,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.black,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                       SizedBox(height: 20),
                       buildMBTICard(
@@ -91,46 +150,6 @@ class ResultCard extends StatelessWidget {
       ),
     );
   }
-}
-
-Widget buildMainResultBox(MBTIData data) {
-  return Column(
-    children: [
-      Image.asset(
-        data.mascotImage,
-        height: 100,
-      ),
-      SizedBox(height: 20),
-      Text(
-        data.type,
-        style: TextStyle(
-          fontSize: 30,
-          fontWeight: FontWeight.bold,
-          color: Colors.green,
-        ),
-      ),
-      SizedBox(height: 10),
-      Text(
-        data.description,
-        style: TextStyle(
-          fontSize: 18,
-          color: Colors.black54,
-        ),
-        textAlign: TextAlign.center,
-      ),
-      SizedBox(height: 10),
-      ...data.traits.map(
-        (trait) => Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5.0),
-          child: Text(
-            trait,
-            style: TextStyle(fontSize: 14, color: Colors.black),
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ),
-    ],
-  );
 }
 
 Widget buildMBTICard({
