@@ -41,7 +41,7 @@ class _MBTISelectionPageState extends State<MBTISelectionPage> {
 
   @override
   Widget build(BuildContext context) {
-    final double screenWidth = MediaQuery.of(context).size.width;
+    // final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
 
     return SingleChildScrollView(

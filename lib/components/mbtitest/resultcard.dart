@@ -1,19 +1,13 @@
 import 'package:flutter/material.dart';
 import 'mbtidata.dart';
-import 'result.dart';
-import '../basicframe.dart';
 
-class ResultPage extends StatelessWidget {
+class ResultCard extends StatelessWidget {
   final String selectedOption;
 
-  ResultPage({
-    required this.selectedOption,
-  });
+  ResultCard({required this.selectedOption});
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-
     final mbtiData =
         mbtiDataList.firstWhere((data) => data.type == selectedOption);
 
@@ -29,63 +23,61 @@ class ResultPage extends StatelessWidget {
           },
         ),
       ),
-      body: BasicFrame1Page(
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Divider(
-                  color: Color(0xFFE4E4E4),
-                  thickness: 1,
-                  height: 1,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Divider(
+                color: Color(0xFFE4E4E4),
+                thickness: 1,
+                height: 1,
+              ),
+              SizedBox(height: 20),
+              Text(
+                '나의 여행 MBTI는?',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
                 ),
-                SizedBox(height: 20),
-                Text(
-                  '나의 여행 MBTI는?',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+              ),
+              SizedBox(height: 10),
+              buildMainResultBox(mbtiData),
+              SizedBox(height: 20),
+              buildMBTICard(
+                title: '찰떡궁합 MBTI',
+                mbtiType: mbtiData.bestMatchType,
+                description: mbtiData.bestMatchDescription,
+                mascotImage: mbtiData.bestMatchImage,
+                color: Colors.orange[100]!,
+              ),
+              SizedBox(height: 20),
+              buildMBTICard(
+                title: '환장궁합 MBTI',
+                mbtiType: mbtiData.worstMatchType,
+                description: mbtiData.worstMatchDescription,
+                mascotImage: mbtiData.worstMatchImage,
+                color: Colors.red[100]!,
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  // 저장 기능
+                },
+                child: Text(
+                  'MBTI 저장하기',
+                  style: TextStyle(fontSize: 18, color: Colors.white),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.grey,
+                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                SizedBox(height: 10),
-                buildMainResultBox(mbtiData),
-                SizedBox(height: 20),
-                buildMBTICard(
-                  title: '찰떡궁합 MBTI',
-                  mbtiType: mbtiData.bestMatchType,
-                  description: mbtiData.bestMatchDescription,
-                  mascotImage: mbtiData.bestMatchImage,
-                  color: Colors.orange[100]!,
-                ),
-                SizedBox(height: 20),
-                buildMBTICard(
-                  title: '환장궁합 MBTI',
-                  mbtiType: mbtiData.worstMatchType,
-                  description: mbtiData.worstMatchDescription,
-                  mascotImage: mbtiData.worstMatchImage,
-                  color: Colors.red[100]!,
-                ),
-                SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    // 저장 기능
-                  },
-                  child: Text(
-                    'MBTI 저장하기',
-                    style: TextStyle(fontSize: 18, color: Colors.white),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey,
-                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

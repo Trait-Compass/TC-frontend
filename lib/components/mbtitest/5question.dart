@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:untitled/components/basicframe.dart';
+import 'package:untitled/components/mbtitest/resultcard.dart';
 
 class ResultPage extends StatelessWidget {
   final String selectedOption;
@@ -99,7 +100,15 @@ class ResultPage extends StatelessWidget {
                             ),
                           ),
                           ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => (ResultCard(
+                                          selectedOption: selectedOption,
+                                        ))),
+                              );
+                            },
                             child: Text(
                               '자세히 보기',
                               style:

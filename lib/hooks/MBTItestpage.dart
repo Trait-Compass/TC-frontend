@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../components/basicframe.dart';
 import '../components/mbtitest/0question.dart';
-import '../components/mbtitest/1question.dart';
-import '../components/mbtitest/2question.dart';
+// import '../components/mbtitest/1question.dart';
+// import '../components/mbtitest/2question.dart';
 
 // StatefulWidget 구현
 class MBTItestselection extends StatefulWidget {
