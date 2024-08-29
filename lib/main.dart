@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'components/basic_frame_page.dart';
 import 'package:kakao_flutter_sdk_common/kakao_flutter_sdk_common.dart';
 import '../components/mbti_selection_page.dart';
-// import '../services/webview.dart';
+import '../components/start/onboarding.dart'; // 온보딩 페이지 임포트
+import '../components/start/splash.dart'; // 스플래쉬 페이지 임포트
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,9 +39,12 @@ class MBTISelectionApp extends StatelessWidget {
           labelSmall: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      home: BasicFramePage(
-        body: MBTISelectionPage(),
-      ),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => SplashScreen(),
+        '/onboarding': (context) => OnboardingPage(),
+        '/main': (context) => BasicFramePage(body: MBTISelectionPage()),
+      },
     );
   }
 }
