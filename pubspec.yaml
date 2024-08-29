@@ -1,7 +1,7 @@
 name: untitled
 description: A new Flutter project.
 
-publish_to: "none" # Remove this line if you wish to publish to pub.dev
+publish_to: "none"
 
 version: 1.0.0+1
 
@@ -35,7 +35,10 @@ flutter:
           weight: 700
 
 flutter_native_splash:
-  color: "F4F4F4"
+  color: "#F4F4F4"
   image: assets/mbti.png
   android: true
   ios: true
+  android_gravity: center
+  ios_content_mode: scaleAspectFit
+  fullscreen: true
