@@ -3,11 +3,11 @@ import '../basic_frame_page.dart';
 
 void main() {
   runApp(MaterialApp(
-    home: Mypage(),
+    home: DiaryforT(),
   ));
 }
 
-class Mypage extends StatelessWidget {
+class DiaryforT extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
