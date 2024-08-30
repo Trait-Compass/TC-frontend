@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../basic_frame_page.dart'; // 가정한 경로, 실제 import 경로에 맞게 수정 필요
+import '../Mypage/diaryforT.dart';
+import '../Mypage/diaryforF.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -12,11 +14,10 @@ class Mypage extends StatelessWidget {
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
     final grayBoxHeight = screenHeight * 0.15; // 회색 박스의 높이
-
     final whiteBoxHeight = screenHeight * 0.18; // 흰색 박스의 높이
     final lastBoxHeight = screenHeight * 0.15; // 마지막 회색 박스의 높이
-    final smallBoxHeight = lastBoxHeight / 5;
-    final smallBoxWidth = 100.0;
+    final smallBoxHeight = lastBoxHeight / 5; // 작은 박스의 세로 길이
+    final smallBoxWidth = 100.0; // 작은 박스의 가로 길이
 
     return BasicFramePage(
       body: SingleChildScrollView(
@@ -43,14 +44,16 @@ class Mypage extends StatelessWidget {
                 width: double.infinity,
                 height: grayBoxHeight,
                 decoration: BoxDecoration(
-                  color: Color(0xFFEAEAEA),
-                  borderRadius: BorderRadius.circular(10),
-                ),
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: Colors.black,
+                    )),
               ),
             ),
-            SizedBox(height: 5), // 회색 박스와 텍스트 사이의 간격
+            SizedBox(height: 5),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20), // 텍스트 위치 조정
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Text(
                 '내가 저장한 여행 코스',
                 style: TextStyle(
@@ -59,7 +62,7 @@ class Mypage extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 5), // 텍스트와 흰색 박스 사이의 간격
+            SizedBox(height: 5),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Container(
@@ -69,7 +72,6 @@ class Mypage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(
                       color: Colors.black,
-                      style: BorderStyle.solid,
                     )),
               ),
             ),
@@ -84,7 +86,7 @@ class Mypage extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 5), // 텍스트와 흰색 박스 사이의 간격
+            SizedBox(height: 5),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Container(
@@ -94,7 +96,6 @@ class Mypage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(
                       color: Colors.black,
-                      style: BorderStyle.solid,
                     )),
               ),
             ),
@@ -109,7 +110,7 @@ class Mypage extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 5), // 텍스트와 흰색 박스 사이의 간격
+            SizedBox(height: 5),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
@@ -118,10 +119,11 @@ class Mypage extends StatelessWidget {
                   Expanded(
                     child: Container(
                       height: lastBoxHeight,
-                      padding: EdgeInsets.only(left: 30), // 여백 추가
-                      alignment: Alignment.centerLeft, // 텍스트를 세로 중심 왼쪽에 정렬
+                      alignment: Alignment
+                          .center, // Align items to the center horizontally
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment
+                            .center, // Center the row content horizontally
                         children: [
                           Text(
                             'T',
@@ -130,7 +132,11 @@ class Mypage extends StatelessWidget {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
+                          SizedBox(
+                              width: 30), // Space between "T" and the columns
                           Column(
+                            mainAxisAlignment: MainAxisAlignment
+                                .center, // Align column contents vertically
                             children: [
                               Container(
                                 width: smallBoxWidth,
@@ -146,7 +152,7 @@ class Mypage extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(5),
                                 ),
                               ),
-                              SizedBox(height: 5), // 간격
+                              SizedBox(height: 5), // Space between boxes
                               Container(
                                 width: smallBoxWidth,
                                 height: smallBoxHeight,
@@ -171,14 +177,14 @@ class Mypage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(width: 10), // 두 컨테이너 사이의 간격
+                  SizedBox(width: 10), // Space between the two main containers
                   Expanded(
                     child: Container(
                       height: lastBoxHeight,
-                      padding: EdgeInsets.only(left: 30), // 여백 추가
-                      alignment: Alignment.centerLeft, // 텍스트를 세로 중심 왼쪽에 정렬
+                      alignment:
+                          Alignment.center, // Same as the first container
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
                             'F',
@@ -187,7 +193,9 @@ class Mypage extends StatelessWidget {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
+                          SizedBox(width: 30),
                           Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Container(
                                 width: smallBoxWidth,
@@ -203,7 +211,7 @@ class Mypage extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(5),
                                 ),
                               ),
-                              SizedBox(height: 5), // 간격
+                              SizedBox(height: 5),
                               Container(
                                 width: smallBoxWidth,
                                 height: smallBoxHeight,
