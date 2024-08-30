@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../hooks/loginscreen.dart';
+import '../components/Mypage/myprofilefirstpage.dart';
 import '../components/mbti_selection_page.dart';
 import '../pages/travelplan.dart';
 
@@ -24,7 +24,7 @@ class _BasicFramePageState extends State<BasicFramePage> {
       // 내 정보 페이지로 이동
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => LoginScreen()),
+        MaterialPageRoute(builder: (context) => Mypage()),
       );
     } else if (index == 0) {
       // 홈 페이지로 이동
