@@ -12,8 +12,11 @@ class Mypage extends StatelessWidget {
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
     final grayBoxHeight = screenHeight * 0.15; // 회색 박스의 높이
+
     final whiteBoxHeight = screenHeight * 0.18; // 흰색 박스의 높이
     final lastBoxHeight = screenHeight * 0.15; // 마지막 회색 박스의 높이
+    final smallBoxHeight = lastBoxHeight / 5;
+    final smallBoxWidth = 100.0;
 
     return BasicFramePage(
       body: SingleChildScrollView(
@@ -29,6 +32,15 @@ class Mypage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Container(
+                padding: EdgeInsets.only(left: 10, top: 5),
+                child: Text(
+                  '나의 프로필',
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                width: double.infinity,
                 height: grayBoxHeight,
                 decoration: BoxDecoration(
                   color: Color(0xFFEAEAEA),
@@ -42,7 +54,7 @@ class Mypage extends StatelessWidget {
               child: Text(
                 '내가 저장한 여행 코스',
                 style: TextStyle(
-                  fontSize: 15,
+                  fontSize: 17,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -67,7 +79,7 @@ class Mypage extends StatelessWidget {
               child: Text(
                 '여행 일기장',
                 style: TextStyle(
-                  fontSize: 15,
+                  fontSize: 17,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -92,7 +104,7 @@ class Mypage extends StatelessWidget {
               child: Text(
                 '일기 작성하기',
                 style: TextStyle(
-                  fontSize: 15,
+                  fontSize: 17,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -103,39 +115,117 @@ class Mypage extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    width: (MediaQuery.of(context).size.width - 40 - 10) / 2,
-                    height: lastBoxHeight,
-                    padding: EdgeInsets.only(left: 20), // 여백 추가
-                    alignment: Alignment.centerLeft, // 텍스트를 세로 중심 왼쪽에 정렬
-                    child: Text(
-                      'T',
-                      style: TextStyle(
-                        fontSize: 70,
-                        fontWeight: FontWeight.bold,
+                  Expanded(
+                    child: Container(
+                      height: lastBoxHeight,
+                      padding: EdgeInsets.only(left: 30), // 여백 추가
+                      alignment: Alignment.centerLeft, // 텍스트를 세로 중심 왼쪽에 정렬
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'T',
+                            style: TextStyle(
+                              fontSize: 70,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Column(
+                            children: [
+                              Container(
+                                width: smallBoxWidth,
+                                height: smallBoxHeight,
+                                alignment: Alignment.center,
+                                child: Text("# 만족도 그래프",
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black)),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                              ),
+                              SizedBox(height: 5), // 간격
+                              Container(
+                                width: smallBoxWidth,
+                                height: smallBoxHeight,
+                                alignment: Alignment.center,
+                                child: Text("# 여행 상세분석",
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black)),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                    ),
-                    decoration: BoxDecoration(
-                      color: Color(0xFFE4E4E4),
-                      borderRadius: BorderRadius.circular(10),
+                      decoration: BoxDecoration(
+                        color: Color(0xFFE4E4E4),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
                   ),
                   SizedBox(width: 10), // 두 컨테이너 사이의 간격
-                  Container(
-                    width: (MediaQuery.of(context).size.width - 40 - 10) / 2,
-                    height: lastBoxHeight,
-                    padding: EdgeInsets.only(left: 20), // 여백 추가
-                    alignment: Alignment.centerLeft, // 텍스트를 세로 중심 왼쪽에 정렬
-                    child: Text(
-                      'F',
-                      style: TextStyle(
-                        fontSize: 70,
-                        fontWeight: FontWeight.bold,
+                  Expanded(
+                    child: Container(
+                      height: lastBoxHeight,
+                      padding: EdgeInsets.only(left: 30), // 여백 추가
+                      alignment: Alignment.centerLeft, // 텍스트를 세로 중심 왼쪽에 정렬
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'F',
+                            style: TextStyle(
+                              fontSize: 70,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Column(
+                            children: [
+                              Container(
+                                width: smallBoxWidth,
+                                height: smallBoxHeight,
+                                alignment: Alignment.center,
+                                child: Text("# 감정 차트",
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black)),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                              ),
+                              SizedBox(height: 5), // 간격
+                              Container(
+                                width: smallBoxWidth,
+                                height: smallBoxHeight,
+                                alignment: Alignment.center,
+                                child: Text("# 나의 감성 기록",
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black)),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                    ),
-                    decoration: BoxDecoration(
-                      color: Color(0xFFE4E4E4),
-                      borderRadius: BorderRadius.circular(10),
+                      decoration: BoxDecoration(
+                        color: Color(0xFFE4E4E4),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
                   ),
                 ],
