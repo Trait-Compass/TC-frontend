@@ -13,11 +13,6 @@ class Mypage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
-    // final grayBoxHeight = screenHeight * 0.15; // 회색 박스의 높이
-    final whiteBoxHeight = screenHeight * 0.18; // 흰색 박스의 높이
-    final lastBoxHeight = screenHeight * 0.15; // 마지막 회색 박스의 높이
-    final smallBoxHeight = lastBoxHeight / 5; // 작은 박스의 세로 길이
-    final smallBoxWidth = 100.0; // 작은 박스의 가로 길이
 
     return BasicFramePage(
       body: SingleChildScrollView(
@@ -44,15 +39,107 @@ class Mypage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Container(
-                height: 150,
+                padding: const EdgeInsets.symmetric(vertical: 20),
+                height: 130,
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(
                       color: Colors.black,
                     )),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(width: 20),
+                    Container(
+                      height: 90,
+                      width: 55,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(color: Colors.black)),
+                    ),
+                    SizedBox(width: 20),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: 55,
+                          height: 25,
+                          alignment: Alignment.center,
+                          child: Text(
+                            "ENFP",
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          decoration: BoxDecoration(
+                            color: Color(0xFFE4E4E4),
+                            borderRadius: BorderRadius.circular(12.5),
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Container(
+                          height: 25,
+                          alignment: Alignment.center,
+                          child: Text(
+                            "텐션 높은 인싸 여행자",
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          decoration: BoxDecoration(color: Colors.white),
+                        ),
+                        SizedBox(width: 10),
+                        Container(
+                          width: 49,
+                          height: 25,
+                          alignment: Alignment.center,
+                          child: Text(
+                            "닉네임",
+                            style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10.5),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
+            /*SizedBox(height: 10),
+            // Add new Row for a new box right below the "닉네임"
+            Row(children: [
+              Container(
+                child: Container(
+                  height: 90,
+                  width: 90,
+                  decoration: BoxDecoration(
+                    color: Colors.purple,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.black),
+                  ),
+                  child: Center(
+                    child: Text(
+                      "새로운 박스",
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ]),*/
+            SizedBox(height: 5),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Text(
@@ -67,7 +154,7 @@ class Mypage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Container(
-                height: whiteBoxHeight,
+                height: 160,
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10),
@@ -91,7 +178,7 @@ class Mypage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Container(
-                height: whiteBoxHeight,
+                height: 160,
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10),
@@ -126,7 +213,8 @@ class Mypage extends StatelessWidget {
                         );
                       },
                       child: Container(
-                        height: lastBoxHeight,
+                        height: 77,
+                        width: 160,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
                           color: Color(0xFFE4E4E4),
@@ -138,7 +226,7 @@ class Mypage extends StatelessWidget {
                             Text(
                               'T',
                               style: TextStyle(
-                                fontSize: 70,
+                                fontSize: 50,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -147,13 +235,13 @@ class Mypage extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Container(
-                                  width: smallBoxWidth,
-                                  height: smallBoxHeight,
+                                  width: 100,
+                                  height: 17,
                                   alignment: Alignment.center,
                                   child: Text(
                                     "# 만족도 그래프",
                                     style: TextStyle(
-                                      fontSize: 15,
+                                      fontSize: 14,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -164,13 +252,13 @@ class Mypage extends StatelessWidget {
                                 ),
                                 SizedBox(height: 5),
                                 Container(
-                                  width: smallBoxWidth,
-                                  height: smallBoxHeight,
+                                  width: 100,
+                                  height: 17,
                                   alignment: Alignment.center,
                                   child: Text(
                                     "# 여행 상세분석",
                                     style: TextStyle(
-                                      fontSize: 15,
+                                      fontSize: 14,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -196,7 +284,8 @@ class Mypage extends StatelessWidget {
                         );
                       },
                       child: Container(
-                        height: lastBoxHeight,
+                        height: 77,
+                        width: 160,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
                           color: Color(0xFFE4E4E4),
@@ -208,7 +297,7 @@ class Mypage extends StatelessWidget {
                             Text(
                               'F',
                               style: TextStyle(
-                                fontSize: 70,
+                                fontSize: 50,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -217,13 +306,13 @@ class Mypage extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Container(
-                                  width: smallBoxWidth,
-                                  height: smallBoxHeight,
+                                  height: 17,
+                                  width: 100,
                                   alignment: Alignment.center,
                                   child: Text(
                                     "# 감정 차트",
                                     style: TextStyle(
-                                      fontSize: 15,
+                                      fontSize: 14,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -234,13 +323,13 @@ class Mypage extends StatelessWidget {
                                 ),
                                 SizedBox(height: 5),
                                 Container(
-                                  width: smallBoxWidth,
-                                  height: smallBoxHeight,
+                                  height: 17,
+                                  width: 100,
                                   alignment: Alignment.center,
                                   child: Text(
                                     "# 나의 감성 기록",
                                     style: TextStyle(
-                                      fontSize: 15,
+                                      fontSize: 14,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -259,6 +348,7 @@ class Mypage extends StatelessWidget {
                 ],
               ),
             ),
+            SizedBox(height: 20),
           ],
         ),
       ),
