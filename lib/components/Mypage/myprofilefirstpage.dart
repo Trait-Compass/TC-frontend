@@ -40,13 +40,14 @@ class Mypage extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 20),
-                height: 130,
+                height: 180,
                 decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      color: Colors.black,
-                    )),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: Colors.black,
+                  ),
+                ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -55,58 +56,158 @@ class Mypage extends StatelessWidget {
                       height: 90,
                       width: 55,
                       decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(color: Colors.black)),
+                        color: Colors.white,
+                        border: Border.all(color: Colors.black),
+                      ),
                     ),
                     SizedBox(width: 20),
-                    Row(
+                    Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          width: 55,
-                          height: 25,
-                          alignment: Alignment.center,
-                          child: Text(
-                            "ENFP",
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.bold,
+                        Row(
+                          children: [
+                            Container(
+                              width: 55,
+                              height: 25,
+                              alignment: Alignment.center,
+                              child: Text(
+                                "ENFP",
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              decoration: BoxDecoration(
+                                color: Color(0xFFE4E4E4),
+                                borderRadius: BorderRadius.circular(12.5),
+                              ),
                             ),
-                          ),
-                          decoration: BoxDecoration(
-                            color: Color(0xFFE4E4E4),
-                            borderRadius: BorderRadius.circular(12.5),
-                          ),
+                            SizedBox(width: 10),
+                            Container(
+                              height: 25,
+                              alignment: Alignment.center,
+                              child: Text(
+                                "텐션 높은 인싸 여행자",
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              decoration: BoxDecoration(color: Colors.white),
+                            ),
+                            SizedBox(width: 10),
+                            Container(
+                              width: 49,
+                              height: 25,
+                              alignment: Alignment.center,
+                              child: Text(
+                                "닉네임",
+                                style: TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10.5),
+                              ),
+                            ),
+                          ],
                         ),
-                        SizedBox(width: 10),
-                        Container(
-                          height: 25,
-                          alignment: Alignment.center,
-                          child: Text(
-                            "텐션 높은 인싸 여행자",
-                            style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
+                        SizedBox(height: 10),
+                        Row(
+                          children: [
+                            // 왼쪽 박스
+                            Container(
+                              width: 170,
+                              height: 80,
+                              padding: const EdgeInsets.all(8.0),
+                              alignment: Alignment.center,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "같이 여행가면 재밌는 타입",
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  Text(
+                                    "구체적인 계획은 잘 안짜는 타입",
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(color: Colors.black),
+                                borderRadius: BorderRadius.circular(12.5),
+                              ),
                             ),
-                          ),
-                          decoration: BoxDecoration(color: Colors.white),
-                        ),
-                        SizedBox(width: 10),
-                        Container(
-                          width: 49,
-                          height: 25,
-                          alignment: Alignment.center,
-                          child: Text(
-                            "닉네임",
-                            style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.bold,
+                            SizedBox(width: 10),
+                            // 오른쪽 박스
+                            Container(
+                              width: 170,
+                              height: 80,
+                              padding: const EdgeInsets.all(8.0),
+                              alignment: Alignment.center,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "❤️ 찰떡 궁합 ",
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        "INFJ",
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 5),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "😅 환장 궁합 ",
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        "ISTJ",
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(color: Colors.black),
+                                borderRadius: BorderRadius.circular(12.5),
+                              ),
                             ),
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10.5),
-                          ),
+                          ],
                         ),
                       ],
                     ),
@@ -114,31 +215,6 @@ class Mypage extends StatelessWidget {
                 ),
               ),
             ),
-            /*SizedBox(height: 10),
-            // Add new Row for a new box right below the "닉네임"
-            Row(children: [
-              Container(
-                child: Container(
-                  height: 90,
-                  width: 90,
-                  decoration: BoxDecoration(
-                    color: Colors.purple,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.black),
-                  ),
-                  child: Center(
-                    child: Text(
-                      "새로운 박스",
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ]),*/
             SizedBox(height: 5),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
