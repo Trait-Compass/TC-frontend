@@ -115,11 +115,11 @@ class _RadarChartPainter extends CustomPainter {
       ..style = PaintingStyle.stroke;
 
     Paint dataPaint = Paint()
-      ..color = Colors.blue.withOpacity(0.5)
+      ..color = Color(0x7F7D9C).withOpacity(0.5)
       ..style = PaintingStyle.fill;
 
     Paint handlePaint = Paint()
-      ..color = Colors.blue
+      ..color = Color(0x4D4C5C).withOpacity(1)
       ..style = PaintingStyle.fill;
 
     int sides = labels.length;

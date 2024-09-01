@@ -28,7 +28,8 @@ class DiaryforT extends StatelessWidget {
             SizedBox(height: 40),
             Divider(color: Color(0xFFE4E4E4), thickness: 1, height: 1),
             SizedBox(height: 5),
-            TravelDetailAnalysisSection(), // 여행 상세분석 추가
+            TravelDetailAnalysisSection(),
+            SizedBox(height: 10), // 여행 상세분석 추가
           ],
         ),
       ),
