@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../basic_frame_page.dart';
+import '../Mypage/uploadmypictures.dart';
 
 void main() {
   runApp(MaterialApp(

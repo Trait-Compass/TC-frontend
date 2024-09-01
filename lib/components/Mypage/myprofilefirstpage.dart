@@ -12,8 +12,6 @@ void main() {
 class Mypage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final double screenHeight = MediaQuery.of(context).size.height;
-
     return BasicFramePage(
       body: SingleChildScrollView(
         child: Column(
@@ -40,27 +38,27 @@ class Mypage extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 20),
-                height: 180,
+                height: 150,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
-                    color: Colors.black,
+                    color: Colors.grey,
                   ),
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(width: 20),
-                    Container(
-                      height: 90,
-                      width: 55,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color: Colors.black),
-                      ),
+                    SizedBox(
+                      width: 30,
                     ),
-                    SizedBox(width: 20),
+                    Image.asset(
+                      'assets/istj.png',
+                      height: 110,
+                      width: 40,
+                      fit: BoxFit.cover,
+                    ),
+                    SizedBox(width: 30),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -120,7 +118,7 @@ class Mypage extends StatelessWidget {
                             // 왼쪽 박스
                             Container(
                               width: 170,
-                              height: 80,
+                              height: 70,
                               padding: const EdgeInsets.all(8.0),
                               alignment: Alignment.center,
                               child: Column(
@@ -154,7 +152,7 @@ class Mypage extends StatelessWidget {
                             // 오른쪽 박스
                             Container(
                               width: 170,
-                              height: 80,
+                              height: 70,
                               padding: const EdgeInsets.all(8.0),
                               alignment: Alignment.center,
                               child: Column(
@@ -232,11 +230,61 @@ class Mypage extends StatelessWidget {
               child: Container(
                 height: 160,
                 decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      color: Colors.black,
-                    )),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: Colors.grey, // 검은색에서 회색으로 수정
+                    // style: BorderStyle.dashed, // 점선 스타일 추가 나중에 패키지 설치하기
+                  ),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      '저장한 코스가 없습니다',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            //
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: Colors.black,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                              side: BorderSide(color: Colors.grey),
+                            ),
+                          ),
+                          child: Text('코스 제작하기'),
+                        ),
+                        SizedBox(width: 20),
+                        ElevatedButton(
+                          onPressed: () {
+                            //
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: Colors.black,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                              side: BorderSide(color: Colors.grey),
+                            ),
+                          ),
+                          child: Text('인기코스 보러가기'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
             SizedBox(height: 5),
@@ -254,13 +302,44 @@ class Mypage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Container(
+                width: double.infinity,
                 height: 160,
                 decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      color: Colors.black,
-                    )),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: Colors.grey, // 기존 검은색에서 회색으로 수정
+                    style: BorderStyle.solid, // 패키지 나중에 설치
+                  ),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      '작성된 일기가 없습니다',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        // 일기 작성하기 버튼 클릭 시 실행될 코드 추가
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.black,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          side: BorderSide(color: Colors.grey),
+                        ),
+                      ),
+                      child: Text('일기 작성하기'),
+                    ),
+                  ],
+                ),
               ),
             ),
             SizedBox(height: 5),
