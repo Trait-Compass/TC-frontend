@@ -66,26 +66,29 @@ class _TravelDetailAnalysisSectionState
                               color: Colors.grey[200], // 회색 박스 색상 설정
                               borderRadius: BorderRadius.circular(5),
                             ),
-                            child: isEditingSatisfied // 편집 모드 확인
-                                ? TextField(
-                                    controller: satisfiedController,
-                                    style: TextStyle(
-                                        fontSize: 12), // 입력 텍스트의 폰트 크기 설정
-                                    maxLines: null, // 줄 수 제한 없음
-                                    decoration: InputDecoration(
-                                      isCollapsed: true, // 텍스트 필드의 내부 패딩 제거
-                                      border: InputBorder.none, // 테두리 제거
+                            child: SingleChildScrollView(
+                              // 스크롤 가능하도록 변경
+                              child: isEditingSatisfied // 편집 모드 확인
+                                  ? TextField(
+                                      controller: satisfiedController,
+                                      style: TextStyle(
+                                          fontSize: 12), // 입력 텍스트의 폰트 크기 설정
+                                      maxLines: null, // 줄 수 제한 없음
+                                      decoration: InputDecoration(
+                                        isCollapsed: true, // 텍스트 필드의 내부 패딩 제거
+                                        border: InputBorder.none, // 테두리 제거
+                                      ),
+                                    )
+                                  : Text(
+                                      satisfiedText ??
+                                          'ex) 액티비티 활동을 많이 즐김', // 저장된 텍스트를 표시 또는 기본 텍스트
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          color: satisfiedText != null
+                                              ? Color(0xFF41424C)
+                                              : Colors.grey),
                                     ),
-                                  )
-                                : Text(
-                                    satisfiedText ??
-                                        'ex) 액티비티 활동을 많이 즐김', // 저장된 텍스트를 표시 또는 기본 텍스트
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        color: satisfiedText != null
-                                            ? Color(0xFF41424C)
-                                            : Colors.grey),
-                                  ),
+                            ),
                           ),
                         ],
                       ),
@@ -168,26 +171,29 @@ class _TravelDetailAnalysisSectionState
                               color: Colors.grey[200], // 회색 박스 색상 설정
                               borderRadius: BorderRadius.circular(5),
                             ),
-                            child: isEditingMaintain // 편집 모드 확인
-                                ? TextField(
-                                    controller: maintainController,
-                                    style: TextStyle(
-                                        fontSize: 12), // 입력 텍스트의 폰트 크기 설정
-                                    maxLines: null, // 줄 수 제한 없음
-                                    decoration: InputDecoration(
-                                      isCollapsed: true, // 텍스트 필드의 내부 패딩 제거
-                                      border: InputBorder.none, // 테두리 제거
+                            child: SingleChildScrollView(
+                              // 스크롤 가능하도록 변경
+                              child: isEditingMaintain // 편집 모드 확인
+                                  ? TextField(
+                                      controller: maintainController,
+                                      style: TextStyle(
+                                          fontSize: 12), // 입력 텍스트의 폰트 크기 설정
+                                      maxLines: null, // 줄 수 제한 없음
+                                      decoration: InputDecoration(
+                                        isCollapsed: true, // 텍스트 필드의 내부 패딩 제거
+                                        border: InputBorder.none, // 테두리 제거
+                                      ),
+                                    )
+                                  : Text(
+                                      maintainText ??
+                                          'ex) 활동적 • 여행지 많이 다니기', // 저장된 텍스트를 표시 또는 기본 텍스트
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          color: maintainText != null
+                                              ? Color(0xFF41424C)
+                                              : Colors.grey),
                                     ),
-                                  )
-                                : Text(
-                                    maintainText ??
-                                        'ex) 활동적 • 여행지 많이 다니기', // 저장된 텍스트를 표시 또는 기본 텍스트
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        color: maintainText != null
-                                            ? Color(0xFF41424C)
-                                            : Colors.grey),
-                                  ),
+                            ),
                           ),
                         ],
                       ),
