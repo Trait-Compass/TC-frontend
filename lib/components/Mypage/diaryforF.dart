@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../basic_frame_page.dart';
-import '../Mypage/uploadmypictures.dart';
+import '../Mypage/emotionalchart.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -23,6 +23,8 @@ class DiaryforF extends StatelessWidget {
               thickness: 1,
               height: 1,
             ),
+            SizedBox(height: 10),
+            EmotionChart(),
           ],
         ),
       ),

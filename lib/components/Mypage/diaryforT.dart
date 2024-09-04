@@ -26,7 +26,6 @@ class DiaryforT extends StatelessWidget {
             SizedBox(height: 40),
             RadarChartWidget(), // RadarChart 추가
             SizedBox(height: 40),
-            Divider(color: Color(0xFFE4E4E4), thickness: 1, height: 1),
             SizedBox(height: 5),
             TravelDetailAnalysisSection(),
             SizedBox(height: 10),
