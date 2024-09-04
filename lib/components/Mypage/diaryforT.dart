@@ -21,7 +21,7 @@ class DiaryforT extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Divider(color: Color(0xFFE4E4E4), thickness: 1, height: 1),
-            SizedBox(height: 10),
+            SizedBox(height: 5),
             TravelDetailPage(),
             SizedBox(height: 40),
             RadarChartWidget(), // RadarChart 추가
