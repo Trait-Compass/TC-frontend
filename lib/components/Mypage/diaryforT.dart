@@ -1,4 +1,3 @@
-// diary_for_t.dart
 import 'package:flutter/material.dart';
 import '../basic_frame_page.dart';
 import '../Mypage/uploadmypictures.dart'; // 정확한 경로로 수정 필요
@@ -14,7 +13,6 @@ void main() {
 class DiaryforT extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final double screenHeight = MediaQuery.of(context).size.height;
     return BasicFramePage(
       body: SingleChildScrollView(
         child: Column(
@@ -23,7 +21,7 @@ class DiaryforT extends StatelessWidget {
             Divider(color: Color(0xFFE4E4E4), thickness: 1, height: 1),
             SizedBox(height: 5),
             TravelDetailPage(),
-            SizedBox(height: 40),
+            SizedBox(height: 10),
             RadarChartWidget(), // RadarChart 추가
             SizedBox(height: 40),
             SizedBox(height: 5),

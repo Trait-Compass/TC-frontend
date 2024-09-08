@@ -14,8 +14,6 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
   final ScrollController _scrollController = ScrollController(); // 스크롤 컨트롤러 추가
   final TextEditingController _courseNameController =
       TextEditingController(); // 코스 이름 텍스트 컨트롤러
-  final TextEditingController _travelDateController =
-      TextEditingController(); // 여행 날짜 텍스트 컨트롤러
 
   List<File?> _selectedImages =
       List.generate(10, (_) => null); // 모바일에서 최대 10개의 이미지를 저장할 리스트
@@ -24,6 +22,7 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
   List<bool> _isLoading =
       List.generate(10, (_) => false); // 각 이미지의 로딩 상태를 저장할 리스트
   int _nextBoxToShow = 1; // 사용자가 사진을 입력하면 다음 박스를 표시할 변수
+  int loadingTime = 2; // 로딩 시간을 조절하는 변수
 
   // 인덱스를 한글 숫자로 변환하는 함수
   String _getKoreanNumber(int index) {
@@ -54,11 +53,12 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
         _isLoading[index] = true; // 해당 인덱스의 이미지 로딩 상태로 변경
       });
 
+      await Future.delayed(Duration(seconds: loadingTime)); // 로딩 시간 조절 가능
+
       if (kIsWeb) {
         // 웹의 경우
         Uint8List webImageBytes =
             await pickedFile.readAsBytes(); // 이미지를 Uint8List로 읽음
-        await Future.delayed(Duration(seconds: 3)); // 3초 동안 지연
         setState(() {
           _webImages[index] = webImageBytes; // 해당 인덱스의 웹 이미지 저장
           _isLoading[index] = false; // 로딩 완료 상태로 변경
@@ -66,7 +66,6 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
         });
       } else {
         // 모바일(Android, iOS)의 경우
-        await Future.delayed(Duration(seconds: 3)); // 3초 동안 지연
         setState(() {
           _selectedImages[index] = File(pickedFile.path); // 선택한 파일 경로에서 이미지 로드
           _isLoading[index] = false; // 로딩 완료 상태로 변경
@@ -74,6 +73,15 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
         });
       }
     }
+  }
+
+  void _removeImage(int index) {
+    setState(() {
+      _selectedImages.removeAt(index);
+      _webImages.removeAt(index);
+      _isLoading.removeAt(index);
+      _nextBoxToShow--; // 삭제 시 다음 박스를 표시할 변수 감소
+    });
   }
 
   @override
@@ -89,7 +97,7 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
               Expanded(
                 // Expanded로 설정하여 가로 공간을 균등하게 나눔
                 child: Container(
-                  height: 25, // 박스의 높이
+                  height: 30, // 박스의 높이
                   padding: EdgeInsets.symmetric(horizontal: 8.0),
                   decoration: BoxDecoration(
                     color: Color(0xFFEAEAEA),
@@ -105,14 +113,13 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
                       ),
                       Expanded(
                         child: TextField(
-                          controller:
-                              _courseNameController, // 코스 이름 텍스트 입력 컨트롤러
+                          controller: _courseNameController,
                           decoration: InputDecoration(
                             border: InputBorder.none, // 텍스트 필드의 테두리를 제거
                             contentPadding: EdgeInsets.symmetric(horizontal: 5),
+                            isDense: true, // 간격을 줄여서 정렬을 더 잘 맞추도록 함
                           ),
-                          style: TextStyle(fontSize: 10),
-                          textAlignVertical: TextAlignVertical.center,
+                          style: TextStyle(fontSize: 14),
                         ),
                       ),
                     ],
@@ -121,31 +128,21 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
               ),
               SizedBox(width: 10), // 두 박스 간의 간격
               Expanded(
-                // Expanded로 설정하여 가로 공간을 균등하게 나눔
+                // 여행 날짜 필드는 필요 없다면 제거 또는 주석 처리
                 child: Container(
-                  height: 25, // 박스의 높이
+                  height: 30, // 박스의 높이
                   padding: EdgeInsets.symmetric(horizontal: 8.0),
                   decoration: BoxDecoration(
                     color: Color(0xFFEAEAEA),
                     borderRadius: BorderRadius.circular(5),
                   ), // 회색 배경색
                   child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
                         '여행 날짜:', // 박스 안의 텍스트
                         style: TextStyle(
                             fontSize: 14, fontWeight: FontWeight.bold),
-                      ),
-                      Expanded(
-                        child: TextField(
-                          controller:
-                              _travelDateController, // 여행 날짜 텍스트 입력 컨트롤러
-                          decoration: InputDecoration(
-                            border: InputBorder.none, // 텍스트 필드의 테두리를 제거
-                            contentPadding: EdgeInsets.symmetric(horizontal: 5),
-                          ),
-                          style: TextStyle(fontSize: 14),
-                        ),
                       ),
                     ],
                   ),
@@ -196,55 +193,78 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
           ),
           SizedBox(height: 5), // 텍스트와 사진 박스 사이의 간격
-          hasImage
-              ? Container(
-                  // 이미지를 삽입한 박스는 실선 테두리
-                  width: 145, // 박스의 너비
-                  height: 120, // 박스의 높이
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.grey, width: 1),
-                  ),
-                  child: Center(
-                    child: _isLoading[index]
-                        ? Text(
-                            'GPT-4 Vision으로 사진 분석 중...', // 로딩 중 텍스트 표시
-                            style: TextStyle(fontSize: 12),
-                          )
-                        : (_selectedImages[index] != null && !kIsWeb
-                            ? Image.file(
-                                _selectedImages[index]!,
-                                width: 132,
-                                height: 100,
-                                fit: BoxFit.cover, // 박스 크기에 맞게 이미지 조정
+          Stack(
+            children: [
+              hasImage
+                  ? Container(
+                      // 이미지를 삽입한 박스는 실선 테두리
+                      width: 145, // 박스의 너비
+                      height: 120, // 박스의 높이
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: Colors.grey, width: 1),
+                      ),
+                      child: Center(
+                        child: _isLoading[index]
+                            ? Text(
+                                'GPT-4 Vision으로 사진 분석 중...', // 로딩 중 텍스트 표시
+                                style: TextStyle(fontSize: 12),
                               )
-                            : (_webImages[index] != null
-                                ? Image.memory(
-                                    _webImages[index]!,
-                                    width: 132,
-                                    height: 100,
-                                    fit: BoxFit.cover, // 박스 크기에 맞게 이미지 조정
+                            : (_selectedImages[index] != null && !kIsWeb
+                                ? Image.file(
+                                    _selectedImages[index]!,
+                                    width: 120, // 이미지만의 너비
+                                    height: 80, // 이미지만의 높이
+                                    fit: BoxFit.contain, // 박스 크기에 맞게 이미지 조정
                                   )
-                                : _buildAddButton(index))),
-                  ),
-                )
-              : DottedBorder(
-                  // 이미지를 삽입하지 않은 박스는 점선 테두리
-                  color: Colors.black, // 점선 색상
-                  strokeWidth: 1, // 점선 두께
-                  dashPattern: [4, 3], // 점선과 점선 사이의 간격 및 길이
-                  borderType: BorderType.RRect, // 둥근 사각형 모양
-                  radius: Radius.circular(10), // 둥근 모서리 반지름
-                  child: Container(
-                    width: 145, // 박스의 너비
-                    height: 120, // 박스의 높이
-                    color: Colors.white,
-                    child: Center(
-                      child: _buildAddButton(index),
+                                : (_webImages[index] != null
+                                    ? Image.memory(
+                                        _webImages[index]!,
+                                        width: 120, // 이미지만의 너비
+                                        height: 80, // 이미지만의 높이
+                                        fit: BoxFit.contain, // 박스 크기에 맞게 이미지 조정
+                                      )
+                                    : _buildAddButton(index))),
+                      ),
+                    )
+                  : DottedBorder(
+                      // 이미지를 삽입하지 않은 박스는 점선 테두리
+                      color: Colors.black, // 점선 색상
+                      strokeWidth: 1, // 점선 두께
+                      dashPattern: [4, 3], // 점선과 점선 사이의 간격 및 길이
+                      borderType: BorderType.RRect, // 둥근 사각형 모양
+                      radius: Radius.circular(10), // 둥근 모서리 반지름
+                      child: Container(
+                        width: 145, // 박스의 너비
+                        height: 115, // 박스의 높이
+                        color: Colors.white,
+                        child: Center(
+                          child: _buildAddButton(index),
+                        ),
+                      ),
+                    ),
+              if (hasImage)
+                Positioned(
+                  top: 5,
+                  right: 5,
+                  child: GestureDetector(
+                    onTap: () => _removeImage(index),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black, // 엑스표 아이콘 배경색
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.close,
+                        color: Colors.white,
+                        size: 16,
+                      ),
                     ),
                   ),
                 ),
+            ],
+          ),
         ],
       ),
     );

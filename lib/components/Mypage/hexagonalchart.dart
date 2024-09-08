@@ -20,7 +20,6 @@ class _RadarChartWidgetState extends State<RadarChartWidget> {
   double sideLength = 250;
   late double radius;
 
-  // 사용자가 설정할 수 있는 점수 리스트 (2, 4, 6, 8, 10)
   final List<double> scoreLevels = [
     0.1,
     0.2,
@@ -42,25 +41,41 @@ class _RadarChartWidgetState extends State<RadarChartWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: GestureDetector(
-        onPanUpdate: (details) {
-          _updateData(details.localPosition);
-        },
-        child: SizedBox(
-          width: radius * 2,
-          height: radius * 2,
-          child: CustomPaint(
-            size: Size(radius * 2, radius * 2),
-            painter: _RadarChartPainter(
-              values: values,
-              labels: labels,
-              maxValue: maxValue,
-              radius: radius,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start, // 위쪽 정렬
+      crossAxisAlignment: CrossAxisAlignment.start, // 텍스트를 왼쪽 정렬
+      children: [
+        // 화면의 맨 위에 텍스트 추가
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Text(
+            '여행 만족도 그래프',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.left,
+          ),
+        ),
+        Container(height: 40),
+        Center(
+          child: GestureDetector(
+            onPanUpdate: (details) {
+              _updateData(details.localPosition);
+            },
+            child: SizedBox(
+              width: radius * 2,
+              height: radius * 2,
+              child: CustomPaint(
+                size: Size(radius * 2, radius * 2),
+                painter: _RadarChartPainter(
+                  values: values,
+                  labels: labels,
+                  maxValue: maxValue,
+                  radius: radius,
+                ),
+              ),
             ),
           ),
         ),
-      ),
+      ],
     );
   }
 
@@ -76,10 +91,7 @@ class _RadarChartWidgetState extends State<RadarChartWidget> {
       );
 
       if ((position - point).distance < 30) {
-        // 마우스와 포인트 간의 거리가 30 이하일 때
         double distanceFromCenter = (position - center).distance / radius;
-
-        // 가장 가까운 점수 단계로 값 설정
         double closestScore = scoreLevels.reduce((a, b) =>
             (a - distanceFromCenter).abs() < (b - distanceFromCenter).abs()
                 ? a
@@ -125,17 +137,15 @@ class _RadarChartPainter extends CustomPainter {
     int sides = labels.length;
     List<int> scores = [2, 4, 6, 8, 10]; // 점수 설정
 
-    // 텍스트 박스 그리기
-    double labelOffset = 30; // 텍스트 박스와 차트 사이의 간격 설정 (5만큼 떨어짐)
+    double labelOffset = 30; // 텍스트 박스와 차트 사이의 간격 설정
     for (int i = 0; i < sides; i++) {
       double angle = (2 * pi * i) / sides;
       double x = center.dx + (radius + labelOffset) * cos(angle);
       double y = center.dy + (radius + labelOffset) * sin(angle);
-      double scoreValue = (values[i] * 10).roundToDouble(); // 레이블 옆 점수 계산
+      double scoreValue = (values[i] * 10).roundToDouble();
 
-      // 텍스트 박스를 만들기 위해 Rect 사용
-      Rect textBox = Rect.fromCenter(
-          center: Offset(x, y), width: 50, height: 50); // 텍스트 박스 크기와 위치 설정
+      Rect textBox =
+          Rect.fromCenter(center: Offset(x, y), width: 50, height: 50);
 
       Paint textBoxPaint = Paint()
         ..color = Colors.white
@@ -144,7 +154,6 @@ class _RadarChartPainter extends CustomPainter {
         ..color = Colors.white
         ..style = PaintingStyle.stroke;
 
-      // 텍스트 박스 그리기
       canvas.drawRect(textBox, textBoxPaint);
       canvas.drawRect(textBox, borderPaint);
 
@@ -152,7 +161,7 @@ class _RadarChartPainter extends CustomPainter {
         text: TextSpan(
             text: '${labels[i]} $scoreValue점',
             style: TextStyle(color: Colors.black, fontSize: 12)),
-        textAlign: TextAlign.center, // 텍스트 중앙 정렬
+        textAlign: TextAlign.center,
         textDirection: TextDirection.ltr,
       );
       textPainter.layout();
@@ -165,9 +174,8 @@ class _RadarChartPainter extends CustomPainter {
       );
     }
 
-    // 그리드 그리기 및 점수 표시 (텍스트 박스 아래로 그려짐)
     for (int i = 0; i < scores.length; i++) {
-      double scale = scores[i] / 10; // 각 단계별 점수 (2점, 4점, ...)
+      double scale = scores[i] / 10;
       Path path = Path();
       for (int j = 0; j < sides; j++) {
         double angle = (2 * pi * j) / sides;
@@ -183,7 +191,6 @@ class _RadarChartPainter extends CustomPainter {
       canvas.drawPath(path, gridPaint);
     }
 
-    // 데이터 그리기
     Path dataPath = Path();
     for (int i = 0; i < sides; i++) {
       double angle = (2 * pi * i) / sides;
@@ -198,7 +205,6 @@ class _RadarChartPainter extends CustomPainter {
     dataPath.close();
     canvas.drawPath(dataPath, dataPaint);
 
-    // 핸들 그리기
     for (int i = 0; i < sides; i++) {
       double angle = (2 * pi * i) / sides;
       double x = center.dx + radius * (values[i] / maxValue) * cos(angle);
