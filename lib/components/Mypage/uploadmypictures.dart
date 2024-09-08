@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class TravelDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final double screenHeight = MediaQuery.of(context).size.height;
+    // final double screenHeight = MediaQuery.of(context).size.height;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20), // 전체 패딩 추가
       child: Column(
