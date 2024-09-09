@@ -113,6 +113,10 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+ develop-MyPageFile
+
+    // final double screenHeight = MediaQuery.of(context).size.height;
+ main
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20), // 전체 패딩 추가
       child: Column(

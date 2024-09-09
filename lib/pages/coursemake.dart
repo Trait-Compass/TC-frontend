@@ -1,5 +1,7 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import '../components/basic_frame_page.dart';
+import '../components/map/MapPage.dart';
 
 class Coursemake extends StatefulWidget {
   @override
@@ -7,6 +9,19 @@ class Coursemake extends StatefulWidget {
 }
 
 class _CoursemakeState extends State<Coursemake> {
+  List<String> courseImages = [
+    'assets/course1.png',
+    'assets/course2.png',
+    'assets/course3.png',
+    'assets/course4.png',
+  ];
+
+  void shuffleCourses() {
+    setState(() {
+      courseImages.shuffle(Random());
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
@@ -80,11 +95,14 @@ class _CoursemakeState extends State<Coursemake> {
                         mainAxisSpacing: 10,
                         childAspectRatio: 0.75,
                       ),
-                      itemCount: 4,
+                      itemCount: courseImages.length,
                       itemBuilder: (context, index) {
                         return GestureDetector(
                           onTap: () {
-                            // 코스 클릭 시 처리할 작업 추가
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => MapPage()),
+                            );
                           },
                           child: Card(
                             shape: RoundedRectangleBorder(
@@ -98,7 +116,7 @@ class _CoursemakeState extends State<Coursemake> {
                                     borderRadius: BorderRadius.vertical(
                                         top: Radius.circular(10)),
                                     child: Image.asset(
-                                      'assets/course${index + 1}.png', //이미지
+                                      courseImages[index], 
                                       fit: BoxFit.cover,
                                     ),
                                   ),
@@ -112,7 +130,7 @@ class _CoursemakeState extends State<Coursemake> {
                     SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
-                        // 코스 재생성 버튼 클릭 시 처리할 작업 추가
+                        shuffleCourses(); 
                       },
                       child: Text('코스 재생성'),
                       style: ElevatedButton.styleFrom(

@@ -69,7 +69,7 @@ class _MBTISelectionPageState extends State<MBTISelectionPage> {
                   child: Text(
                     allGroupsSelected()
                         ? '${selectedMBTI.values.join()} OOO님!\n오늘은 경상남도 어디로 떠나볼까요?'
-                        : '경상남도 추천지를 원하시면 MBTI를 선택해주세요 !!',
+                        : '경상남도 추천지를 원하시면 \nMBTI를 선택해주세요 ',
                     style: TextStyle(fontSize: 16),
                   ),
                 ),
@@ -117,7 +117,7 @@ class StepOneWidget extends StatelessWidget {
     final double screenHeight = MediaQuery.of(context).size.height;
 
     return Padding(
-      padding: EdgeInsets.all(screenHeight * 0.03),
+      padding: EdgeInsets.all(20),
       child: Container(
         padding: EdgeInsets.all(screenHeight * 0.03),
         decoration: BoxDecoration(
@@ -132,10 +132,10 @@ class StepOneWidget extends StatelessWidget {
               style: TextStyle(fontSize: screenHeight * 0.02),
               textAlign: TextAlign.left,
             ),
-            SizedBox(height: screenHeight * 0.03),
+            SizedBox(height:20),
             Wrap(
               alignment: WrapAlignment.center,
-              spacing: screenHeight * 0.03,
+              spacing: 10,
               children: [
                 MBTIGroup(
                   group: 'EI',
@@ -170,7 +170,7 @@ class StepOneWidget extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.grey[800],
                 foregroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
+                padding: EdgeInsets.symmetric(vertical: 5),
               ),
             ),
           ],
@@ -239,9 +239,8 @@ class MBTIButton extends StatelessWidget {
     final double screenHeight = MediaQuery.of(context).size.height;
 
     return Container(
-      width: screenHeight * 0.08,
-      height: screenHeight * 0.08,
-      margin: EdgeInsets.all(screenHeight * 0.004),
+      width: screenHeight * 0.05,
+      height: 60,
       child: ElevatedButton(
         onPressed: () => toggleSelection(group, mbti),
         child: Padding(

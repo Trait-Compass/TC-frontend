@@ -16,7 +16,7 @@ class TravelPreferencePage extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          '여행을 가고 싶은 곳은?',
+          '여행을 가고 싶은 곳은?',//내 이름은
           style: TextStyle(
             fontSize: 25,
             fontWeight: FontWeight.bold,
