@@ -1,5 +1,6 @@
 // profile_section.dart
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ProfileSection extends StatelessWidget {
   @override
@@ -21,10 +22,10 @@ class ProfileSection extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 20),
             height: 150,
             decoration: BoxDecoration(
-              color: Color(0xFFE4E4E4),
+              color: Color(0xFFEDEDED),
               borderRadius: BorderRadius.circular(10),
               border: Border.all(
-                color: Color(0xFFE4E4E4),
+                color: Color(0xFFEDEDED),
               ),
             ),
             child: Row(
@@ -139,9 +140,11 @@ class ProfileSection extends StatelessWidget {
                                 children: [
                                   Text(
                                     "❤️ 찰떡 궁합 ",
-                                    style: TextStyle(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.bold,
+                                    style: GoogleFonts.notoColorEmoji(
+                                      textStyle: TextStyle(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
                                   Text(
@@ -159,9 +162,11 @@ class ProfileSection extends StatelessWidget {
                                 children: [
                                   Text(
                                     "😅 환장 궁합 ",
-                                    style: TextStyle(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.bold,
+                                    style: GoogleFonts.notoColorEmoji(
+                                      textStyle: TextStyle(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
                                   Text(

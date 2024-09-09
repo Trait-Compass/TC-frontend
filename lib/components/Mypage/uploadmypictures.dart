@@ -5,6 +5,8 @@ import 'package:dotted_border/dotted_border.dart'; // Dotted Border 패키지 �
 import 'dart:io';
 import 'dart:typed_data'; // 이미지 데이터를 위한 패키지
 
+import '../Mypage/selectdate.dart'; // CustomCalendar 임포트
+
 class TravelDetailPage extends StatefulWidget {
   @override
   _TravelDetailPageState createState() => _TravelDetailPageState();
@@ -23,6 +25,8 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
       List.generate(10, (_) => false); // 각 이미지의 로딩 상태를 저장할 리스트
   int _nextBoxToShow = 1; // 사용자가 사진을 입력하면 다음 박스를 표시할 변수
   int loadingTime = 2; // 로딩 시간을 조절하는 변수
+
+  List<DateTime> _selectedDates = []; // 선택된 날짜를 저장할 리스트
 
   // 인덱스를 한글 숫자로 변환하는 함수
   String _getKoreanNumber(int index) {
@@ -53,7 +57,8 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
         _isLoading[index] = true; // 해당 인덱스의 이미지 로딩 상태로 변경
       });
 
-      await Future.delayed(Duration(seconds: loadingTime)); // 로딩 시간 조절 가능
+      // 비동기 작업을 진행하고 로딩 시간 동안 대기
+      await Future.delayed(Duration(seconds: loadingTime)); // 3초 로딩 시간 대기
 
       if (kIsWeb) {
         // 웹의 경우
@@ -82,6 +87,28 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
       _isLoading.removeAt(index);
       _nextBoxToShow--; // 삭제 시 다음 박스를 표시할 변수 감소
     });
+  }
+
+  // 여행 날짜 선택 다이얼로그 표시 함수
+  void _showDateSelectionDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: Container(
+            padding: EdgeInsets.all(10),
+            child: CustomCalendar(
+              onDatesSelected: (selectedDates) {
+                setState(() {
+                  _selectedDates = selectedDates; // 선택된 날짜 업데이트
+                });
+                Navigator.pop(context); // 다이얼로그 닫기
+              },
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -128,23 +155,25 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
               ),
               SizedBox(width: 10), // 두 박스 간의 간격
               Expanded(
-                // 여행 날짜 필드는 필요 없다면 제거 또는 주석 처리
-                child: Container(
-                  height: 30, // 박스의 높이
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  decoration: BoxDecoration(
-                    color: Color(0xFFEAEAEA),
-                    borderRadius: BorderRadius.circular(5),
-                  ), // 회색 배경색
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        '여행 날짜:', // 박스 안의 텍스트
-                        style: TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.bold),
-                      ),
-                    ],
+                child: GestureDetector(
+                  onTap: _showDateSelectionDialog, // 클릭 시 다이얼로그 표시
+                  child: Container(
+                    height: 30, // 박스의 높이
+                    padding: EdgeInsets.symmetric(horizontal: 8.0),
+                    decoration: BoxDecoration(
+                      color: Color(0xFFEAEAEA),
+                      borderRadius: BorderRadius.circular(5),
+                    ), // 회색 배경색
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          '여행 날짜:', // 박스 안의 텍스트
+                          style: TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

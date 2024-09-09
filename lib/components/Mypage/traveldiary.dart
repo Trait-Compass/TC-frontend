@@ -19,7 +19,7 @@ class TravelDiary extends StatelessWidget {
           SizedBox(height: 5),
           // 점선 박스
           DottedBorder(
-            color: Colors.grey, // 점선 색상
+            color: Colors.black, // 점선 색상
             strokeWidth: 1, // 점선 두께
             borderType: BorderType.RRect, // 둥근 모서리
             radius: Radius.circular(10), // 모서리 반경
