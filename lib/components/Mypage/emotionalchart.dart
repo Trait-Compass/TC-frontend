@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart'; // Google Fonts 패키지 임포트
 
-class EmotionChart extends StatelessWidget {
+class EmotionChart extends StatefulWidget {
+  @override
+  _EmotionChartState createState() => _EmotionChartState();
+}
+
+class _EmotionChartState extends State<EmotionChart> {
   final List<Map<String, dynamic>> emotions = [
     {
       'emoji': '😊',
@@ -20,7 +26,7 @@ class EmotionChart extends StatelessWidget {
     {
       'emoji': '😮',
       'title': '놀람',
-      'feelings': ['감탄', '경이로움', '신비로움', '깜짝 놀람', '새로운 발견']
+      'feelings': ['감탄', '경이로움', '신비로움', '깜짝놀람', '새로운\n 발견']
     },
     {
       'emoji': '😞',
@@ -39,57 +45,113 @@ class EmotionChart extends StatelessWidget {
     },
   ];
 
+  List<List<bool>> _isSelected;
+
+  _EmotionChartState()
+      : _isSelected = List.generate(
+          7,
+          (index) => List.generate(
+            6,
+            (_) => false,
+          ),
+        );
+
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        width: 500,
-        height: 300,
-        child: Table(
-          border: TableBorder.all(color: Colors.black),
-          children: [
-            TableRow(
-              children: emotions.map((emotion) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                      Text(
-                        emotion['emoji'],
-                        style: TextStyle(fontSize: 24),
-                      ),
-                      SizedBox(height: 4),
-                      Text(
-                        emotion['title'],
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                );
-              }).toList(),
-            ),
-            TableRow(
-              children: emotions.map((emotion) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: emotion['feelings'].map<Widget>((feeling) {
+    return Padding(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '여행 감정 차트',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 5),
+          Center(
+            child: Container(
+              width: double.infinity,
+              child: Table(
+                border: TableBorder.all(color: Colors.black),
+                children: [
+                  TableRow(
+                    children: emotions.map((emotion) {
                       return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 2.0),
-                        child: Text(
-                          feeling,
-                          style: TextStyle(fontSize: 14),
+                        padding: const EdgeInsets.all(8),
+                        child: Column(
+                          children: [
+                            Text(
+                              emotion['emoji'],
+                              style: GoogleFonts.notoColorEmoji(
+                                textStyle: TextStyle(fontSize: 24),
+                              ), // 이모지를 위한 폰트 설정
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              emotion['title'],
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                          ],
                         ),
                       );
                     }).toList(),
                   ),
-                );
-              }).toList(),
+                  TableRow(
+                    children: emotions.asMap().entries.map((entry) {
+                      int emotionIndex = entry.key;
+                      Map<String, dynamic> emotion = entry.value;
+
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: emotion['feelings']
+                            .asMap()
+                            .entries
+                            .map<Widget>((feelingEntry) {
+                          int feelingIndex = feelingEntry.key;
+                          String feeling = feelingEntry.value;
+
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 4, vertical: 4),
+                            child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _isSelected[emotionIndex][feelingIndex] =
+                                      !_isSelected[emotionIndex][feelingIndex];
+                                });
+                              },
+                              child: IntrinsicHeight(
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 4, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: _isSelected[emotionIndex]
+                                            [feelingIndex]
+                                        ? Colors.grey[300]
+                                        : Colors.white,
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      feeling,
+                                      style: TextStyle(fontSize: 13),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      );
+                    }).toList(),
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
