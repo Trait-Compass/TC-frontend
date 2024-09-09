@@ -36,7 +36,7 @@ class ResultPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
-                      '제가 몇 가지 코스를 가지고 왔어요!\n더 다양한 코스를 받고 싶다면 ‘추천 코스’를 눌러주세요:)',
+                      '제가 몇 가지 코스를 가지고 왔어요!\n더 다양한 코스를 받고 싶다면 \n‘추천 코스’를 눌러주세요:)',
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
@@ -75,10 +75,10 @@ class ResultPage extends StatelessWidget {
                       },
                       child: Text('코스 재생성'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.black,
+                        backgroundColor: Colors.grey[800],
                         foregroundColor: Colors.white,
                         padding:
-                            EdgeInsets.symmetric(vertical: 15, horizontal: 30),
+                            EdgeInsets.symmetric(vertical: 5, horizontal: 30),
                       ),
                     ),
                   ),
