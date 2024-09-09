@@ -17,8 +17,7 @@
         <!-- 카카오맵 API 키 설정 -->
         <meta-data
             android:name="com.kakao.sdk.AppKey"
-            android:value="943a707ffc4c5c863f19e8705f7f88a3" /> <!-- 여기에 본인의 카카오 네이티브 앱 키를 사용하세요 -->
-
+            android:value="943a707ffc4c5c863f19e8705f7f88a3" /> 
         <!-- 카카오 로그인 커스텀 URL 스킴 설정 -->
         <activity
             android:name="com.kakao.sdk.flutter.AuthCodeCustomTabsActivity"
@@ -36,24 +35,25 @@
         </activity>
 
         <!-- 메인 액티비티 설정 -->
-        <activity
+  <activity
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
             android:taskAffinity=""
-            android:theme="@style/LaunchTheme"
+            android:theme="@style/AppTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize">
             <meta-data
                 android:name="io.flutter.embedding.android.NormalTheme"
-                android:resource="@style/NormalTheme"
+                android:resource="@style/AppTheme"
                 />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+ㄹ
 
         <!-- Flutter용 플러그인 등록 -->
         <meta-data
