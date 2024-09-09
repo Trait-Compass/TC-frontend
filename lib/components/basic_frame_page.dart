@@ -46,15 +46,15 @@ class _BasicFramePageState extends State<BasicFramePage> {
     final double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      backgroundColor: Colors.white, 
+      backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
         title: Image.asset('assets/mbtilogo.jpg', height: screenHeight * 0.05),
-        backgroundColor: Colors.white, 
-        elevation: 0, 
+        backgroundColor: Colors.white,
+        elevation: 0,
         flexibleSpace: Container(
           decoration: BoxDecoration(
-            color: Colors.white, 
+            color: Colors.white,
           ),
         ),
         actions: [
@@ -67,28 +67,26 @@ class _BasicFramePageState extends State<BasicFramePage> {
       body: widget.body,
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white,
+        selectedItemColor: Colors.black, 
+        unselectedItemColor: Colors.grey, 
         items: [
           BottomNavigationBarItem(
             icon: Image.asset(
-              _currentIndex == 0 ? 'assets/house.png' : 'assets/house.png',
+              'assets/house.png',
               height: screenHeight * 0.04,
             ),
             label: '홈',
           ),
           BottomNavigationBarItem(
             icon: Image.asset(
-              _currentIndex == 1
-                  ? 'assets/location2.png'
-                  : 'assets/location1.png',
+              'assets/location1.png',
               height: screenHeight * 0.04,
             ),
             label: '여행 일정',
           ),
           BottomNavigationBarItem(
             icon: Image.asset(
-              _currentIndex == 2
-                  ? 'assets/myprofile1.png'
-                  : 'assets/myprofile.png',
+              'assets/myprofile.png',
               height: screenHeight * 0.04,
             ),
             label: '내 정보',
