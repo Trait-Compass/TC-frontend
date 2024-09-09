@@ -91,9 +91,9 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
 
   Widget _buildCalendarSection(double screenHeight) {
     return Padding(
-      padding: EdgeInsets.all(screenHeight * 0.03),
+      padding: EdgeInsets.all(20),
       child: Container(
-        padding: EdgeInsets.all(screenHeight * 0.03),
+        padding: EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: Colors.grey[200],
           borderRadius: BorderRadius.circular(10),
@@ -106,7 +106,7 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
               style: TextStyle(fontSize: screenHeight * 0.02),
               textAlign: TextAlign.left,
             ),
-            SizedBox(height: screenHeight * 0.02),
+            SizedBox(height:10),
             Container(
               height: screenHeight * 0.5,
               padding: EdgeInsets.all(screenHeight * 0.02),
@@ -142,7 +142,7 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
           backgroundColor:
               selectedDates.length == 2 ? Colors.grey[800] : Colors.grey[400],
           foregroundColor: Colors.white,
-          padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
+          padding: EdgeInsets.symmetric(vertical: 5),
         ),
       ),
     );
