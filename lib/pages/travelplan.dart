@@ -108,8 +108,8 @@ class _MyNewPageState extends State<MyNewPage> {
                                       ),
                                     ),
                                     SizedBox(height: 10),
-                                    Text('# 계획은 귀찮아'),
-                                    Text('# 즉흥적 # AI 추천'),
+                                    Text('# 계획은 귀찮아', style: TextStyle(fontSize: 11)),
+                                    Text('# 즉흥적 # AI 추천', style: TextStyle(fontSize: 11) ),
                                   ],
                                 ),
                               ),
@@ -152,8 +152,8 @@ class _MyNewPageState extends State<MyNewPage> {
                                       ),
                                     ),
                                     SizedBox(height: 10),
-                                    Text('# 계획을 즐기는'),
-                                    Text('# 체계적 # 역설정'),
+                                    Text('# 계획을 즐기는',style:TextStyle(fontSize: 11),),
+                                    Text('# 체계적 # 역설정',style:TextStyle(fontSize: 11),),
                                   ],
                                 ),
                               ),
@@ -190,7 +190,7 @@ class _MyNewPageState extends State<MyNewPage> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.grey[800], // '다음' 버튼 색상을 지정
                           padding: EdgeInsets.symmetric(
-                              horizontal: 40, vertical: 15),
+                              horizontal: 40, vertical: 5),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),

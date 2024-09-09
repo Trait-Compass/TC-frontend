@@ -13,32 +13,20 @@ class BasicFramePage extends StatefulWidget {
 }
 
 class _BasicFramePageState extends State<BasicFramePage> {
-  int _currentIndex = 0;
+  int _currentIndex = 0; 
 
+
+  final List<Widget> _pages = [
+    MBTISelectionPage(),
+    MyNewPage(),
+    Mypage(),
+  ];
+
+  // 탭 선택 시 호출되는 메서드
   void _onTabTapped(int index) {
     setState(() {
-      _currentIndex = index;
+      _currentIndex = index; // 선택된 탭 인덱스 업데이트
     });
-
-    if (index == 2) {
-      // 내 정보 페이지로 이동
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => Mypage()),
-      );
-    } else if (index == 0) {
-      // 홈 페이지로 이동
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => MBTISelectionPage()),
-      );
-    } else {
-      // 여행 일정 페이지로 이동
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => MyNewPage()),
-      );
-    }
   }
 
   @override
@@ -64,11 +52,14 @@ class _BasicFramePageState extends State<BasicFramePage> {
           ),
         ],
       ),
-      body: widget.body,
+      body: IndexedStack(
+        index: _currentIndex, // 현재 선택된 인덱스에 해당하는 페이지만 표시
+        children: _pages, // 페이지 목록
+      ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white,
-        selectedItemColor: Colors.black, 
-        unselectedItemColor: Colors.grey, 
+        selectedItemColor: Colors.black,
+        unselectedItemColor: Colors.grey,
         items: [
           BottomNavigationBarItem(
             icon: Image.asset(
@@ -93,7 +84,7 @@ class _BasicFramePageState extends State<BasicFramePage> {
           ),
         ],
         currentIndex: _currentIndex,
-        onTap: _onTabTapped,
+        onTap: _onTabTapped, // 탭 선택 시 호출되는 메서드
       ),
     );
   }
