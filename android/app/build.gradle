@@ -23,7 +23,7 @@ if (flutterVersionName == null) {
 
 android {
     namespace = "com.example.untitled"
-    compileSdk = 33  // 최신 SDK 버전으로 설정
+    compileSdk = 34  // 최신 SDK 버전으로 설정
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
