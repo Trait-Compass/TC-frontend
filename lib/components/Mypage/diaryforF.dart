@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../basic_frame_page.dart';
 import '../Mypage/emotionalchart.dart';
 import '../Mypage/uploadmypictures.dart'; // 정확한 경로로 수정 필요
 import '../Mypage/emotionalfeedback.dart';
+import '../basic_frame_page.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -14,7 +14,7 @@ class DiaryforF extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // final double screenHeight = MediaQuery.of(context).size.height;
-    return BasicFramePage(
+ return BasicFramePage(
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

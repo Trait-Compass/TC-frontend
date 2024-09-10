@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:untitled/pages/coursemake.dart';
+import 'package:untitled/pages/KeywordSelectionPage.dart';
+// import 'package:untitled/pages/coursemake.dart';
 import '../components/basic_frame_page.dart';
 import '../hooks/top3course.dart';
 
@@ -10,19 +11,30 @@ class LocationAndPersonSelectionPage extends StatefulWidget {
 }
 
 class _LocationAndPersonSelectionPageState
-    extends State<LocationAndPersonSelectionPage> {
+    extends State<LocationAndPersonSelectionPage  > {
   String? selectedLocation;
   String? selectedGroup;
 
   List<DropdownMenuItem<String>> _buildLocationItems() {
-    return [
-      DropdownMenuItem(value: '창원시', child: Text('창원시')),
-      DropdownMenuItem(value: '김해시', child: Text('김해시')),
-      DropdownMenuItem(value: '진주시', child: Text('진주시')),
-      DropdownMenuItem(value: '양산시', child: Text('양산시')),
-      DropdownMenuItem(value: '거제시', child: Text('거제시')),
-      DropdownMenuItem(value: '사천시', child: Text('사천시')),
-    ];
+ return [
+  DropdownMenuItem(value: '창원시', child: Text('창원시')),
+  DropdownMenuItem(value: '김해시', child: Text('김해시')),
+  DropdownMenuItem(value: '진주시', child: Text('진주시')),
+  DropdownMenuItem(value: '양산시', child: Text('양산시')),
+  DropdownMenuItem(value: '거제시', child: Text('거제시')),
+  DropdownMenuItem(value: '사천시', child: Text('사천시')),
+  DropdownMenuItem(value: '통영시', child: Text('통영시')),
+  DropdownMenuItem(value: '밀양시', child: Text('밀양시')),
+  DropdownMenuItem(value: '함안군', child: Text('함안군')),
+  DropdownMenuItem(value: '창녕군', child: Text('창녕군')),
+  DropdownMenuItem(value: '고성군', child: Text('고성군')),
+  DropdownMenuItem(value: '하동군', child: Text('하동군')),
+  DropdownMenuItem(value: '남해군', child: Text('남해군')),
+  DropdownMenuItem(value: '산청군', child: Text('산청군')),
+  DropdownMenuItem(value: '함양군', child: Text('함양군')),
+  DropdownMenuItem(value: '거창군', child: Text('거창군')),
+  DropdownMenuItem(value: '합천군', child: Text('합천군')),
+];
   }
 
   final List<String> groups = ['혼자', '커플', '친구', '친구들', '아이와 함께', '부모님과 함께'];
@@ -32,6 +44,8 @@ class _LocationAndPersonSelectionPageState
       return ChoiceChip(
         label: Text(group),
         selected: selectedGroup == group,
+        backgroundColor: Colors.white,
+        selectedColor: Colors.grey[500],
         onSelected: (selected) {
           setState(() {
             selectedGroup = group;
@@ -81,7 +95,7 @@ class _LocationAndPersonSelectionPageState
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Text(
-                'P형 코스 만들기',
+                'J형 코스 만들기',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
@@ -114,6 +128,7 @@ class _LocationAndPersonSelectionPageState
                           borderSide: BorderSide.none,
                         ),
                       ),
+                      dropdownColor: Colors.white, 
                       value: selectedLocation,
                       hint: Text('여행 장소를 선택하세요'),
                       items: _buildLocationItems(),
@@ -141,12 +156,12 @@ class _LocationAndPersonSelectionPageState
                     ElevatedButton(
                       onPressed:
                           selectedLocation != null && selectedGroup != null
-                              ? () => Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => Coursemake(),
-                                    ),
-                                  )
+                              ? () {
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) {
+                                    return KeywordSelectionPage();
+                                  }));
+                                }
                               : null,
                       child: Text('완료'),
                       style: ElevatedButton.styleFrom(

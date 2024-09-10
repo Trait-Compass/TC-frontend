@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:untitled/pages/coursemakej.dart';
 // import 'package:untitled/pages/coursemake.dart';
 import '../hooks/top3course.dart'; // Top3Courses를 가져오는 부분 추가
 import '../components/basic_frame_page.dart'; // BasicFramePage 임포트
@@ -130,7 +131,12 @@ class _KeywordSelectionPageState extends State<KeywordSelectionPage> {
                     ElevatedButton(
                       onPressed: selectedKeywords.isNotEmpty
                           ? () {
-                              // 선택된 키워드를 이용해 코스를 만들어야 함
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Coursemakej(),
+                                ),
+                              );
                             }
                           : null,
                       child: Text('AI에게 추천코스 받기'),
