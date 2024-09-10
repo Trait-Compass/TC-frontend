@@ -108,7 +108,7 @@ class _MyNewPageState extends State<MyNewPage> {
                                       ),
                                     ),
                                     SizedBox(height: 10),
-                                    Text('# 계획은 귀찮아'),
+                                    Text('# 계획은 귀찮아',style: TextStyle(fontSize: 8)),
                                     Text('# 즉흥적 # AI 추천'),
                                   ],
                                 ),
