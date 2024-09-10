@@ -16,19 +16,17 @@ class _CustomCalendarState extends State<CustomCalendar> {
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
-    final double screenHeight = MediaQuery.of(context).size.height;
-
     final double boxWidth = screenWidth / 7.5;
+    final double screenHeight = MediaQuery.of(context).size.height;
     final double boxHeight = screenHeight * 0.06;
 
     void onDateSelected(DateTime date) {
       setState(() {
         if (selectedDates.length == 2) {
-          selectedDates.clear();
+          selectedDates.clear(); // 이미 두 개의 날짜가 선택되어 있으면 초기화
         }
         selectedDates.add(date);
-        selectedDates.sort();
-        widget.onDatesSelected(selectedDates);
+        selectedDates.sort(); // 날짜 정렬
       });
     }
 
@@ -153,8 +151,7 @@ class _CustomCalendarState extends State<CustomCalendar> {
                   ),
                   child: Text(
                     day,
-                    style:
-                        TextStyle(color: textColor, fontSize: 14), // 폰트 크기 감소
+                    style: TextStyle(color: textColor, fontSize: 14),
                   ),
                 );
               }).toList(),
@@ -219,22 +216,25 @@ class _CustomCalendarState extends State<CustomCalendar> {
               child: buildCalendar(boxWidth),
             ),
           ),
-          // 완료 버튼 추가
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(
-              onPressed: selectedDates.length == 2
-                  ? () {
-                      widget.onDatesSelected(selectedDates);
-                      Navigator.pop(context); // 다이얼로그 닫기
-                    }
-                  : null, // 선택된 날짜가 2개가 아닐 때는 비활성화
-              child: Text('완료'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor:
-                    selectedDates.length == 2 ? Colors.blue : Colors.grey,
-                foregroundColor: Colors.white,
-              ),
+            child: Builder(
+              builder: (dialogContext) {
+                return ElevatedButton(
+                  onPressed: selectedDates.length == 2
+                      ? () {
+                          widget.onDatesSelected(selectedDates);
+                          Navigator.of(dialogContext).pop(); // 다이얼로그 닫기
+                        }
+                      : null, // 선택된 날짜가 2개가 아닐 때는 비활성화
+                  child: Text('완료'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor:
+                        selectedDates.length == 2 ? Colors.blue : Colors.grey,
+                    foregroundColor: Colors.white,
+                  ),
+                );
+              },
             ),
           ),
         ],

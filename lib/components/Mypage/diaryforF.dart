@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../basic_frame_page.dart';
 import '../Mypage/emotionalchart.dart';
 import '../Mypage/uploadmypictures.dart'; // 정확한 경로로 수정 필요
 import '../Mypage/emotionalfeedback.dart';
@@ -13,34 +12,29 @@ void main() {
 class DiaryforF extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
- develop-MyPageFile
-
-     final double screenHeight = MediaQuery.of(context).size.height;
-
- main
-    return BasicFramePage(
+    // 기본 화면 구조를 Scaffold로 설정
+    return Scaffold(
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Divider(color: Color(0xFFE4E4E4), thickness: 1, height: 1),
             SizedBox(height: 5),
-            TravelDetailPage(),
-
-            EmotionChart(),
-            TravelFeelingAnalysisSection(),
+            TravelDetailPage(), // 여행 상세 페이지 위젯
+            EmotionChart(), // 감정 차트 위젯
+            TravelFeelingAnalysisSection(), // 감정 분석 섹션 위젯
             SizedBox(height: 10),
             Center(
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  // 저장 버튼 클릭 시 수행할 동작 추가
+                },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xEAEAEA),
-                  // 버튼 색상 설정
+                  backgroundColor: Color(0xEAEAEA), // 버튼 색상 설정
                   padding: EdgeInsets.symmetric(
                       horizontal: 24, vertical: 12), // 버튼 패딩 설정
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5),
-                    // 버튼 모서리 둥글게 설정
+                    borderRadius: BorderRadius.circular(5), // 버튼 모서리 둥글게 설정
                   ),
                 ),
                 child: Text(
@@ -50,8 +44,7 @@ class DiaryforF extends StatelessWidget {
                 ),
               ),
             ),
-
-            SizedBox(height: 20), // 버튼 아래 여백 추가// 여행 상세분석 추가
+            SizedBox(height: 20), // 버튼 아래 여백 추가
           ],
         ),
       ),

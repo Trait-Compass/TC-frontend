@@ -23,6 +23,8 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
       List.generate(10, (_) => null); // 웹에서 최대 10개의 이미지를 저장할 리스트
   List<bool> _isLoading =
       List.generate(10, (_) => false); // 각 이미지의 로딩 상태를 저장할 리스트
+  List<bool> _isProcessing =
+      List.generate(10, (_) => false); // 이미지 처리 상태를 저장할 리스트
   int _nextBoxToShow = 1; // 사용자가 사진을 입력하면 다음 박스를 표시할 변수
   int loadingTime = 2; // 로딩 시간을 조절하는 변수
 
@@ -54,11 +56,8 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
 
     if (pickedFile != null) {
       setState(() {
-        _isLoading[index] = true; // 해당 인덱스의 이미지 로딩 상태로 변경
+        _isProcessing[index] = true; // 이미지 처리가 시작됨을 표시
       });
-
-      // 비동기 작업을 진행하고 로딩 시간 동안 대기
-      await Future.delayed(Duration(seconds: loadingTime)); // 3초 로딩 시간 대기
 
       if (kIsWeb) {
         // 웹의 경우
@@ -66,25 +65,31 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
             await pickedFile.readAsBytes(); // 이미지를 Uint8List로 읽음
         setState(() {
           _webImages[index] = webImageBytes; // 해당 인덱스의 웹 이미지 저장
-          _isLoading[index] = false; // 로딩 완료 상태로 변경
-          if (index + 1 < 10) _nextBoxToShow = index + 2; // 다음 박스를 표시할 준비
         });
       } else {
         // 모바일(Android, iOS)의 경우
         setState(() {
           _selectedImages[index] = File(pickedFile.path); // 선택한 파일 경로에서 이미지 로드
-          _isLoading[index] = false; // 로딩 완료 상태로 변경
-          if (index + 1 < 10) _nextBoxToShow = index + 2; // 다음 박스를 표시할 준비
         });
       }
+
+      // 비동기 작업을 진행하고 로딩 시간 동안 대기
+      await Future.delayed(Duration(seconds: loadingTime)); // 3초 로딩 시간 대기
+
+      setState(() {
+        _isProcessing[index] = false; // 이미지 처리가 완료됨을 표시
+        _isLoading[index] = false; // 로딩 완료 상태로 변경
+        if (index + 1 < 10) _nextBoxToShow = index + 2; // 다음 박스를 표시할 준비
+      });
     }
   }
 
   void _removeImage(int index) {
     setState(() {
-      _selectedImages.removeAt(index);
-      _webImages.removeAt(index);
-      _isLoading.removeAt(index);
+      _selectedImages[index] = null;
+      _webImages[index] = null;
+      _isLoading[index] = false;
+      _isProcessing[index] = false;
       _nextBoxToShow--; // 삭제 시 다음 박스를 표시할 변수 감소
     });
   }
@@ -97,12 +102,18 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
         return Dialog(
           child: Container(
             padding: EdgeInsets.all(10),
-            child: CustomCalendar(
-              onDatesSelected: (selectedDates) {
-                setState(() {
-                  _selectedDates = selectedDates; // 선택된 날짜 업데이트
-                });
-                Navigator.pop(context); // 다이얼로그 닫기
+            child: Builder(
+              // Builder로 새로운 context 생성
+              builder: (BuildContext dialogContext) {
+                return CustomCalendar(
+                  onDatesSelected: (selectedDates) {
+                    setState(() {
+                      _selectedDates = selectedDates; // 선택된 날짜 업데이트
+                    });
+                    Navigator.of(dialogContext)
+                        .pop(); // 다이얼로그의 context를 사용하여 닫기
+                  },
+                );
               },
             ),
           ),
@@ -111,12 +122,17 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
     );
   }
 
+  String _formatDateRange(List<DateTime> dates) {
+    if (dates.isEmpty) return ''; // 날짜가 없을 때
+    if (dates.length == 1)
+      return '${dates.first.toLocal()}'.split(' ')[0]; // 날짜가 한 개일 때
+    return '${dates.first.toLocal()}'.split(' ')[0] +
+        ' ~ ' +
+        '${dates.last.toLocal()}'.split(' ')[0]; // 날짜 범위 표시
+  }
+
   @override
   Widget build(BuildContext context) {
- develop-MyPageFile
-
-    // final double screenHeight = MediaQuery.of(context).size.height;
- main
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20), // 전체 패딩 추가
       child: Column(
@@ -126,7 +142,6 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
           Row(
             children: [
               Expanded(
-                // Expanded로 설정하여 가로 공간을 균등하게 나눔
                 child: Container(
                   height: 30, // 박스의 높이
                   padding: EdgeInsets.symmetric(horizontal: 8.0),
@@ -172,7 +187,7 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          '여행 날짜:', // 박스 안의 텍스트
+                          '여행 날짜: ', // 박스 안의 텍스트
                           style: TextStyle(
                               fontSize: 14, fontWeight: FontWeight.bold),
                         ),
@@ -239,10 +254,15 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
                         border: Border.all(color: Colors.grey, width: 1),
                       ),
                       child: Center(
-                        child: _isLoading[index]
-                            ? Text(
-                                'GPT-4 Vision으로 사진 분석 중...', // 로딩 중 텍스트 표시
-                                style: TextStyle(fontSize: 12),
+                        child: _isProcessing[index]
+                            ? Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10.0),
+                                child: Text(
+                                  'GPT-4 Vision으로 사진 분석 중...', // 로딩 중 텍스트 표시
+                                  style: TextStyle(fontSize: 12),
+                                  textAlign: TextAlign.center,
+                                ),
                               )
                             : (_selectedImages[index] != null && !kIsWeb
                                 ? Image.file(
