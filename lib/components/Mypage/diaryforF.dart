@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../basic_frame_page.dart';
 import '../Mypage/emotionalchart.dart';
 import '../Mypage/uploadmypictures.dart'; // 정확한 경로로 수정 필요
 import '../Mypage/emotionalfeedback.dart';
@@ -14,8 +13,7 @@ class DiaryforF extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // final double screenHeight = MediaQuery.of(context).size.height;
-    return BasicFramePage(
-      body: SingleChildScrollView(
+    return SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -50,7 +48,6 @@ class DiaryforF extends StatelessWidget {
             SizedBox(height: 20), // 버튼 아래 여백 추가// 여행 상세분석 추가
           ],
         ),
-      ),
     );
   }
 }
