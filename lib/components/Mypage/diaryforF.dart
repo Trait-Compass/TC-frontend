@@ -13,11 +13,7 @@ void main() {
 class DiaryforF extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
- develop-MyPageFile
-
-     final double screenHeight = MediaQuery.of(context).size.height;
-
- main
+    // final double screenHeight = MediaQuery.of(context).size.height;
     return BasicFramePage(
       body: SingleChildScrollView(
         child: Column(
