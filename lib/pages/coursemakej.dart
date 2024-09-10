@@ -4,12 +4,12 @@ import '../components/basic_frame_page.dart';
 import '../components/map/MapPage.dart';
 import '../hooks/top3course.dart';
 
-class Coursemake extends StatefulWidget {
+class Coursemakej extends StatefulWidget {
   @override
-  _CoursemakeState createState() => _CoursemakeState();
+  _CoursemakejState createState() => _CoursemakejState();
 }
 
-class _CoursemakeState extends State<Coursemake> {
+class _CoursemakejState extends State<Coursemakej> {
   List<String> courseImages = [
     'assets/course1.png',
     'assets/course2.png',
@@ -63,7 +63,7 @@ class _CoursemakeState extends State<Coursemake> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Text(
-                'P형 코스 만들기',
+                'J형 코스 만들기',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
