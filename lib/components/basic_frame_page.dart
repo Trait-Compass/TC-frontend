@@ -14,31 +14,25 @@ class BasicFramePage extends StatefulWidget {
 
 class _BasicFramePageState extends State<BasicFramePage> {
   int _currentIndex = 0;
+  late Widget _currentBody; 
+
+  @override
+  void initState() {
+    super.initState();
+    _currentBody = widget.body;
+  }
 
   void _onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
+      if (index == 2) {
+        _currentBody = Mypage();
+      } else if (index == 0) {
+        _currentBody = MBTISelectionPage();
+      } else {
+        _currentBody = MyNewPage();
+      }
     });
-
-    if (index == 2) {
-      // 내 정보 페이지로 이동
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => Mypage()),
-      );
-    } else if (index == 0) {
-      // 홈 페이지로 이동
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => MBTISelectionPage()),
-      );
-    } else {
-      // 여행 일정 페이지로 이동
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => MyNewPage()),
-      );
-    }
   }
 
   @override
@@ -64,11 +58,11 @@ class _BasicFramePageState extends State<BasicFramePage> {
           ),
         ],
       ),
-      body: widget.body,
+      body: _currentBody,
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white,
-        selectedItemColor: Colors.black, 
-        unselectedItemColor: Colors.grey, 
+        selectedItemColor: Colors.black,
+        unselectedItemColor: Colors.grey,
         items: [
           BottomNavigationBarItem(
             icon: Image.asset(
