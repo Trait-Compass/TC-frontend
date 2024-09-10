@@ -66,21 +66,21 @@ class _BasicFramePageState extends State<BasicFramePage> {
         items: [
           BottomNavigationBarItem(
             icon: Image.asset(
-              'assets/house.png',
+              _currentIndex == 0 ? 'assets/house.png' : 'assets/house1.png',
               height: screenHeight * 0.04,
             ),
             label: '홈',
           ),
           BottomNavigationBarItem(
             icon: Image.asset(
-              'assets/location1.png',
+              _currentIndex == 1 ? 'assets/location.png' : 'assets/location1.png',
               height: screenHeight * 0.04,
             ),
             label: '여행 일정',
           ),
           BottomNavigationBarItem(
             icon: Image.asset(
-              'assets/myprofile.png',
+              _currentIndex == 2 ? 'assets/myprofile.png' : 'assets/myprofile1.png',
               height: screenHeight * 0.04,
             ),
             label: '내 정보',
