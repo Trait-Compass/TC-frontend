@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:untitled/pages/coursemake.dart';
+import 'package:untitled/pages/KeywordSelectionPage.dart';
+// import 'package:untitled/pages/coursemake.dart';
 import '../components/basic_frame_page.dart';
 import '../hooks/top3course.dart';
 
@@ -10,7 +11,7 @@ class LocationAndPersonSelectionPage extends StatefulWidget {
 }
 
 class _LocationAndPersonSelectionPageState
-    extends State<LocationAndPersonSelectionPage> {
+    extends State<LocationAndPersonSelectionPage  > {
   String? selectedLocation;
   String? selectedGroup;
 
@@ -43,6 +44,8 @@ class _LocationAndPersonSelectionPageState
       return ChoiceChip(
         label: Text(group),
         selected: selectedGroup == group,
+        backgroundColor: Colors.white,
+        selectedColor: Colors.grey[500],
         onSelected: (selected) {
           setState(() {
             selectedGroup = group;
@@ -92,7 +95,7 @@ class _LocationAndPersonSelectionPageState
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Text(
-                'P형 코스 만들기',
+                'J형 코스 만들기',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
@@ -125,6 +128,7 @@ class _LocationAndPersonSelectionPageState
                           borderSide: BorderSide.none,
                         ),
                       ),
+                      dropdownColor: Colors.white, 
                       value: selectedLocation,
                       hint: Text('여행 장소를 선택하세요'),
                       items: _buildLocationItems(),
@@ -152,12 +156,12 @@ class _LocationAndPersonSelectionPageState
                     ElevatedButton(
                       onPressed:
                           selectedLocation != null && selectedGroup != null
-                              ? () => Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => Coursemake(),
-                                    ),
-                                  )
+                              ? () {
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) {
+                                    return KeywordSelectionPage();
+                                  }));
+                                }
                               : null,
                       child: Text('완료'),
                       style: ElevatedButton.styleFrom(
