@@ -324,8 +324,8 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
       onPressed: () => _pickImage(index), // 버튼 클릭 시 파일 선택기 열기
       style: ButtonStyle(
         backgroundColor:
-            MaterialStateProperty.all<Color>(Color(0xFFE0E0E0)), // 회색 배경색 설정
-        minimumSize: MaterialStateProperty.all<Size>(Size(85, 25)), // 버튼 크기 설정
+            WidgetStateProperty.all<Color>(Color(0xFFE0E0E0)), // 회색 배경색 설정
+        minimumSize: WidgetStateProperty.all<Size>(Size(85, 25)), // 버튼 크기 설정
       ),
       child: Text(
         '사진 추가하기',
