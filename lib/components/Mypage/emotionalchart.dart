@@ -135,7 +135,7 @@ class _EmotionChartState extends State<EmotionChart> {
                                   child: Center(
                                     child: Text(
                                       feeling,
-                                      style: TextStyle(fontSize: 13),
+                                      style: TextStyle(fontSize: 10),
                                       textAlign: TextAlign.center,
                                     ),
                                   ),
