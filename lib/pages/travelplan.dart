@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:untitled/pages/Jselection.dart';
 import 'package:untitled/pages/Pselection.dart';
-import '../components/basic_frame_page.dart';
+
 import '../hooks/top3course.dart'; // 추가된 Top3Courses 파일 import
 
 class MyNewPage extends StatefulWidget {
@@ -20,7 +20,8 @@ class _MyNewPageState extends State<MyNewPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BasicFramePage(
+    return Scaffold(
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,7 +109,8 @@ class _MyNewPageState extends State<MyNewPage> {
                                       ),
                                     ),
                                     SizedBox(height: 10),
-                                    Text('# 계획은 귀찮아',style: TextStyle(fontSize: 8)),
+                                    Text('# 계획은 귀찮아',
+                                        style: TextStyle(fontSize: 8)),
                                     Text('# 즉흥적 # AI 추천'),
                                   ],
                                 ),

@@ -106,7 +106,7 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
               style: TextStyle(fontSize: screenHeight * 0.02),
               textAlign: TextAlign.left,
             ),
-            SizedBox(height:10),
+            SizedBox(height: 10),
             Container(
               height: screenHeight * 0.5,
               padding: EdgeInsets.all(screenHeight * 0.02),
