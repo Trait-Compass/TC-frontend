@@ -32,7 +32,6 @@ class WriteDiary extends StatelessWidget {
                   },
                   child: Container(
                     height: 77,
-                    width: 160,
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       color: Color(0xFFEDEDED),
@@ -103,7 +102,6 @@ class WriteDiary extends StatelessWidget {
                   },
                   child: Container(
                     height: 77,
-                    width: 160,
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       color: Color(0xFFEDEDED),

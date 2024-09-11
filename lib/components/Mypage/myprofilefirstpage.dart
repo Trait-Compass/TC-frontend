@@ -21,16 +21,17 @@ class Mypage extends StatelessWidget {
           children: <Widget>[
             Divider(color: Color(0xFFE4E4E4), thickness: 1, height: 1),
             SizedBox(height: 5),
-            ProfileSection(),
+            ProfileSection(), // 프로필 섹션 위젯
             SizedBox(height: 10),
             SavedTravelCourses(), 
+            SavedTravelCourses(), // 저장된 여행 코스 위젯
             SizedBox(height: 10),
-            TravelDiary(),
+            TravelDiary(), // 여행 다이어리 위젯
             SizedBox(height: 10),
-            WriteDiary(),
+            WriteDiary(), // 다이어리 작성 위젯
             SizedBox(height: 10),
 
-            // 버튼 아래 여백 추가// 여행 상세분석 추가
+            // 버튼 아래 여백 추가 및 여행 상세 분석 추가
           ],
         ),
       ),

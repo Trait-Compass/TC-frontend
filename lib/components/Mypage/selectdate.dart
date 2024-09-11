@@ -1,243 +1,117 @@
 import 'package:flutter/material.dart';
+import 'package:table_calendar/table_calendar.dart';
 
-class CustomCalendar extends StatefulWidget {
-  final Function(List<DateTime>) onDatesSelected;
-
-  CustomCalendar({required this.onDatesSelected});
-
+class CalendarPage extends StatefulWidget {
   @override
-  _CustomCalendarState createState() => _CustomCalendarState();
+  _CalendarPageState createState() => _CalendarPageState();
 }
 
-class _CustomCalendarState extends State<CustomCalendar> {
-  DateTime selectedDate = DateTime.now();
-  List<DateTime> selectedDates = [];
+class _CalendarPageState extends State<CalendarPage> {
+  late CalendarFormat _calendarFormat;
+  DateTime _focusedDay = DateTime.now();
+  DateTime? _selectedStartDay;
+  DateTime? _selectedEndDay;
+  RangeSelectionMode _rangeSelectionMode = RangeSelectionMode.toggledOff;
+
+  final DateTime _firstDay = DateTime.utc(2024, 1, 1); // 시작 날짜 설정
+  final DateTime _lastDay = DateTime.utc(2026, 12, 31); // 종료 날짜 설정
+
+  @override
+  void initState() {
+    super.initState();
+    _calendarFormat = CalendarFormat.month;
+  }
 
   @override
   Widget build(BuildContext context) {
-    final double screenWidth = MediaQuery.of(context).size.width;
-    final double screenHeight = MediaQuery.of(context).size.height;
-
-    final double boxWidth = screenWidth / 7.5;
-    final double boxHeight = screenHeight * 0.06;
-
-    void onDateSelected(DateTime date) {
-      setState(() {
-        if (selectedDates.length == 2) {
-          selectedDates.clear();
-        }
-        selectedDates.add(date);
-        selectedDates.sort();
-        widget.onDatesSelected(selectedDates);
-      });
-    }
-
-    bool isSelected(DateTime date) {
-      return selectedDates.contains(date);
-    }
-
-    bool isBetweenSelectedDates(DateTime date) {
-      if (selectedDates.length < 2) return false;
-      return date.isAfter(selectedDates.first) &&
-          date.isBefore(selectedDates.last);
-    }
-
-    BoxDecoration buildBoxDecoration(DateTime date) {
-      if (isSelected(date)) {
-        if (selectedDates.first == date) {
-          return BoxDecoration(
-            color: Color(0xFF6699FF),
-            borderRadius: BorderRadius.horizontal(
-              left: Radius.circular(20.0),
-              right: Radius.zero,
-            ),
-          );
-        } else if (selectedDates.last == date) {
-          return BoxDecoration(
-            color: Color(0xFF6699FF),
-            borderRadius: BorderRadius.horizontal(
-              left: Radius.zero,
-              right: Radius.circular(20.0),
-            ),
-          );
-        }
-        return BoxDecoration(
-          color: Color(0xFF6699FF),
-          shape: BoxShape.circle,
-        );
-      } else if (isBetweenSelectedDates(date)) {
-        return BoxDecoration(
-          color: Color(0xFFBBDDFF),
-          shape: BoxShape.rectangle,
-        );
-      } else {
-        return BoxDecoration(
-          color: Colors.white,
-          shape: BoxShape.circle,
-        );
-      }
-    }
-
-    TextStyle buildTextStyle(DateTime date) {
-      if (isSelected(date)) {
-        return TextStyle(
-          color: Color(0xFFFAFAFA),
-          fontSize: 16.0,
-        );
-      } else if (isBetweenSelectedDates(date)) {
-        return TextStyle(); // 범위 내의 날짜 글자 스타일
-      } else {
-        return TextStyle(
-          color: Colors.black,
-        );
-      }
-    }
-
-    Widget buildDateWidget(DateTime date, double boxWidth) {
-      return GestureDetector(
-        onTap: () => onDateSelected(date),
-        child: Container(
-          width: boxWidth,
-          height: boxHeight,
-          decoration: buildBoxDecoration(date),
-          child: Center(
-            child: Text(
-              date.day.toString(),
-              style: buildTextStyle(date),
-            ),
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          '여행 기간을 선택해주세요!',
+          style: TextStyle(color: Colors.black), // 텍스트 색상을 검정색으로 설정
         ),
-      );
-    }
-
-    Widget buildCalendarMonth(int year, int month, double boxWidth) {
-      DateTime firstDate = DateTime(year, month, 1);
-      DateTime lastDate = DateTime(year, month + 1, 0);
-      DateTime currentDate = firstDate;
-
-      List<Widget> rows = [];
-
-      rows.add(Padding(
-        padding: const EdgeInsets.only(left: 8.0, top: 8.0),
+        backgroundColor: Colors.white, // 앱바 배경색을 흰색으로 설정
+        elevation: 0, // 그림자 제거
+        iconTheme: IconThemeData(color: Colors.black), // 아이콘 색상 변경
+      ),
+      body: Container(
+        color: Colors.white, // 전체 배경색을 흰색으로 설정
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              "$year년",
-              style: TextStyle(color: Colors.grey, fontSize: 16),
-            ),
-            Text(
-              "$month월",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-      ));
-
-      List<String> daysOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
-
-      rows.add(
-        Table(
-          children: [
-            TableRow(
-              children: daysOfWeek.map((day) {
-                Color textColor = Colors.black;
-                if (day == '일') textColor = Colors.red;
-                if (day == '토') textColor = Colors.blue;
-
-                return Container(
-                  alignment: Alignment.center, // 중앙 정렬
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(color: Colors.white),
-                  ),
-                  child: Text(
-                    day,
-                    style:
-                        TextStyle(color: textColor, fontSize: 14), // 폰트 크기 감소
-                  ),
-                );
-              }).toList(),
-            ),
-          ],
-        ),
-      );
-
-      while (currentDate.isBefore(lastDate.add(Duration(days: 1)))) {
-        List<Widget> days = [];
-        for (int i = 0; i < 7; i++) {
-          if ((i < currentDate.weekday % 7 && currentDate.day == 1) ||
-              currentDate.month != month) {
-            days.add(Container(
-              width: boxWidth,
-              height: boxHeight,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: Colors.white),
-              ),
-            ));
-          } else {
-            days.add(buildDateWidget(currentDate, boxWidth));
-            currentDate = currentDate.add(Duration(days: 1));
-          }
-        }
-        rows.add(
-          Table(
-            children: [
-              TableRow(
-                children: days,
-              ),
-            ],
-          ),
-        );
-      }
-      rows.add(Container(
-        width: double.infinity,
-        height: boxHeight / 2,
-        color: Colors.white,
-      ));
-
-      return Column(
-          crossAxisAlignment: CrossAxisAlignment.start, children: rows);
-    }
-
-    Widget buildCalendar(double boxWidth) {
-      List<Widget> months = [];
-      int year = 2024;
-      for (int month = 1; month <= 12; month++) {
-        months.add(buildCalendarMonth(year, month, boxWidth));
-      }
-      return Column(children: months);
-    }
-
-    return Container(
-      color: Colors.white, // 전체 배경색을 흰색으로 설정
-      child: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: buildCalendar(boxWidth),
-            ),
-          ),
-          // 완료 버튼 추가
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(
-              onPressed: selectedDates.length == 2
-                  ? () {
-                      widget.onDatesSelected(selectedDates);
-                      Navigator.pop(context); // 다이얼로그 닫기
+            TableCalendar(
+              firstDay: _firstDay,
+              lastDay: _lastDay,
+              focusedDay: _focusedDay,
+              calendarFormat: _calendarFormat,
+              rangeSelectionMode: _rangeSelectionMode,
+              rangeStartDay: _selectedStartDay, // 범위 시작 날짜
+              rangeEndDay: _selectedEndDay, // 범위 끝 날짜
+              selectedDayPredicate: (day) {
+                // 선택된 날짜와 동일한지 확인
+                return isSameDay(_selectedStartDay, day) ||
+                    isSameDay(_selectedEndDay, day);
+              },
+              onDaySelected: (selectedDay, focusedDay) {
+                setState(() {
+                  if (_rangeSelectionMode == RangeSelectionMode.toggledOff) {
+                    // 새로운 범위 시작 선택
+                    if (_selectedStartDay != null &&
+                        isSameDay(_selectedStartDay, selectedDay)) {
+                      // 이미 선택된 시작 날짜를 다시 클릭하면 해제
+                      _selectedStartDay = null;
+                      _rangeSelectionMode = RangeSelectionMode.toggledOff;
+                    } else {
+                      // 새로운 시작 날짜 선택
+                      _selectedStartDay = selectedDay;
+                      _selectedEndDay = null;
+                      _rangeSelectionMode = RangeSelectionMode.toggledOn;
                     }
-                  : null, // 선택된 날짜가 2개가 아닐 때는 비활성화
-              child: Text('완료'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor:
-                    selectedDates.length == 2 ? Colors.blue : Colors.grey,
-                foregroundColor: Colors.white,
-              ),
+                  } else {
+                    // 범위 종료 선택
+                    if (_selectedEndDay != null &&
+                        isSameDay(_selectedEndDay, selectedDay)) {
+                      // 이미 선택된 종료 날짜를 다시 클릭하면 해제
+                      _selectedEndDay = null;
+                      _rangeSelectionMode = RangeSelectionMode.toggledOff;
+                    } else {
+                      // 새로운 종료 날짜 선택
+                      _selectedEndDay = selectedDay;
+                      _rangeSelectionMode = RangeSelectionMode.toggledOff;
+                    }
+                  }
+                  _focusedDay = focusedDay;
+                });
+
+                // 선택된 날짜들을 다이얼로그가 열린 곳으로 반환
+                if (_selectedStartDay != null && _selectedEndDay != null) {
+                  Navigator.pop(context, [_selectedStartDay, _selectedEndDay]);
+                }
+              },
+              onRangeSelected: (start, end, focusedDay) {
+                setState(() {
+                  _selectedStartDay = start;
+                  _selectedEndDay = end;
+                  _focusedDay = focusedDay;
+                });
+
+                if (start != null && end != null) {
+                  // 선택된 날짜들을 다이얼로그가 열린 곳으로 반환
+                  Navigator.pop(context, [start, end]);
+                }
+              },
+              onFormatChanged: (format) {
+                if (_calendarFormat != format) {
+                  setState(() {
+                    _calendarFormat = format;
+                  });
+                }
+              },
+              onPageChanged: (focusedDay) {
+                _focusedDay = focusedDay;
+              },
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

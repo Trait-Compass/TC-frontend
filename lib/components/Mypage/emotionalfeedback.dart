@@ -250,33 +250,34 @@ class _TravelFeelingAnalysisSectionState
           ),
           Row(
             children: [
-              Container(
-                width: 350,
-                height: 50,
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(5),
+              Expanded(
+                child: Container(
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: isEditingComment
+                      ? TextField(
+                          controller: commentController,
+                          style: TextStyle(fontSize: 14),
+                          maxLines: null,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.all(8),
+                          ),
+                        )
+                      : (commentText != null && commentText!.isNotEmpty)
+                          ? Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                commentText!,
+                                style: TextStyle(
+                                    fontSize: 14, color: Color(0xFF41424C)),
+                              ),
+                            )
+                          : SizedBox(),
                 ),
-                child: isEditingComment
-                    ? TextField(
-                        controller: commentController,
-                        style: TextStyle(fontSize: 14),
-                        maxLines: null,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.all(8),
-                        ),
-                      )
-                    : (commentText != null && commentText!.isNotEmpty)
-                        ? Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              commentText!,
-                              style: TextStyle(
-                                  fontSize: 14, color: Color(0xFF41424C)),
-                            ),
-                          )
-                        : SizedBox(),
               ),
               SizedBox(width: 15),
               ElevatedButton(

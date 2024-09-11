@@ -5,7 +5,7 @@ import 'package:dotted_border/dotted_border.dart'; // Dotted Border 패키지 �
 import 'dart:io';
 import 'dart:typed_data'; // 이미지 데이터를 위한 패키지
 
-import '../Mypage/selectdate.dart'; // CustomCalendar 임포트
+import '../Mypage/selectdate.dart'; // CalendarPage 임포트
 
 class TravelDetailPage extends StatefulWidget {
   @override
@@ -24,9 +24,9 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
   List<bool> _isLoading =
       List.generate(10, (_) => false); // 각 이미지의 로딩 상태를 저장할 리스트
   int _nextBoxToShow = 1; // 사용자가 사진을 입력하면 다음 박스를 표시할 변수
-  int loadingTime = 2; // 로딩 시간을 조절하는 변수
+  int loadingTime = 3; // 로딩 시간을 3초로 설정
 
-  List<DateTime> _selectedDates = []; // 선택된 날짜를 저장할 리스트
+  DateTime? _selectedDate; // 선택된 날짜를 저장할 변수
 
   // 인덱스를 한글 숫자로 변환하는 함수
   String _getKoreanNumber(int index) {
@@ -82,39 +82,36 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
 
   void _removeImage(int index) {
     setState(() {
-      _selectedImages.removeAt(index);
-      _webImages.removeAt(index);
-      _isLoading.removeAt(index);
+      _selectedImages[index] = null;
+      _webImages[index] = null;
+      _isLoading[index] = false;
       _nextBoxToShow--; // 삭제 시 다음 박스를 표시할 변수 감소
     });
   }
 
   // 여행 날짜 선택 다이얼로그 표시 함수
-  void _showDateSelectionDialog() {
-    showDialog(
+  void _showDateSelectionDialog() async {
+    final selectedDate = await showDialog<DateTime>(
       context: context,
       builder: (BuildContext context) {
         return Dialog(
           child: Container(
             padding: EdgeInsets.all(10),
-            child: CustomCalendar(
-              onDatesSelected: (selectedDates) {
-                setState(() {
-                  _selectedDates = selectedDates; // 선택된 날짜 업데이트
-                });
-                Navigator.pop(context); // 다이얼로그 닫기
-              },
-            ),
+            child: CalendarPage(),
           ),
         );
       },
     );
+
+    if (selectedDate != null) {
+      setState(() {
+        _selectedDate = selectedDate; // 선택된 날짜 업데이트
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // final double screenHeight = MediaQuery.of(context).size.height;
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20), // 전체 패딩 추가
       child: Column(
@@ -174,6 +171,12 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
                           style: TextStyle(
                               fontSize: 14, fontWeight: FontWeight.bold),
                         ),
+                        if (_selectedDate != null) // 선택된 날짜가 있을 경우 텍스트로 표시
+                          Text(
+                            ' ${_selectedDate!.toLocal()}'.split(' ')[0],
+                            style: TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.bold),
+                          ),
                       ],
                     ),
                   ),
@@ -213,6 +216,7 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
   // 이미지 박스를 빌드하는 함수
   Widget _buildImageBox(int index) {
     bool hasImage = _selectedImages[index] != null || _webImages[index] != null;
+    bool isLoading = _isLoading[index]; // 로딩 상태를 별도로 관리
 
     return Padding(
       padding: const EdgeInsets.only(right: 10.0), // 박스 간의 간격
@@ -226,9 +230,8 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
           SizedBox(height: 5), // 텍스트와 사진 박스 사이의 간격
           Stack(
             children: [
-              hasImage
+              isLoading
                   ? Container(
-                      // 이미지를 삽입한 박스는 실선 테두리
                       width: 145, // 박스의 너비
                       height: 120, // 박스의 높이
                       decoration: BoxDecoration(
@@ -237,44 +240,58 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
                         border: Border.all(color: Colors.grey, width: 1),
                       ),
                       child: Center(
-                        child: _isLoading[index]
-                            ? Text(
-                                'GPT-4 Vision으로 사진 분석 중...', // 로딩 중 텍스트 표시
-                                style: TextStyle(fontSize: 12),
-                              )
-                            : (_selectedImages[index] != null && !kIsWeb
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10.0), // 텍스트의 좌우 여백 추가
+                          child: Text(
+                            'GPT-4 Vision으로 사진 분석 중...', // 로딩 중 텍스트 표시
+                            style: TextStyle(fontSize: 12),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    )
+                  : hasImage
+                      ? Container(
+                          width: 145, // 박스의 너비
+                          height: 120, // 박스의 높이
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: Colors.grey, width: 1),
+                          ),
+                          child: Center(
+                            child: (_selectedImages[index] != null && !kIsWeb)
                                 ? Image.file(
                                     _selectedImages[index]!,
                                     width: 120, // 이미지만의 너비
                                     height: 80, // 이미지만의 높이
                                     fit: BoxFit.contain, // 박스 크기에 맞게 이미지 조정
                                   )
-                                : (_webImages[index] != null
-                                    ? Image.memory(
-                                        _webImages[index]!,
-                                        width: 120, // 이미지만의 너비
-                                        height: 80, // 이미지만의 높이
-                                        fit: BoxFit.contain, // 박스 크기에 맞게 이미지 조정
-                                      )
-                                    : _buildAddButton(index))),
-                      ),
-                    )
-                  : DottedBorder(
-                      // 이미지를 삽입하지 않은 박스는 점선 테두리
-                      color: Colors.black, // 점선 색상
-                      strokeWidth: 1, // 점선 두께
-                      dashPattern: [4, 3], // 점선과 점선 사이의 간격 및 길이
-                      borderType: BorderType.RRect, // 둥근 사각형 모양
-                      radius: Radius.circular(10), // 둥근 모서리 반지름
-                      child: Container(
-                        width: 145, // 박스의 너비
-                        height: 115, // 박스의 높이
-                        color: Colors.white,
-                        child: Center(
-                          child: _buildAddButton(index),
+                                : Image.memory(
+                                    _webImages[index]!,
+                                    width: 120, // 이미지만의 너비
+                                    height: 80, // 이미지만의 높이
+                                    fit: BoxFit.contain, // 박스 크기에 맞게 이미지 조정
+                                  ),
+                          ),
+                        )
+                      : DottedBorder(
+                          // 이미지를 삽입하지 않은 박스는 점선 테두리
+                          color: Colors.black, // 점선 색상
+                          strokeWidth: 1, // 점선 두께
+                          dashPattern: [4, 2], // 점선과 점선 사이의 간격 및 길이
+                          borderType: BorderType.RRect, // 둥근 사각형 모양
+                          radius: Radius.circular(10), // 둥근 모서리 반지름
+                          child: Container(
+                            width: 145, // 박스의 너비
+                            height: 115, // 박스의 높이
+                            color: Colors.white,
+                            child: Center(
+                              child: _buildAddButton(index),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
               if (hasImage)
                 Positioned(
                   top: 5,
@@ -307,8 +324,8 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
       onPressed: () => _pickImage(index), // 버튼 클릭 시 파일 선택기 열기
       style: ButtonStyle(
         backgroundColor:
-            MaterialStateProperty.all<Color>(Color(0xFFE0E0E0)), // 회색 배경색 설정
-        minimumSize: MaterialStateProperty.all<Size>(Size(85, 25)), // 버튼 크기 설정
+            WidgetStateProperty.all<Color>(Color(0xFFE0E0E0)), // 회색 배경색 설정
+        minimumSize: WidgetStateProperty.all<Size>(Size(85, 25)), // 버튼 크기 설정
       ),
       child: Text(
         '사진 추가하기',
