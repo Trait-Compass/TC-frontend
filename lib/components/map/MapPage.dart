@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-// import 'package:share_plus/share_plus.dart'; 
+// import 'package:share_plus/share_plus.dart'; // 패키지 임포트
+import '../map/trip.dart';
 
 class MapPage extends StatefulWidget { 
   @override
@@ -18,7 +19,7 @@ class _MapPageState extends State<MapPage> {
         actions: [
           TextButton(
             onPressed: () {
-             
+              // Add functionality here
             },
             child: Text(
               '완료',
@@ -60,7 +61,7 @@ class _MapPageState extends State<MapPage> {
             child: Center(
               child: GestureDetector(
                 onTap: () {
-                  Navigator.pop(context); 
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => Trip()));
                 },
                 child: Container(
                   width: 150,
@@ -106,7 +107,7 @@ class _MapPageState extends State<MapPage> {
                     IconButton(
                       icon: Icon(Icons.share),
                       onPressed: () {
-                      // Share.share('shareCourtUrl,', subject: 'MBTI 여행 추천 코스');
+                      // Share.share('YOUR_SHARE_URL', subject: 'MBTI');
                       },
                     ),
                     Text('공유하기', style: TextStyle(fontSize: 12)),
