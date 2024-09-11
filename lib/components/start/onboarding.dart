@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:untitled/components/map/MapPage.dart';
 
 class OnboardingPage extends StatefulWidget {
   @override
@@ -88,7 +89,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 SizedBox(height: 10),
                 ElevatedButton.icon(
                   onPressed: () {
-                    // 카카오 로그인 처리
+                   Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => MapPage()),
+                    );
                   },
                   icon: Icon(Icons.chat_bubble, color: Colors.black),
                   label:
