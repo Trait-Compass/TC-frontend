@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-class CustomCalendar extends StatefulWidget {
+class MyCalendar extends StatefulWidget {
   final Function(List<DateTime>) onDatesSelected;
 
-  CustomCalendar({required this.onDatesSelected});
+  MyCalendar({required this.onDatesSelected});
 
   @override
-  _CustomCalendarState createState() => _CustomCalendarState();
+  _MyCalendarState createState() => _MyCalendarState();
 }
 
-class _CustomCalendarState extends State<CustomCalendar> {
+class _MyCalendarState extends State<MyCalendar> {
   DateTime selectedDate = DateTime.now();
   List<DateTime> selectedDates = [];
 

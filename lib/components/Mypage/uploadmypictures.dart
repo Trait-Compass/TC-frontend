@@ -97,7 +97,7 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
         return Dialog(
           child: Container(
             padding: EdgeInsets.all(10),
-            child: CustomCalendar(
+            child: MyCalendar(
               onDatesSelected: (selectedDates) {
                 setState(() {
                   _selectedDates = selectedDates; // 선택된 날짜 업데이트
