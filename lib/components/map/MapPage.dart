@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+// import 'package:share_plus/share_plus.dart'; 
 
 class MapPage extends StatefulWidget { 
   @override
@@ -17,7 +18,7 @@ class _MapPageState extends State<MapPage> {
         actions: [
           TextButton(
             onPressed: () {
-              // Add functionality here
+             
             },
             child: Text(
               '완료',
@@ -86,26 +87,26 @@ class _MapPageState extends State<MapPage> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.end, // Align items to the end (right side)
+              mainAxisAlignment: MainAxisAlignment.end, 
               children: [
                 Column(
                   children: [
                     IconButton(
                       icon: Icon(Icons.edit),
                       onPressed: () {
-                        // Add functionality here
+                        // 수정 기능 추가
                       },
                     ),
                     Text('수정하기', style: TextStyle(fontSize: 12)),
                   ],
                 ),
-                SizedBox(width: 20), // Add space between the columns
+                SizedBox(width: 20), 
                 Column(
                   children: [
                     IconButton(
                       icon: Icon(Icons.share),
                       onPressed: () {
-                        // Add functionality here
+                      // Share.share('shareCourtUrl,', subject: 'MBTI 여행 추천 코스');
                       },
                     ),
                     Text('공유하기', style: TextStyle(fontSize: 12)),
