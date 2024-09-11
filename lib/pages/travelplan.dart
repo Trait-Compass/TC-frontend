@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:untitled/pages/Jselection.dart';
 import 'package:untitled/pages/Pselection.dart';
-
+import '../hooks/top3course.dart'; 
 import '../hooks/top3course.dart'; // 추가된 Top3Courses 파일 import
 
 class MyNewPage extends StatefulWidget {
@@ -109,6 +109,8 @@ class _MyNewPageState extends State<MyNewPage> {
                                       ),
                                     ),
                                     SizedBox(height: 10),
+                                    Text('# 계획은 귀찮아',style: TextStyle(fontSize: 10)),
+                                    Text('# 즉흥적 # AI 추천',style: TextStyle(fontSize: 10) ),
                                     Text('# 계획은 귀찮아',
                                         style: TextStyle(fontSize: 8)),
                                     Text('# 즉흥적 # AI 추천'),
@@ -154,8 +156,8 @@ class _MyNewPageState extends State<MyNewPage> {
                                       ),
                                     ),
                                     SizedBox(height: 10),
-                                    Text('# 계획을 즐기는'),
-                                    Text('# 체계적 # 역설정'),
+                                    Text('# 계획을 즐기는',style: TextStyle(fontSize: 10)),
+                                    Text('# 체계적 # 역설정',style: TextStyle(fontSize: 10) ),
                                   ],
                                 ),
                               ),

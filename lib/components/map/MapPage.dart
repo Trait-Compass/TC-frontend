@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+// import 'package:share_plus/share_plus.dart'; // 패키지 임포트
+import '../map/trip.dart';
 
 class MapPage extends StatefulWidget { 
   @override
@@ -11,16 +13,17 @@ class _MapPageState extends State<MapPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('내 일정'),
+        title: Text('내 일정', style: TextStyle(fontSize: 15)), 
         actions: [
           TextButton(
             onPressed: () {
-             
+              // Add functionality here
             },
             child: Text(
               '완료',
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(fontSize: 12, color: Colors.black),
             ),
           ),
         ],
@@ -47,7 +50,7 @@ class _MapPageState extends State<MapPage> {
                       label: Text('${index + 1}일차'),
                       backgroundColor: selectedDayIndex == index
                           ? Colors.grey[300]
-                          : Colors.grey[200],
+                          : Colors.white,
                     ),
                   ),
                 );
@@ -58,23 +61,23 @@ class _MapPageState extends State<MapPage> {
             child: Center(
               child: GestureDetector(
                 onTap: () {
-                  Navigator.pop(context); 
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => Trip()));
                 },
                 child: Container(
                   width: 150,
                   height: 150,
                   decoration: BoxDecoration(
                     color: Colors.grey[200],
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(30),
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.add, size: 40, color: Colors.grey),
+                      Icon(Icons.add, size: 40, color: Colors.grey[600]),
                       SizedBox(height: 10),
                       Text(
                         '여행지 추가하기',
-                        style: TextStyle(color: Colors.grey),
+                        style: TextStyle(color: Colors.grey[600]),
                       ),
                     ],
                   ),
@@ -85,19 +88,30 @@ class _MapPageState extends State<MapPage> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.end, 
               children: [
-                IconButton(
-                  icon: Icon(Icons.edit),
-                  onPressed: () {
-                   
-                  },
+                Column(
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.edit),
+                      onPressed: () {
+                        // 수정 기능 추가
+                      },
+                    ),
+                    Text('수정하기', style: TextStyle(fontSize: 12)),
+                  ],
                 ),
-                IconButton(
-                  icon: Icon(Icons.share),
-                  onPressed: () {
-                    
-                  },
+                SizedBox(width: 20), 
+                Column(
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.share),
+                      onPressed: () {
+                      // Share.share('YOUR_SHARE_URL', subject: 'MBTI');
+                      },
+                    ),
+                    Text('공유하기', style: TextStyle(fontSize: 12)),
+                  ],
                 ),
               ],
             ),

@@ -23,6 +23,7 @@ class Mypage extends StatelessWidget {
             SizedBox(height: 5),
             ProfileSection(), // 프로필 섹션 위젯
             SizedBox(height: 10),
+            SavedTravelCourses(), 
             SavedTravelCourses(), // 저장된 여행 코스 위젯
             SizedBox(height: 10),
             TravelDiary(), // 여행 다이어리 위젯
