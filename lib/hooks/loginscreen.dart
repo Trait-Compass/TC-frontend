@@ -18,7 +18,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final AuthService _authService = AuthService();
   bool _isRememberMeChecked = false;
   String _userInfo = '';
-  String? _accessToken;  
+  String? _accessToken;  // AccessToken 저장할 변수 추가
 
   // 로그인 API 호출 메서드
   Future<void> _login() async {
@@ -45,6 +45,16 @@ class _LoginScreenState extends State<LoginScreen> {
       print('Response Body: ${response.body}');  // 응답 본문 출력
 
       if (response.statusCode == 201) {
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        
+        // 서버 응답에서 accessToken 추출
+        if (responseBody.containsKey('result') && responseBody['result'].containsKey('accessToken')) {
+          _accessToken = responseBody['result']['accessToken'];
+          print('Access Token: $_accessToken');  // 디버깅용
+        } else {
+          print('Access Token not found in the response.');
+        }
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('로그인 성공!')),
         );
@@ -87,8 +97,8 @@ class _LoginScreenState extends State<LoginScreen> {
           final Map<String, dynamic> responseBody = jsonDecode(response.body);
           
           // 서버로부터 받은 accessToken 저장
-          if (responseBody.containsKey('accessToken')) {
-            _accessToken = responseBody['accessToken'];
+          if (responseBody.containsKey('result') && responseBody['result'].containsKey('accessToken')) {
+            _accessToken = responseBody['result']['accessToken'];
             print('Access Token: $_accessToken');  // 디버깅용
           } else {
             print('Access Token not found in the response.');
