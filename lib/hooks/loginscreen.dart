@@ -6,7 +6,7 @@ import 'creataccount.dart';
 import '../components/basic_frame_page.dart';
 import 'package:http/http.dart' as http;  
 import 'dart:convert';  
-
+import 'package:flutter_secure_storage/flutter_secure_storage.dart'; 
 class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -16,6 +16,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final AuthService _authService = AuthService();
+  final FlutterSecureStorage secureStorage = FlutterSecureStorage();  
   bool _isRememberMeChecked = false;
   String _userInfo = '';
   String? _accessToken;  // AccessToken 저장할 변수 추가
@@ -50,6 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
         // 서버 응답에서 accessToken 추출
         if (responseBody.containsKey('result') && responseBody['result'].containsKey('accessToken')) {
           _accessToken = responseBody['result']['accessToken'];
+          await secureStorage.write(key: 'accessToken', value: _accessToken);  // Secure Storage에 저장
           print('Access Token: $_accessToken');  // 디버깅용
         } else {
           print('Access Token not found in the response.');
@@ -66,12 +68,12 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('로그인 실패. 아이디와 비밀번호를 확인해주세요. 상태 코드: ${response.statusCode}')),
+          SnackBar(content: Text('아이디와 비밀번호를 확인해주세요')),
         );
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('로그인 중 오류가 발생했습니다: $e')),
+        SnackBar(content: Text('로그인 중 오류가 발생했습니다 다시 한번 시도해주세요')),
       );
     }
   }
@@ -99,6 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
           // 서버로부터 받은 accessToken 저장
           if (responseBody.containsKey('result') && responseBody['result'].containsKey('accessToken')) {
             _accessToken = responseBody['result']['accessToken'];
+            await secureStorage.write(key: 'accessToken', value: _accessToken);  // Secure Storage에 저장
             print('Access Token: $_accessToken');  // 디버깅용
           } else {
             print('Access Token not found in the response.');
@@ -155,7 +158,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           BasicFramePage(body: MBTISelectionPage()),
                     ),
                   );
-                },
+                }, // 웹 들어갈때 필요해서 임시 방편 나중에 제거 해야함
                 child: Image.asset(
                   'assets/mbtilogo.jpg',
                   height: 100,
