@@ -60,37 +60,45 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
     super.dispose();
   }
 
-  Future<void> _submitUserInfo() async {
-    final String nickname = _nicknameController.text;
-    final String mbti = _mbti;
-    final String gender = _gender;
-    final bool isOauth = false;
+ Future<void> _submitUserInfo() async {
+  final String nickname = _nicknameController.text;
+  final String mbti = _mbti;
+  final String gender = _gender;
+  final bool isOauth = false;
 
-    final response = await http.post(
-      Uri.parse('https://www.traitcompass.store/user'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, dynamic>{
-        'id': widget.id,
-        'password': widget.password,
-        'nickname': nickname,
-        'mbti': mbti,
-        'gender': gender,
-        'isOauth': isOauth,
-      }),
+  final Map<String, dynamic> requestBody = {
+    'id': widget.id,
+    'password': widget.password,
+    'nickname': nickname,
+    'mbti': mbti,
+    'gender': gender,
+    'isOauth': isOauth,
+  };
+
+  print('Request Body: $requestBody');  // 요청 본문을 출력하여 디버깅
+
+  final response = await http.post(
+    Uri.parse('https://www.traitcompass.store/user'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: jsonEncode(requestBody),
+  );
+
+  print('Response Status Code: ${response.statusCode}');  // 상태 코드 출력
+  print('Response Body: ${response.body}');  // 응답 본문 출력하여 디버깅
+
+  if (response.statusCode == 201) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('회원정보가 성공적으로 제출되었습니다.')),
     );
-
-    if (response.statusCode == 201) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('회원정보가 성공적으로 제출되었습니다.')),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('회원정보 제출에 실패했습니다.')),
-      );
-    }
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('회원정보 제출에 실패했습니다. 상태 코드: ${response.statusCode}')),
+    );
   }
+}
+
 
   Future<void> _checkDuplicateNickname() async {
     final String nickname = _nicknameController.text;
@@ -130,7 +138,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => MBTItestselection()), // 실제 테스트 페이지로 변경
+          builder: (context) => MBTItestselection()), 
     );
   }
 
@@ -298,16 +306,16 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                   Text(
                                     '아직 내 MBTI를 모른다면',
                                     style: TextStyle(
-                                        fontSize: screenHeight * 0.017,
-                                        color: Color(0xFF676767)),
+                                        fontSize: 10,
+                                        color: Colors.grey[600]),
                                   ),
                                   TextButton(
                                     onPressed: _navigateToMBTITest,
                                     child: Text(
                                       '내 MBTI 알아보러 가기 GO',
                                       style: TextStyle(
-                                          fontSize: screenHeight * 0.017,
-                                          color: Colors.blue),
+                                          fontSize: 10,
+                                          color: Colors.black),
                                     ),
                                   ),
                                 ],
