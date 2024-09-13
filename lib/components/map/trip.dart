@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http; // http 패키지 추가
 import 'dart:convert';
+import 'tripmodal.dart'; // 모달 파일 import
 
 class Trip extends StatefulWidget {
   @override
@@ -13,6 +14,13 @@ class _TripState extends State<Trip> {
   String _searchText = '';
   String _selectedRegion = '경상남도'; 
   List<String> _filteredRegions = [];
+  
+  // 여행지 목록 예시 데이터
+  final List<Map<String, String>> trips = [
+    {'image': '../assets/city1.png', 'title': '고부길 벽화마을'},
+    {'image': '../assets/city2.png', 'title': '산책로 공원'},
+    {'image': '../assets/city3.png', 'title': '역사 박물관'},
+  ];
 
   @override
   void initState() {
@@ -23,7 +31,8 @@ class _TripState extends State<Trip> {
         if (_searchText.isNotEmpty) {
           _fetchRecommendations(_searchText); 
         } else {
-          _filteredRegions.clear(); }
+          _filteredRegions.clear();
+        }
       });
     });
   }
@@ -36,31 +45,30 @@ class _TripState extends State<Trip> {
   }
 
   Future<void> _fetchRecommendations(String query) async {
-    // API를 호출하지 않고 예시로 대체
-   List<String> allRegions = [
-  '경상남도 창원시',
-  '경상남도 김해시',
-  '경상남도 진주시',
-  '경상남도 양산시',
-  '경상남도 사천시',
-  '경상남도 밀양시',
-  '경상남도 통영시',
-  '경상남도 거제시',
-  '경상남도 함안군',
-  '경상남도 창녕군',
-  '경상남도 고성군',
-  '경상남도 남해군',
-  '경상남도 하동군',
-  '경상남도 산청군',
-  '경상남도 함양군',
-  '경상남도 거창군',
-  '경상남도 합천군'
-];
+    List<String> allRegions = [
+      '경상남도 창원시',
+      '경상남도 김해시',
+      '경상남도 진주시',
+      '경상남도 양산시',
+      '경상남도 사천시',
+      '경상남도 밀양시',
+      '경상남도 통영시',
+      '경상남도 거제시',
+      '경상남도 함안군',
+      '경상남도 창녕군',
+      '경상남도 고성군',
+      '경상남도 남해군',
+      '경상남도 하동군',
+      '경상남도 산청군',
+      '경상남도 함양군',
+      '경상남도 거창군',
+      '경상남도 합천군'
+    ];
 
     setState(() {
       if (query.isNotEmpty) {
         _filteredRegions = allRegions
-            .where((region) => region.contains(query)) 
+            .where((region) => region.contains(query))
             .toList();
       } else {
         _filteredRegions.clear();
@@ -128,15 +136,15 @@ class _TripState extends State<Trip> {
           top: 80,
           left: 20,
           right: 20,
-          child: _searchText.isNotEmpty && _filteredRegions.isNotEmpty // 검색 결과가 있을 때만 보여줌
+          child: _searchText.isNotEmpty && _filteredRegions.isNotEmpty
               ? _buildSearchResults()
-              : Container(), // 검색 결과가 없을 때 빈 컨테이너로 대체
+              : Container(),
         ),
         Positioned(
           bottom: 20,
           right: 20,
           child: Text(
-            _selectedRegion, // 선택된 지역을 보여줌
+            _selectedRegion,
             style: TextStyle(
               fontSize: 24,
               color: Colors.white,
@@ -173,7 +181,11 @@ class _TripState extends State<Trip> {
         controller: _titleController,
         focusNode: _titleFocusNode,
         decoration: InputDecoration(
-          hintText: '경상남도 지역을 검색하세요',
+            hintText: '경상남도를 입력 후 경상남도 지역을 검색하세요',
+            hintStyle: TextStyle(
+            color: Colors.grey,
+            fontSize: 14,
+            ),
           border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(vertical: 15),
           suffixIcon: Icon(Icons.search, color: Colors.grey),
@@ -189,7 +201,7 @@ class _TripState extends State<Trip> {
 
   Widget _buildSearchResults() {
     return Container(
-      height: 100, 
+      height: 100,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
@@ -202,16 +214,16 @@ class _TripState extends State<Trip> {
         ],
       ),
       child: ListView.builder(
-        shrinkWrap: true,  
+        shrinkWrap: true,
         itemCount: _filteredRegions.length,
         itemBuilder: (context, index) {
           return ListTile(
             title: Text(_filteredRegions[index]),
             onTap: () {
               setState(() {
-                _titleController.text = _filteredRegions[index]; 
-                _selectedRegion = _filteredRegions[index].split(' ')[1]; 
-                _filteredRegions.clear(); 
+                _titleController.text = _filteredRegions[index];
+                _selectedRegion = _filteredRegions[index].split(' ')[1];
+                _filteredRegions.clear();
               });
             },
           );
@@ -236,29 +248,41 @@ class _TripState extends State<Trip> {
       padding: EdgeInsets.only(left: 18.0, right: 18.0), 
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: 10, // 일단 10으로 설정 하고 api 연동해서 추후에 변경 예정
+        itemCount: trips.length, // trips 리스트 사용
         itemBuilder: (context, index) {
-          return _buildImageItem(index);
+          return GestureDetector(
+            onTap: () {
+              showDialog(
+                context: context,
+                barrierColor: Colors.black.withOpacity(0.5), 
+                builder: (context) => TripDetailModal(
+                  imagePath: trips[index]['image']!, 
+                  title: trips[index]['title']!,   
+                ),
+              );
+            },
+            child: _buildImageItem(trips[index]['image']!, trips[index]['title']!),
+          );
         },
       ),
     );
   }
 
-  Widget _buildImageItem(int index) {
+  Widget _buildImageItem(String imagePath, String title) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 8),
       width: 120,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         image: DecorationImage(
-          image: AssetImage('../assets/city${index % 3 + 1}.png'), // 추후에 api 연동해서 이미지 변경
+          image: AssetImage(imagePath),
           fit: BoxFit.cover,
         ),
       ),
       alignment: Alignment.bottomLeft,
       padding: EdgeInsets.all(8),
       child: Text(
-        '고부길 벽화마을',
+        title,
         style: TextStyle(
           color: Colors.white,
           fontWeight: FontWeight.bold,
