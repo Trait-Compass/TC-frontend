@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;  // http 패키지 추가
+import 'package:http/http.dart' as http; // http 패키지 추가
 import 'dart:convert';
 
 class Trip extends StatefulWidget {
@@ -11,6 +11,7 @@ class _TripState extends State<Trip> {
   final TextEditingController _titleController = TextEditingController();
   FocusNode _titleFocusNode = FocusNode();
   String _searchText = '';
+  String _selectedRegion = '경상남도'; 
   List<String> _filteredRegions = [];
 
   @override
@@ -20,10 +21,9 @@ class _TripState extends State<Trip> {
       setState(() {
         _searchText = _titleController.text;
         if (_searchText.isNotEmpty) {
-          _fetchRecommendations(_searchText);  // API 호출
+          _fetchRecommendations(_searchText); 
         } else {
-          _filteredRegions.clear();
-        }
+          _filteredRegions.clear(); }
       });
     });
   }
@@ -36,26 +36,36 @@ class _TripState extends State<Trip> {
   }
 
   Future<void> _fetchRecommendations(String query) async {
-    final url = Uri.parse('https://www.traitcompass.store/spot/recommand');  // API 엔드포인트
-    try {
-      final response = await http.get(
-        url,
-        headers: {
-          'Authorization': 'Bearer YOUR_ACCESS_TOKEN',  // 여기에 실제 엑세스 토큰을 추가하세요
-          'Content-Type': 'application/json',
-        },
-      );
-      if (response.statusCode == 200) {
-        List<dynamic> data = json.decode(response.body);
-        setState(() {
-          _filteredRegions = data.map((item) => item['location'].toString()).toList();  // 응답 데이터에서 필요한 정보를 가져옵니다.
-        });
+    // API를 호출하지 않고 예시로 대체
+   List<String> allRegions = [
+  '경상남도 창원시',
+  '경상남도 김해시',
+  '경상남도 진주시',
+  '경상남도 양산시',
+  '경상남도 사천시',
+  '경상남도 밀양시',
+  '경상남도 통영시',
+  '경상남도 거제시',
+  '경상남도 함안군',
+  '경상남도 창녕군',
+  '경상남도 고성군',
+  '경상남도 남해군',
+  '경상남도 하동군',
+  '경상남도 산청군',
+  '경상남도 함양군',
+  '경상남도 거창군',
+  '경상남도 합천군'
+];
+
+    setState(() {
+      if (query.isNotEmpty) {
+        _filteredRegions = allRegions
+            .where((region) => region.contains(query)) 
+            .toList();
       } else {
-        print('Failed to load recommendations: ${response.statusCode}');
+        _filteredRegions.clear();
       }
-    } catch (e) {
-      print('Error fetching recommendations: $e');
-    }
+    });
   }
 
   @override
@@ -79,20 +89,18 @@ class _TripState extends State<Trip> {
         ),
       ),
       body: SingleChildScrollView(
+        padding: EdgeInsets.only(bottom: 20), 
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildSearchSection(),
             SizedBox(height: 20),
             _buildSection('추천 여행지'),
-            _buildHorizontalImageList(),
-            _buildSliderIndicator(),  
+            _buildHorizontalImageList(), // 추천 여행지 섹션
             _buildSection('인기 여행지'),
-            _buildHorizontalImageList(),
-            _buildSliderIndicator(), 
+            _buildHorizontalImageList(), // 인기 여행지 섹션
             _buildSection('ENTP 여행지'),
-            _buildHorizontalImageList(),
-            _buildSliderIndicator(),  
+            _buildHorizontalImageList(), // ENTP 여행지 섹션
           ],
         ),
       ),
@@ -117,16 +125,18 @@ class _TripState extends State<Trip> {
           child: _buildSearchBar(),
         ),
         Positioned(
-          top: 80,  // 검색창 바로 아래에 위치하도록 설정
+          top: 80,
           left: 20,
           right: 20,
-          child: _searchText.isNotEmpty ? _buildSearchResults() : Container(),
+          child: _searchText.isNotEmpty && _filteredRegions.isNotEmpty // 검색 결과가 있을 때만 보여줌
+              ? _buildSearchResults()
+              : Container(), // 검색 결과가 없을 때 빈 컨테이너로 대체
         ),
         Positioned(
           bottom: 20,
           right: 20,
           child: Text(
-            '창원',
+            _selectedRegion, // 선택된 지역을 보여줌
             style: TextStyle(
               fontSize: 24,
               color: Colors.white,
@@ -168,12 +178,18 @@ class _TripState extends State<Trip> {
           contentPadding: EdgeInsets.symmetric(vertical: 15),
           suffixIcon: Icon(Icons.search, color: Colors.grey),
         ),
+        onSubmitted: (_) { 
+          setState(() {
+            _filteredRegions.clear();
+          });
+        },
       ),
     );
   }
 
   Widget _buildSearchResults() {
     return Container(
+      height: 100, 
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
@@ -185,19 +201,21 @@ class _TripState extends State<Trip> {
           ),
         ],
       ),
-      child: Column(
-        children: _filteredRegions.map((region) {
+      child: ListView.builder(
+        shrinkWrap: true,  
+        itemCount: _filteredRegions.length,
+        itemBuilder: (context, index) {
           return ListTile(
-            title: Text(region),
+            title: Text(_filteredRegions[index]),
             onTap: () {
               setState(() {
-                _searchText = region;
-                _titleController.text = region; // 선택된 지역으로 텍스트 업데이트
-                _filteredRegions.clear(); // 검색 결과 닫기
+                _titleController.text = _filteredRegions[index]; 
+                _selectedRegion = _filteredRegions[index].split(' ')[1]; 
+                _filteredRegions.clear(); 
               });
             },
           );
-        }).toList(),
+        },
       ),
     );
   }
@@ -215,24 +233,25 @@ class _TripState extends State<Trip> {
   Widget _buildHorizontalImageList() {
     return Container(
       height: 150,
+      padding: EdgeInsets.only(left: 18.0, right: 18.0), 
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: 6,
+        itemCount: 10, // 일단 10으로 설정 하고 api 연동해서 추후에 변경 예정
         itemBuilder: (context, index) {
-          return _buildImageItem();
+          return _buildImageItem(index);
         },
       ),
     );
   }
 
-  Widget _buildImageItem() {
+  Widget _buildImageItem(int index) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 8),
       width: 120,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         image: DecorationImage(
-          image: AssetImage('../assets/city3.png'), 
+          image: AssetImage('../assets/city${index % 3 + 1}.png'), // 추후에 api 연동해서 이미지 변경
           fit: BoxFit.cover,
         ),
       ),
@@ -243,33 +262,6 @@ class _TripState extends State<Trip> {
         style: TextStyle(
           color: Colors.white,
           fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSliderIndicator() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Container(
-        margin: EdgeInsets.only(top: 8.0, bottom: 20.0),
-        child: Row(
-          children: [
-            Expanded(
-              flex: 1,
-              child: Divider(
-                color: Colors.black,
-                thickness: 1.5,
-              ),
-            ),
-            Expanded(
-              flex: 3,
-              child: Divider(
-                color: Colors.black.withOpacity(0.2),
-                thickness: 1.5,
-              ),
-            ),
-          ],
         ),
       ),
     );
