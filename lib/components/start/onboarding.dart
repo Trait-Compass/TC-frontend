@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:untitled/components/map/MapPage.dart';
+import 'package:untitled/hooks/loginscreen.dart';
+
 
 class OnboardingPage extends StatefulWidget {
   @override
@@ -78,7 +80,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.pushReplacementNamed(context, '/main'); // 나중에 수정
+                      Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginScreen()),
+                    );
                   },
                   child: Text('회원가입하기', style: TextStyle(color: Colors.black)),
                   style: ElevatedButton.styleFrom(

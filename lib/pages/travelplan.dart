@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:untitled/pages/Jselection.dart';
 import 'package:untitled/pages/Pselection.dart';
-import '../hooks/top3course.dart'; 
-import '../hooks/top3course.dart'; // 추가된 Top3Courses 파일 import
+import '../hooks/top3course.dart';  
 
 class MyNewPage extends StatefulWidget {
   @override
