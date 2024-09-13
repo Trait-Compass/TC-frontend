@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 
 class MapdetailPage extends StatefulWidget {
-  final String title; 
-  final String address; 
+  final List<Map<String, String>> tripDetails;
 
-  MapdetailPage({required this.title, required this.address}); 
+  MapdetailPage({required this.tripDetails});
 
   @override
   _MapdetailPageState createState() => _MapdetailPageState();
@@ -12,20 +11,22 @@ class MapdetailPage extends StatefulWidget {
 
 class _MapdetailPageState extends State<MapdetailPage> {
   int selectedDayIndex = 0;
-  List<Map<String, String>> tripDetails = []; 
+  late List<Map<String, String>> tripDetails;
+
   @override
   void initState() {
     super.initState();
-    // 초기 데이터를 리스트에 추가
-    tripDetails.add({'title': widget.title, 'address': widget.address});
+    // 전달받은 리스트를 상태로 초기화
+    tripDetails = widget.tripDetails;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.white, 
       appBar: AppBar(
-        title: Text('내 일정', style: TextStyle(fontSize: 15)),
+        title:
+            Text('내 일정', style: TextStyle(fontSize: 15, color: Colors.black)),
         actions: [
           TextButton(
             onPressed: () {
@@ -43,6 +44,7 @@ class _MapdetailPageState extends State<MapdetailPage> {
       ),
       body: Column(
         children: [
+          // 날짜 선택 부분
           Container(
             height: 50,
             child: ListView(
@@ -67,48 +69,104 @@ class _MapdetailPageState extends State<MapdetailPage> {
               }),
             ),
           ),
+          // 여행지 리스트
           Expanded(
             child: ListView.builder(
               itemCount: tripDetails.length,
               itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Column(
-                      children: [
-                        ListTile(
-                          leading: Icon(Icons.place, color: Colors.black),
-                          title: Text(tripDetails[index]['title']!),
-                          subtitle: Text(tripDetails[index]['address']!),
-                          trailing: IconButton(
-                            icon: Icon(Icons.more_vert),
-                            onPressed: () {
-                              // 추가 기능
-                            },
-                          ),
-                        ),
-                        if (index < tripDetails.length - 1)
-                          Row(
+                return Column(
+                  children: [
+                    // 여행지 카드
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center, 
+                      children: [   
+                        SizedBox(
+                          width: 40,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center, 
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 32.0),
-                                child: Icon(Icons.directions_bus, size: 20),
-                              ),
-                              Text('약 32분'), // 이동 시간 예시
+                              Icon(Icons.place, color: Colors.black),
+                              if (index < tripDetails.length - 1)
+                                Container(
+                                  height: 100,
+                                  width: 2,
+                                  color: Colors.grey,
+                                ),
                             ],
                           ),
+                        ),
+                        // 여행지 정보 카드
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 16.0),
+                            child: Card(
+                              color: Colors.white, 
+                              elevation: 4,
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.circular(15), 
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0), 
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            tripDetails[index]['title']!,
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                        IconButton(
+                                          icon: Icon(Icons.more_vert),
+                                          onPressed: () {
+                                            // 추가 기능
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 8),
+                                    Text(
+                                      tripDetails[index]['address']!,
+                                      style: TextStyle(
+                                          fontSize: 14, color: Colors.grey[600]),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
-                  ),
+                    if (index < tripDetails.length - 1)
+                      Padding(
+                        padding: const EdgeInsets.only(left: 40.0, top: 8.0),
+                        child: Row(
+                          children: [
+                            Icon(Icons.directions_bus, size: 20),
+                            SizedBox(width: 8),
+                            Text(
+                              '약 32분 소요',
+                              style: TextStyle(fontSize: 14),
+                            ),
+                          ],
+                        ),
+                      ),
+                  ],
                 );
               },
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -129,12 +187,5 @@ class _MapdetailPageState extends State<MapdetailPage> {
         ],
       ),
     );
-  }
-
- 
-  void addTripDetail(Map<String, String> detail) {
-    setState(() {
-      tripDetails.add(detail); 
-    });
   }
 }

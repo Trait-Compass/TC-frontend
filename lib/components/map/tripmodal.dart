@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../map/mapdetail.dart'; 
 
 class TripDetailModal extends StatelessWidget {
   final String imagePath;
@@ -26,7 +25,8 @@ class TripDetailModal extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
+              borderRadius:
+                  BorderRadius.vertical(top: Radius.circular(40)),
               child: Image.asset(
                 imagePath,
                 height: 200,
@@ -41,25 +41,23 @@ class TripDetailModal extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style:
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 8),
                   Text('경남 창원시 마산합포구 성호서7길 15-6'), // 예시 주소
                   SizedBox(height: 16),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment:
+                        MainAxisAlignment.spaceEvenly,
                     children: [
                       ElevatedButton(
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => MapdetailPage(
-                                title: title,
-                                address: '경남 창원시 마산합포구 성호서7길 15-6',
-                              ),
-                            ),
-                          );
+                          // 모달을 닫고 데이터를 반환
+                          Navigator.pop(context, {
+                            'title': title,
+                            'address': '경남 창원시 마산합포구 성호서7길 15-6',
+                          });
                         },
                         child: Text('추가하기'),
                         style: ElevatedButton.styleFrom(

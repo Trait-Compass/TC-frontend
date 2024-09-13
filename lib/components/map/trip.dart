@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http; // http 패키지 추가
-import 'dart:convert';
-import 'tripmodal.dart'; // 모달 파일 import
+import 'tripmodal.dart'; // TripDetailModal import
+import 'mapdetail.dart'; // MapdetailPage import
 
 class Trip extends StatefulWidget {
   @override
@@ -12,15 +11,18 @@ class _TripState extends State<Trip> {
   final TextEditingController _titleController = TextEditingController();
   FocusNode _titleFocusNode = FocusNode();
   String _searchText = '';
-  String _selectedRegion = '경상남도'; 
+  String _selectedRegion = '경상남도';
   List<String> _filteredRegions = [];
-  
+
   // 여행지 목록 예시 데이터
   final List<Map<String, String>> trips = [
-    {'image': '../assets/city1.png', 'title': '고부길 벽화마을'},
-    {'image': '../assets/city2.png', 'title': '산책로 공원'},
-    {'image': '../assets/city3.png', 'title': '역사 박물관'},
+    {'image': 'assets/city1.png', 'title': '고부길 벽화마을'},
+    {'image': 'assets/city2.png', 'title': '산책로 공원'},
+    {'image': 'assets/city3.png', 'title': '역사 박물관'},
   ];
+
+  // 여행지 리스트를 상태로 관리
+  List<Map<String, String>> tripDetails = [];
 
   @override
   void initState() {
@@ -29,7 +31,7 @@ class _TripState extends State<Trip> {
       setState(() {
         _searchText = _titleController.text;
         if (_searchText.isNotEmpty) {
-          _fetchRecommendations(_searchText); 
+          _fetchRecommendations(_searchText);
         } else {
           _filteredRegions.clear();
         }
@@ -97,18 +99,18 @@ class _TripState extends State<Trip> {
         ),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.only(bottom: 20), 
+        padding: EdgeInsets.only(bottom: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildSearchSection(),
             SizedBox(height: 20),
             _buildSection('추천 여행지'),
-            _buildHorizontalImageList(), // 추천 여행지 섹션
+            _buildHorizontalImageList(),
             _buildSection('인기 여행지'),
-            _buildHorizontalImageList(), // 인기 여행지 섹션
+            _buildHorizontalImageList(),
             _buildSection('ENTP 여행지'),
-            _buildHorizontalImageList(), // ENTP 여행지 섹션
+            _buildHorizontalImageList(),
           ],
         ),
       ),
@@ -122,7 +124,7 @@ class _TripState extends State<Trip> {
           height: 250,
           width: double.infinity,
           child: Image.asset(
-            '../assets/city2.png',
+            'assets/city2.png',
             fit: BoxFit.cover,
           ),
         ),
@@ -181,16 +183,16 @@ class _TripState extends State<Trip> {
         controller: _titleController,
         focusNode: _titleFocusNode,
         decoration: InputDecoration(
-            hintText: '경상남도를 입력 후 경상남도 지역을 검색하세요',
-            hintStyle: TextStyle(
+          hintText: '경상남도를 입력 후 경상남도 지역을 검색하세요',
+          hintStyle: TextStyle(
             color: Colors.grey,
             fontSize: 14,
-            ),
+          ),
           border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(vertical: 15),
           suffixIcon: Icon(Icons.search, color: Colors.grey),
         ),
-        onSubmitted: (_) { 
+        onSubmitted: (_) {
           setState(() {
             _filteredRegions.clear();
           });
@@ -245,21 +247,37 @@ class _TripState extends State<Trip> {
   Widget _buildHorizontalImageList() {
     return Container(
       height: 150,
-      padding: EdgeInsets.only(left: 18.0, right: 18.0), 
+      padding: EdgeInsets.only(left: 18.0, right: 18.0),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: trips.length, // trips 리스트 사용
+        itemCount: trips.length,
         itemBuilder: (context, index) {
           return GestureDetector(
             onTap: () {
               showDialog(
                 context: context,
-                barrierColor: Colors.black.withOpacity(0.5), 
+                barrierColor: Colors.black.withOpacity(0.5),
                 builder: (context) => TripDetailModal(
-                  imagePath: trips[index]['image']!, 
-                  title: trips[index]['title']!,   
+                  imagePath: trips[index]['image']!,
+                  title: trips[index]['title']!,
                 ),
-              );
+              ).then((result) {
+                if (result != null) {
+                  setState(() {
+                    // 모달에서 반환된 데이터를 리스트에 추가
+                    tripDetails.add(result);
+                  });
+                  // MapdetailPage로 이동하면서 리스트 전달
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MapdetailPage(
+                        tripDetails: tripDetails,
+                      ),
+                    ),
+                  );
+                }
+              });
             },
             child: _buildImageItem(trips[index]['image']!, trips[index]['title']!),
           );
