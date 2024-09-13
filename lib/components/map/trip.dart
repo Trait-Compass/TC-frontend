@@ -83,7 +83,7 @@ class _TripState extends State<Trip> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('여행지 추가', style: TextStyle(fontSize: 18, color: Colors.black)),
+        title: Text('여행지 추가', style: TextStyle(fontSize: 15, color: Colors.black)),
         backgroundColor: Colors.white,
         elevation: 0,
         flexibleSpace: Container(
