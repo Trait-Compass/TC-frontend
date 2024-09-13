@@ -37,7 +37,6 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
             _buildIntro(screenHeight),
             _buildTitle(screenHeight),
             _buildCalendarSection(screenHeight),
-            _buildActionButton(screenHeight),
             SizedBox(height: screenHeight * 0.02),
             BestCourseTop3(),
             SizedBox(height: screenHeight * 0.02),
@@ -117,32 +116,6 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
               child: CustomCalendar(onDatesSelected: _onDatesSelected),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildActionButton(double screenHeight) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: screenHeight * 0.03),
-      child: ElevatedButton(
-        onPressed: selectedDates.length == 2
-            ? () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        CourseGenerationPage(mbti: widget.mbti),
-                  ),
-                );
-              }
-            : null,
-        child: Text('완료'),
-        style: ElevatedButton.styleFrom(
-          backgroundColor:
-              selectedDates.length == 2 ? Colors.grey[800] : Colors.grey[400],
-          foregroundColor: Colors.white,
-          padding: EdgeInsets.symmetric(vertical: 5),
         ),
       ),
     );

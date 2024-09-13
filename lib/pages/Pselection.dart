@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:untitled/hooks/LocationAndPersonSelection.dart';
-import 'package:untitled/hooks/calendar.dart';
+import '../hooks/calendarforP.dart'; // 경로 확인 필수
 import '../components/basic_frame_page.dart';
 import '../hooks/top3course.dart';
 
@@ -12,7 +11,7 @@ class Pselection extends StatefulWidget {
 class _PselectionState extends State<Pselection> {
   List<DateTime> selectedDates = [];
 
-  void _onDatesSelected(List<DateTime> dates) {
+  void _onDatesSelected1(List<DateTime> dates) {
     setState(() {
       selectedDates = dates;
     });
@@ -27,11 +26,7 @@ class _PselectionState extends State<Pselection> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Divider(
-              color: Color(0xFFE4E4E4),
-              thickness: 1,
-              height: 1,
-            ),
+            Divider(color: Color(0xFFE4E4E4), thickness: 1, height: 1),
             SizedBox(height: 20),
             Row(
               children: [
@@ -46,7 +41,7 @@ class _PselectionState extends State<Pselection> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
-                      '자기만의 여행코스를 만들어보세요!:)',
+                      '자기만의 여행코스를 만들어보세요! :)',
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
@@ -76,10 +71,8 @@ class _PselectionState extends State<Pselection> {
                   children: [
                     Text(
                       'STEP 01 | 여행 기간 선택',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                      ),
+                      style:
+                          TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
                     ),
                     SizedBox(height: 10),
                     Container(
@@ -89,30 +82,11 @@ class _PselectionState extends State<Pselection> {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: CustomCalendar(
-                        onDatesSelected: _onDatesSelected,
+                      child: CustomCalendarSelection(
+                        onDatesSelected: _onDatesSelected1,
                       ),
                     ),
                     SizedBox(height: 10),
-                    ElevatedButton(
-                      onPressed: selectedDates.isNotEmpty
-                          ? () {
-                              Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) {
-                                return LocationAndPersonSelectionPage();
-                              }));
-                            }
-                          : null,
-                      child: Text('다음'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: selectedDates.isNotEmpty
-                            ? Colors.grey[800]
-                            : Colors.grey[400],
-                        foregroundColor: Colors.white,
-                        padding:
-                            EdgeInsets.symmetric(vertical: 15, horizontal: 30),
-                      ),
-                    ),
                   ],
                 ),
               ),
