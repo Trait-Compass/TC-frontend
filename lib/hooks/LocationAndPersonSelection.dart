@@ -39,17 +39,22 @@ class _LocationAndPersonSelectionPageState
 
   final List<String> groups = ['혼자', '커플', '친구', '친구들', '아이와 함께', '부모님과 함께'];
 
+  void _onGroupSelected(String group) {
+    setState(() {
+      selectedGroup = (selectedGroup == group) ? null : group; // 선택된 그룹을 토글
+      print('Selected group: $selectedGroup'); // 디버깅용 출력
+    });
+  }
+
   List<Widget> _buildGroupChips() {
     return groups.map((group) {
       return ChoiceChip(
         label: Text(group),
-        selected: selectedGroup == group,
+        selected: selectedGroup == group, // 현재 선택된 그룹과 비교하여 상태 설정
         backgroundColor: Colors.white,
-        selectedColor: Colors.grey[500],
-        onSelected: (selected) {
-          setState(() {
-            selectedGroup = group;
-          });
+        selectedColor: Color(0xFFD0D0D0), // 선택된 색상 유지
+        onSelected: (_) {
+          _onGroupSelected(group); // 선택 상태를 토글하는 콜백 호출
         },
       );
     }).toList();
@@ -83,7 +88,7 @@ class _LocationAndPersonSelectionPageState
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
-                      '자기만의 여행 코스를 만들어보세요!:)',
+                      '자기만의 여행 코스를 만들어보세요! :)',
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
@@ -135,6 +140,8 @@ class _LocationAndPersonSelectionPageState
                       onChanged: (value) {
                         setState(() {
                           selectedLocation = value;
+                          print(
+                              'Selected location: $selectedLocation'); // 디버깅용 출력
                         });
                       },
                     ),
@@ -154,21 +161,16 @@ class _LocationAndPersonSelectionPageState
                     ),
                     SizedBox(height: 20),
                     ElevatedButton(
-                      onPressed:
-                          selectedLocation != null && selectedGroup != null
-                              ? () {
-                                  Navigator.push(context,
-                                      MaterialPageRoute(builder: (context) {
-                                    return KeywordSelectionPage();
-                                  }));
-                                }
-                              : null,
+                      onPressed: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return KeywordSelectionPage();
+                        }));
+                      },
                       child: Text('완료'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor:
-                            selectedLocation != null && selectedGroup != null
-                                ? Colors.grey[800]
-                                : Colors.grey[400],
+                            Colors.grey[800], // 버튼의 배경색을 항상 활성화된 상태의 색으로 설정
                         foregroundColor: Colors.white,
                         padding:
                             EdgeInsets.symmetric(vertical: 15, horizontal: 30),
