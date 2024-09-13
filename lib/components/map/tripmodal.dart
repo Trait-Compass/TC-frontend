@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import '../map/mapdetail.dart'; 
 
 class TripDetailModal extends StatelessWidget {
-  final String imagePath; 
-  final String title;     
+  final String imagePath;
+  final String title;
 
   TripDetailModal({required this.imagePath, required this.title});
 
@@ -10,24 +11,24 @@ class TripDetailModal extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(40),  
+        borderRadius: BorderRadius.circular(40),
       ),
-      backgroundColor: Colors.transparent, 
+      backgroundColor: Colors.transparent,
       elevation: 0,
       contentPadding: EdgeInsets.zero,
       content: Container(
         width: MediaQuery.of(context).size.width * 0.7,
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(40),  
+          borderRadius: BorderRadius.circular(40),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(40)),  
+              borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
               child: Image.asset(
-                imagePath, 
+                imagePath,
                 height: 200,
                 width: double.infinity,
                 fit: BoxFit.cover,
@@ -39,7 +40,7 @@ class TripDetailModal extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    title, 
+                    title,
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 8),
@@ -50,7 +51,15 @@ class TripDetailModal extends StatelessWidget {
                     children: [
                       ElevatedButton(
                         onPressed: () {
-                          // 추가하기 버튼 기능 추가
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MapdetailPage(
+                                title: title,
+                                address: '경남 창원시 마산합포구 성호서7길 15-6',
+                              ),
+                            ),
+                          );
                         },
                         child: Text('추가하기'),
                         style: ElevatedButton.styleFrom(
@@ -60,7 +69,7 @@ class TripDetailModal extends StatelessWidget {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          Navigator.pop(context); 
+                          Navigator.pop(context);
                         },
                         child: Text('취소'),
                         style: ElevatedButton.styleFrom(
