@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+// import '../map/mapresult.dart'; // 필요에 따라 import
 
 class MapdetailPage extends StatefulWidget {
-  final List<Map<String, String>> tripDetails;
+  final Map<int, List<Map<String, String>>> tripDetails;
 
   MapdetailPage({required this.tripDetails});
 
@@ -11,26 +12,83 @@ class MapdetailPage extends StatefulWidget {
 
 class _MapdetailPageState extends State<MapdetailPage> {
   int selectedDayIndex = 0;
-  late List<Map<String, String>> tripDetails;
 
-  @override
-  void initState() {
-    super.initState();
-    // 전달받은 리스트를 상태로 초기화
-    tripDetails = widget.tripDetails;
+  void _showConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(40),
+          ),
+          content: Container(
+            height: 200,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  '저장하시겠습니까?',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 60),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        // 저장 로직 추가
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(
+                        '네, 저장할게요!',
+                        style: TextStyle(color: Colors.grey[600]),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        // 다음에 수정하기 로직 추가
+                        Navigator.of(context).pop(); // Dialog 닫기
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => Mapresult(),
+                        //   ),
+                        // );
+                      },
+                      child: Text(
+                        '아니요, 다음에 수정할게요!',
+                        style: TextStyle(color: Colors.grey[600]),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    // 선택한 날짜의 여행지 리스트 가져오기
+    List<Map<String, String>> currentTripDetails =
+        widget.tripDetails[selectedDayIndex] ?? [];
+
     return Scaffold(
-      backgroundColor: Colors.white, // 배경 흰색 유지
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('내 일정', style: TextStyle(fontSize: 15, color: Colors.black)),
+        title:
+            Text('내 일정', style: TextStyle(fontSize: 15, color: Colors.black)),
         actions: [
           TextButton(
-            onPressed: () {
-              // 완료 버튼 기능 추가
-            },
+            onPressed: _showConfirmationDialog,
             child: Text(
               '완료',
               style: TextStyle(fontSize: 12, color: Colors.black),
@@ -71,22 +129,22 @@ class _MapdetailPageState extends State<MapdetailPage> {
           // 여행지 리스트
           Expanded(
             child: ListView.builder(
-              itemCount: tripDetails.length,
+              itemCount: currentTripDetails.length,
               itemBuilder: (context, index) {
                 return Column(
                   children: [
                     // 여행지 카드
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.center, // 아이콘과 카드 수직 중앙 정렬
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         // 아이콘 및 세로선
                         SizedBox(
                           width: 40,
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center, // 아이콘 수직 중앙 정렬
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Icon(Icons.place, color: Colors.black),
-                              if (index < tripDetails.length - 1)
+                              if (index < currentTripDetails.length - 1)
                                 Container(
                                   height: 100,
                                   width: 2,
@@ -100,16 +158,16 @@ class _MapdetailPageState extends State<MapdetailPage> {
                           child: Padding(
                             padding: const EdgeInsets.only(right: 16.0),
                             child: Card(
-                              color: Colors.white, // 배경을 흰색으로 설정
+                              color: Colors.white,
                               elevation: 4,
                               shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.circular(15), // 모서리 반경 증가
+                                borderRadius: BorderRadius.circular(15),
                               ),
                               child: Padding(
-                                padding: const EdgeInsets.all(16.0), // 내부 패딩 추가
+                                padding: const EdgeInsets.all(16.0),
                                 child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.start,
                                   children: [
                                     // 여행지 이름과 메뉴 버튼
                                     Row(
@@ -118,7 +176,8 @@ class _MapdetailPageState extends State<MapdetailPage> {
                                       children: [
                                         Expanded(
                                           child: Text(
-                                            tripDetails[index]['title']!,
+                                            currentTripDetails[index]
+                                                ['title']!,
                                             style: TextStyle(
                                                 fontSize: 18,
                                                 fontWeight: FontWeight.bold),
@@ -126,23 +185,27 @@ class _MapdetailPageState extends State<MapdetailPage> {
                                         ),
                                         PopupMenuButton<String>(
                                           icon: Icon(Icons.more_vert),
-                                           color: Colors.white,  // 팝업 메뉴의 배경색 설정
-  shape: RoundedRectangleBorder( // 모서리 둥글게 설정
-    borderRadius: BorderRadius.circular(8.0),
-  ),
-  offset: Offset(0, 10),  // 팝업 메뉴의 위치를 약간 아래로 이동
-  // constraints: BoxConstraints( // 팝업 메뉴의 크기 조절
-  //   maxHeight: 40// 높이 조정
-  
+                                          color: Colors.white,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8.0),
+                                          ),
+                                          offset: Offset(0, 10),
                                           onSelected: (value) {
                                             if (value == 'delete') {
                                               setState(() {
-                                                tripDetails.removeAt(index);
+                                                currentTripDetails
+                                                    .removeAt(index);
+                                                // 삭제 후 데이터 업데이트
+                                                widget.tripDetails[
+                                                        selectedDayIndex] =
+                                                    currentTripDetails;
                                               });
                                             }
                                           },
-                                          itemBuilder: (BuildContext context) =>
-                                              <PopupMenuEntry<String>>[
+                                          itemBuilder:
+                                              (BuildContext context) =>
+                                                  <PopupMenuEntry<String>>[
                                             PopupMenuItem<String>(
                                               value: 'delete',
                                               child: Container(
@@ -152,7 +215,8 @@ class _MapdetailPageState extends State<MapdetailPage> {
                                                 decoration: BoxDecoration(
                                                   color: Colors.white,
                                                   borderRadius:
-                                                      BorderRadius.circular(8.0),
+                                                      BorderRadius.circular(
+                                                          8.0),
                                                 ),
                                                 child: Text(
                                                   '삭제하기',
@@ -170,9 +234,10 @@ class _MapdetailPageState extends State<MapdetailPage> {
                                     SizedBox(height: 8),
                                     // 주소
                                     Text(
-                                      tripDetails[index]['address']!,
+                                      currentTripDetails[index]['address']!,
                                       style: TextStyle(
-                                          fontSize: 14, color: Colors.grey[600]),
+                                          fontSize: 14,
+                                          color: Colors.grey[600]),
                                     ),
                                   ],
                                 ),
@@ -183,9 +248,10 @@ class _MapdetailPageState extends State<MapdetailPage> {
                       ],
                     ),
                     // 이동 시간 표시
-                    if (index < tripDetails.length - 1)
+                    if (index < currentTripDetails.length - 1)
                       Padding(
-                        padding: const EdgeInsets.only(left: 40.0, top: 8.0),
+                        padding:
+                            const EdgeInsets.only(left: 40.0, top: 8.0),
                         child: Row(
                           children: [
                             Icon(Icons.directions_bus, size: 20),
