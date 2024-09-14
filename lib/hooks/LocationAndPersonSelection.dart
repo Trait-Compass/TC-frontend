@@ -37,27 +37,15 @@ class _LocationAndPersonSelectionPageState
     ];
   }
 
-  final List<String> groups = ['혼자', '커플', '친구', '친구들', '아이와 함께', '부모님과 함께'];
-
-  void _onGroupSelected(String group) {
-    setState(() {
-      selectedGroup = (selectedGroup == group) ? null : group; // 선택된 그룹을 토글
-      print('Selected group: $selectedGroup'); // 디버깅용 출력
-    });
-  }
-
-  List<Widget> _buildGroupChips() {
-    return groups.map((group) {
-      return ChoiceChip(
-        label: Text(group),
-        selected: selectedGroup == group, // 현재 선택된 그룹과 비교하여 상태 설정
-        backgroundColor: Colors.white,
-        selectedColor: Color(0xFFD0D0D0), // 선택된 색상 유지
-        onSelected: (_) {
-          _onGroupSelected(group); // 선택 상태를 토글하는 콜백 호출
-        },
-      );
-    }).toList();
+  List<DropdownMenuItem<String>> _buildGroupItems() {
+    return [
+      DropdownMenuItem(value: '혼자', child: Text('혼자')),
+      DropdownMenuItem(value: '커플', child: Text('커플')),
+      DropdownMenuItem(value: '친구', child: Text('친구')),
+      DropdownMenuItem(value: '친구들', child: Text('친구들')),
+      DropdownMenuItem(value: '아이와 함께', child: Text('아이와 함께')),
+      DropdownMenuItem(value: '부모님과 함께', child: Text('부모님과 함께')),
+    ];
   }
 
   @override
@@ -154,23 +142,43 @@ class _LocationAndPersonSelectionPageState
                       ),
                     ),
                     SizedBox(height: 10),
-                    Wrap(
-                      spacing: 10.0,
-                      runSpacing: 10.0,
-                      children: _buildGroupChips(),
+                    DropdownButtonFormField<String>(
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                      dropdownColor: Colors.white,
+                      value: selectedGroup,
+                      hint: Text('인원을 선택하세요'),
+                      items: _buildGroupItems(),
+                      onChanged: (value) {
+                        setState(() {
+                          selectedGroup = value;
+                          print('Selected group: $selectedGroup'); // 디버깅용 출력
+                        });
+                      },
                     ),
                     SizedBox(height: 20),
                     ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
-                          return KeywordSelectionPage();
-                        }));
-                      },
+                      onPressed:
+                          (selectedLocation != null && selectedGroup != null)
+                              ? () {
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) {
+                                    return KeywordSelectionPage();
+                                  }));
+                                }
+                              : null, // 두 값이 모두 선택되지 않으면 버튼 비활성화
                       child: Text('완료'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor:
-                            Colors.grey[800], // 버튼의 배경색을 항상 활성화된 상태의 색으로 설정
+                            (selectedLocation != null && selectedGroup != null)
+                                ? Colors.grey[800] // 버튼의 배경색을 활성화된 상태의 색으로 설정
+                                : Colors.grey[400], // 비활성화된 상태의 색으로 설정
                         foregroundColor: Colors.white,
                         padding:
                             EdgeInsets.symmetric(vertical: 15, horizontal: 30),
