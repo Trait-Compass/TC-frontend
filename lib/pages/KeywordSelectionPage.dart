@@ -3,6 +3,7 @@ import 'package:untitled/pages/coursemakej.dart';
 // import 'package:untitled/pages/coursemake.dart';
 import '../hooks/top3course.dart'; // Top3Courses를 가져오는 부분 추가
 import '../components/basic_frame_page.dart'; // BasicFramePage 임포트
+import '../components/map/MapPage.dart';
 
 class KeywordSelectionPage extends StatefulWidget {
   @override
@@ -16,6 +17,12 @@ class _KeywordSelectionPageState extends State<KeywordSelectionPage> {
     '느긋하게': ['자연', '산', '강', '공원', '경치'],
     '신나게': ['축제', '놀이공원', '레포츠', '야경', '전시'],
     '색다르게': ['체험', '역사', '드라이브', '시장', '항구', '마을'],
+  };
+
+  Map<String, String?> selectedKeywordsByGroup = {
+    '느긋하게': null,
+    '신나게': null,
+    '색다르게': null,
   };
 
   @override
@@ -46,7 +53,7 @@ class _KeywordSelectionPageState extends State<KeywordSelectionPage> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
-                      '자기만의 여행 코스를 만들어보세요!:)',
+                      '자기만의 여행 코스를 만들어보세요! :)',
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
@@ -82,7 +89,7 @@ class _KeywordSelectionPageState extends State<KeywordSelectionPage> {
                       ),
                     ),
                     SizedBox(height: 10),
-                    // 키워드 그룹별로 UI 생성
+                    // 키워드 그룹별로 드롭다운 생성
                     ...keywordGroups.entries.map((entry) {
                       String groupTitle = entry.key;
                       List<String> groupKeywords = entry.value;
@@ -98,52 +105,50 @@ class _KeywordSelectionPageState extends State<KeywordSelectionPage> {
                             ),
                           ),
                           SizedBox(height: 10),
-                          Wrap(
-                            spacing: 10,
-                            runSpacing: 10,
-                            children: groupKeywords.map((keyword) {
-                              return FilterChip(
-                                label: Text(keyword),
-                                selected: selectedKeywords.contains(keyword),
-                                onSelected: (bool selected) {
-                                  setState(() {
-                                    if (selected) {
-                                      selectedKeywords.add(keyword);
-                                    } else {
-                                      selectedKeywords.remove(keyword);
-                                    }
-                                  });
-                                },
-                                selectedColor: Colors.grey[800],
-                                backgroundColor: Colors.grey[200],
-                                labelStyle: TextStyle(
-                                  color: selectedKeywords.contains(keyword)
-                                      ? Colors.white
-                                      : Colors.black,
-                                ),
+                          DropdownButtonFormField<String>(
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.white,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide.none,
+                              ),
+                            ),
+                            dropdownColor: Colors.white,
+                            value: selectedKeywordsByGroup[groupTitle],
+                            hint: Text('키워드를 선택하세요'),
+                            items: groupKeywords.map((keyword) {
+                              return DropdownMenuItem<String>(
+                                value: keyword,
+                                child: Text(keyword),
                               );
                             }).toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                selectedKeywordsByGroup[groupTitle] = value;
+                                if (value != null &&
+                                    !selectedKeywords.contains(value)) {
+                                  selectedKeywords.add(value);
+                                }
+                              });
+                            },
                           ),
                           SizedBox(height: 20),
                         ],
                       );
                     }).toList(),
                     ElevatedButton(
-                      onPressed: selectedKeywords.isNotEmpty
-                          ? () {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => Coursemakej(),
-                                ),
-                              );
-                            }
-                          : null,
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Coursemakej(),
+                          ),
+                        );
+                      }, // 항상 버튼 활성화
                       child: Text('AI에게 추천코스 받기'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: selectedKeywords.isNotEmpty
-                            ? Colors.grey[800]
-                            : Colors.grey[400],
+                        backgroundColor: Colors.grey[800],
                         foregroundColor: Colors.white,
                         padding:
                             EdgeInsets.symmetric(vertical: 15, horizontal: 30),
@@ -151,16 +156,18 @@ class _KeywordSelectionPageState extends State<KeywordSelectionPage> {
                     ),
                     SizedBox(height: 10),
                     ElevatedButton(
-                      onPressed: selectedKeywords.isNotEmpty
-                          ? () {
-                              // 선택된 키워드를 이용해 코스를 만들어야 함
-                            }
-                          : null,
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MapPage(),
+                          ),
+                        );
+                        // 선택된 키워드를 이용해 코스를 만들어야 함
+                      }, // 항상 버튼 활성화
                       child: Text('직접 코스 만들기'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: selectedKeywords.isNotEmpty
-                            ? Colors.grey[800]
-                            : Colors.grey[400],
+                        backgroundColor: Colors.grey[800],
                         foregroundColor: Colors.white,
                         padding:
                             EdgeInsets.symmetric(vertical: 15, horizontal: 30),

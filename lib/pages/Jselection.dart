@@ -94,26 +94,6 @@ class _JselectionState extends State<Jselection> {
                         onDatesSelected: _onDatesSelected,
                       ),
                     ),
-                    SizedBox(height: 10),
-                    ElevatedButton(
-                      onPressed: selectedDates.isNotEmpty
-                          ? () {
-                              Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) {
-                                return LocationAndPersonSelectionJ();
-                              }));
-                            }
-                          : null,
-                      child: Text('다음'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: selectedDates.isNotEmpty
-                            ? Colors.grey[800]
-                            : Colors.grey[400],
-                        foregroundColor: Colors.white,
-                        padding:
-                            EdgeInsets.symmetric(vertical: 15, horizontal: 30),
-                      ),
-                    ),
                   ],
                 ),
               ),

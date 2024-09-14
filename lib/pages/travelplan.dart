@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:untitled/pages/Jselection.dart';
 import 'package:untitled/pages/Pselection.dart';
-import '../hooks/top3course.dart';  
+import '../hooks/top3course.dart';
 
 class MyNewPage extends StatefulWidget {
   @override
@@ -44,7 +44,7 @@ class _MyNewPageState extends State<MyNewPage> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
-                      '자기만의 여행코스를 만들어보세요!:)',
+                      '자기만의 여행코스를 만들어보세요! :)',
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
@@ -76,6 +76,7 @@ class _MyNewPageState extends State<MyNewPage> {
                         Expanded(
                           child: Container(
                             padding: EdgeInsets.all(10),
+                            height: 230, // 고정된 높이 설정
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(15),
@@ -99,6 +100,7 @@ class _MyNewPageState extends State<MyNewPage> {
                                   borderRadius: BorderRadius.circular(15),
                                 ),
                                 child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Text(
                                       'P',
@@ -107,12 +109,14 @@ class _MyNewPageState extends State<MyNewPage> {
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    SizedBox(height: 10),
-                                    Text('# 계획은 귀찮아',style: TextStyle(fontSize: 10)),
-                                    Text('# 즉흥적 # AI 추천',style: TextStyle(fontSize: 10) ),
                                     Text('# 계획은 귀찮아',
-                                        style: TextStyle(fontSize: 8)),
-                                    Text('# 즉흥적 # AI 추천'),
+                                        style: TextStyle(fontSize: 10)),
+                                    Text('# 즉흥적 # AI 추천',
+                                        style: TextStyle(fontSize: 10)),
+                                    Text('# 계획은 귀찮아',
+                                        style: TextStyle(fontSize: 10)),
+                                    Text('# 즉흥적 # AI 추천',
+                                        style: TextStyle(fontSize: 10)),
                                   ],
                                 ),
                               ),
@@ -123,6 +127,7 @@ class _MyNewPageState extends State<MyNewPage> {
                         Expanded(
                           child: Container(
                             padding: EdgeInsets.all(10),
+                            height: 230, // 고정된 높이 설정
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(15),
@@ -146,6 +151,7 @@ class _MyNewPageState extends State<MyNewPage> {
                                   borderRadius: BorderRadius.circular(15),
                                 ),
                                 child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Text(
                                       'J',
@@ -154,9 +160,10 @@ class _MyNewPageState extends State<MyNewPage> {
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    SizedBox(height: 10),
-                                    Text('# 계획을 즐기는',style: TextStyle(fontSize: 10)),
-                                    Text('# 체계적 # 역설정',style: TextStyle(fontSize: 10) ),
+                                    Text('# 계획을 즐기는',
+                                        style: TextStyle(fontSize: 10)),
+                                    Text('# 체계적 # 역설정',
+                                        style: TextStyle(fontSize: 10)),
                                   ],
                                 ),
                               ),

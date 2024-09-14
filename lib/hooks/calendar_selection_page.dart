@@ -27,7 +27,7 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
 
-    print('Building CalendarSelectionPage with selectedDates: $selectedDates'); 
+    print('Building CalendarSelectionPage with selectedDates: $selectedDates');
 
     return BasicFramePage(
       body: SingleChildScrollView(
@@ -122,5 +122,4 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
       ),
     );
   }
-}
 }
