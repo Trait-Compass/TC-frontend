@@ -1,25 +1,27 @@
 import 'package:flutter/material.dart';
-// import 'package:share_plus/share_plus.dart'; // 패키지 임포트
 import '../map/trip.dart';
 
-class MapPage extends StatefulWidget { 
+class MapPage extends StatefulWidget {
   @override
   _MapPageState createState() => _MapPageState();
 }
 
 class _MapPageState extends State<MapPage> {
-  int selectedDayIndex = 0; 
+  int selectedDayIndex = 0;
+
+  // 날짜별 여행지 리스트를 관리하기 위한 변수
+  Map<int, List<Map<String, String>>> tripDetails = {};
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('내 일정', style: TextStyle(fontSize: 15)), 
+        title: Text('내 일정', style: TextStyle(fontSize: 15)),
         actions: [
           TextButton(
             onPressed: () {
-              // Add functionality here
+              // 완료 버튼 기능 추가
             },
             child: Text(
               '완료',
@@ -33,6 +35,7 @@ class _MapPageState extends State<MapPage> {
       ),
       body: Column(
         children: [
+          // 날짜 선택 부분
           Container(
             height: 50,
             child: ListView(
@@ -61,7 +64,22 @@ class _MapPageState extends State<MapPage> {
             child: Center(
               child: GestureDetector(
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => Trip()));
+                  // Trip 페이지로 이동할 때 선택한 날짜 인덱스와 현재의 tripDetails를 전달
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Trip(
+                        selectedDayIndex: selectedDayIndex,
+                        tripDetails: tripDetails,
+                      ),
+                    ),
+                  ).then((result) {
+                    if (result != null) {
+                      setState(() {
+                        tripDetails = result;
+                      });
+                    }
+                  });
                 },
                 child: Container(
                   width: 150,
@@ -85,34 +103,14 @@ class _MapPageState extends State<MapPage> {
               ),
             ),
           ),
+          // 하단 수정하기 및 공유하기 버튼 (필요에 따라 추가)
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.end, 
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Column(
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.edit),
-                      onPressed: () {
-                        // 수정 기능 추가
-                      },
-                    ),
-                    Text('수정하기', style: TextStyle(fontSize: 12)),
-                  ],
-                ),
-                SizedBox(width: 20), 
-                Column(
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.share),
-                      onPressed: () {
-                      // Share.share('YOUR_SHARE_URL', subject: 'MBTI');
-                      },
-                    ),
-                    Text('공유하기', style: TextStyle(fontSize: 12)),
-                  ],
-                ),
+                // 수정하기 및 공유하기 버튼 추가 가능
               ],
             ),
           ),

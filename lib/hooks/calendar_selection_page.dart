@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../components/basic_frame_page.dart';
 import '../hooks/calendar.dart';
-import '../pages/course_generation_page.dart';
 import '../pages/BestCourseTop3.dart';
 import '../pages/GyeongNamRecommend.dart';
 
@@ -20,12 +19,15 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
   void _onDatesSelected(List<DateTime> dates) {
     setState(() {
       selectedDates = dates;
+      print('Selected dates: $selectedDates'); // 디버그 메시지 추가
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
+
+    print('Building CalendarSelectionPage with selectedDates: $selectedDates'); 
 
     return BasicFramePage(
       body: SingleChildScrollView(
@@ -120,4 +122,5 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
       ),
     );
   }
+}
 }
