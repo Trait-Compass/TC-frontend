@@ -20,6 +20,61 @@ class _MapdetailPageState extends State<MapdetailPage> {
     tripDetails = widget.tripDetails;
   }
 
+  void _showConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(40),
+          ),
+          content: Container(
+            height: 200,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  '저장하시겠습니까?',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 60),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(); 
+                      },
+                      child: Text(
+                        '네, 저장할게요!',
+                        style: TextStyle(color: Colors.grey[600]),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        // 저장 기능 추가
+                        Navigator.of(context).pop(); // Dialog 닫기
+                      },
+                      child: Text(
+                        '아니요, 다음에 수정할게요!',
+                        style: TextStyle(color: Colors.grey[600]),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,9 +83,7 @@ class _MapdetailPageState extends State<MapdetailPage> {
         title: Text('내 일정', style: TextStyle(fontSize: 15, color: Colors.black)),
         actions: [
           TextButton(
-            onPressed: () {
-              // 완료 버튼 기능 추가
-            },
+            onPressed: _showConfirmationDialog, // 완료 버튼 기능 추가
             child: Text(
               '완료',
               style: TextStyle(fontSize: 12, color: Colors.black),
@@ -126,14 +179,11 @@ class _MapdetailPageState extends State<MapdetailPage> {
                                         ),
                                         PopupMenuButton<String>(
                                           icon: Icon(Icons.more_vert),
-                                           color: Colors.white,  // 팝업 메뉴의 배경색 설정
-  shape: RoundedRectangleBorder( // 모서리 둥글게 설정
-    borderRadius: BorderRadius.circular(8.0),
-  ),
-  offset: Offset(0, 10),  // 팝업 메뉴의 위치를 약간 아래로 이동
-  // constraints: BoxConstraints( // 팝업 메뉴의 크기 조절
-  //   maxHeight: 40// 높이 조정
-  
+                                          color: Colors.white,  // 팝업 메뉴의 배경색 설정
+                                          shape: RoundedRectangleBorder( // 모서리 둥글게 설정
+                                            borderRadius: BorderRadius.circular(8.0),
+                                          ),
+                                          offset: Offset(0, 10),  // 팝업 메뉴의 위치를 약간 아래로 이동
                                           onSelected: (value) {
                                             if (value == 'delete') {
                                               setState(() {
