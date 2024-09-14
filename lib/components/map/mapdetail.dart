@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../map/mapresult.dart'; 
 
 class MapdetailPage extends StatefulWidget {
   final List<Map<String, String>> tripDetails;
@@ -48,7 +49,7 @@ class _MapdetailPageState extends State<MapdetailPage> {
                   children: [
                     TextButton(
                       onPressed: () {
-                        Navigator.of(context).pop(); 
+                        Navigator.of(context).pop();
                       },
                       child: Text(
                         '네, 저장할게요!',
@@ -57,8 +58,14 @@ class _MapdetailPageState extends State<MapdetailPage> {
                     ),
                     TextButton(
                       onPressed: () {
-                        // 저장 기능 추가
+                        // "아니요, 다음에 수정할게요!" 버튼을 누르면 Mapresult 페이지로 이동
                         Navigator.of(context).pop(); // Dialog 닫기
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Mapresult(), // Mapresult 페이지로 이동
+                          ),
+                        );
                       },
                       child: Text(
                         '아니요, 다음에 수정할게요!',
@@ -156,8 +163,7 @@ class _MapdetailPageState extends State<MapdetailPage> {
                               color: Colors.white, // 배경을 흰색으로 설정
                               elevation: 4,
                               shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.circular(15), // 모서리 반경 증가
+                                borderRadius: BorderRadius.circular(15), // 모서리 반경 증가
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.all(16.0), // 내부 패딩 추가
