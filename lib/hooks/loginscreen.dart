@@ -19,7 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final FlutterSecureStorage secureStorage = FlutterSecureStorage();  
   bool _isRememberMeChecked = false;
   String _userInfo = '';
-  String? _accessToken;  // AccessToken 저장할 변수 추가
+  String? _accessToken;  
 
   // 로그인 API 호출 메서드
   Future<void> _login() async {
@@ -71,12 +71,14 @@ class _LoginScreenState extends State<LoginScreen> {
           SnackBar(content: Text('아이디와 비밀번호를 확인해주세요')),
         );
       }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('로그인 중 오류가 발생했습니다 다시 한번 시도해주세요')),
-      );
-    }
-  }
+ } catch (e, stacktrace) {
+  print('Exception during login: $e');
+  print('Stack trace: $stacktrace');
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text('로그인 중 오류가 발생했습니다 다시 한번 시도해주세요')),
+  );
+}
+}
 
   // 카카오 로그인 후 서버로 토큰 전송
   Future<void> _signInWithKakao() async {
