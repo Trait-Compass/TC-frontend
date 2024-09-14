@@ -45,7 +45,7 @@ class TripDetailModal extends StatelessWidget {
                         TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 8),
-                  Text('경남 창원시 마산합포구 성호서7길 15-6'), // 예시 주소
+                  Text('예시 주소입니다.'), // 예시 주소
                   SizedBox(height: 16),
                   Row(
                     mainAxisAlignment:
@@ -56,7 +56,7 @@ class TripDetailModal extends StatelessWidget {
                           // 모달을 닫고 데이터를 반환
                           Navigator.pop(context, {
                             'title': title,
-                            'address': '경남 창원시 마산합포구 성호서7길 15-6',
+                            'address': '예시 주소입니다.',
                           });
                         },
                         child: Text('추가하기'),

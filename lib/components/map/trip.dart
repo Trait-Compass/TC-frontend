@@ -3,6 +3,11 @@ import 'tripmodal.dart'; // TripDetailModal import
 import 'mapdetail.dart'; // MapdetailPage import
 
 class Trip extends StatefulWidget {
+  final int selectedDayIndex;
+  final Map<int, List<Map<String, String>>> tripDetails;
+
+  Trip({required this.selectedDayIndex, required this.tripDetails});
+
   @override
   _TripState createState() => _TripState();
 }
@@ -20,9 +25,6 @@ class _TripState extends State<Trip> {
     {'image': 'assets/city2.png', 'title': '산책로 공원'},
     {'image': 'assets/city3.png', 'title': '역사 박물관'},
   ];
-
-  // 여행지 리스트를 상태로 관리
-  List<Map<String, String>> tripDetails = [];
 
   @override
   void initState() {
@@ -50,21 +52,7 @@ class _TripState extends State<Trip> {
     List<String> allRegions = [
       '경상남도 창원시',
       '경상남도 김해시',
-      '경상남도 진주시',
-      '경상남도 양산시',
-      '경상남도 사천시',
-      '경상남도 밀양시',
-      '경상남도 통영시',
-      '경상남도 거제시',
-      '경상남도 함안군',
-      '경상남도 창녕군',
-      '경상남도 고성군',
-      '경상남도 남해군',
-      '경상남도 하동군',
-      '경상남도 산청군',
-      '경상남도 함양군',
-      '경상남도 거창군',
-      '경상남도 합천군'
+      // 기타 지역 추가
     ];
 
     setState(() {
@@ -83,7 +71,8 @@ class _TripState extends State<Trip> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('여행지 추가', style: TextStyle(fontSize: 15, color: Colors.black)),
+        title:
+            Text('여행지 추가', style: TextStyle(fontSize: 15, color: Colors.black)),
         backgroundColor: Colors.white,
         elevation: 0,
         flexibleSpace: Container(
@@ -94,7 +83,8 @@ class _TripState extends State<Trip> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
-            Navigator.pop(context);
+            // 이전 페이지로 돌아갈 때 tripDetails를 반환
+            Navigator.pop(context, widget.tripDetails);
           },
         ),
       ),
@@ -264,15 +254,18 @@ class _TripState extends State<Trip> {
               ).then((result) {
                 if (result != null) {
                   setState(() {
-                    // 모달에서 반환된 데이터를 리스트에 추가
-                    tripDetails.add(result);
+                    int dayIndex = widget.selectedDayIndex;
+                    if (!widget.tripDetails.containsKey(dayIndex)) {
+                      widget.tripDetails[dayIndex] = [];
+                    }
+                    widget.tripDetails[dayIndex]!.add(result);
                   });
-                  // MapdetailPage로 이동하면서 리스트 전달
+                  // MapdetailPage로 이동하면서 tripDetails 전달
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => MapdetailPage(
-                        tripDetails: tripDetails,
+                        tripDetails: widget.tripDetails,
                       ),
                     ),
                   );
