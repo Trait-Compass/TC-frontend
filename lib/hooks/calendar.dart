@@ -240,7 +240,6 @@ class _CustomCalendarState extends State<CustomCalendar> {
                       MaterialPageRoute(
                         builder: (context) =>
                             CourseGenerationPage(mbti: 'mbti'),
-                        builder: (context) => CourseGenerationPage(mbti: 'mbti'), 
                       ),
                     );
                   }
