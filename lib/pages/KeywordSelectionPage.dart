@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:untitled/pages/coursemakej.dart';
-// import 'package:untitled/pages/coursemake.dart';
-import '../hooks/top3course.dart'; // Top3Courses를 가져오는 부분 추가
-import '../components/basic_frame_page.dart'; // BasicFramePage 임포트
+import '../hooks/top3course.dart'; 
+import '../components/start/basicframe2.dart';
 import '../components/map/MapPage.dart';
 
 class KeywordSelectionPage extends StatefulWidget {

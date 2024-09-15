@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-// import '../map/mapresult.dart'; // 필요에 따라 import
+import '../map/mapresult.dart'; // 필요에 따라 import
 
 class MapdetailPage extends StatefulWidget {
   final Map<int, List<Map<String, String>>> tripDetails;
@@ -53,12 +53,12 @@ class _MapdetailPageState extends State<MapdetailPage> {
                       onPressed: () {
                         // 다음에 수정하기 로직 추가
                         Navigator.of(context).pop(); // Dialog 닫기
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) => Mapresult(),
-                        //   ),
-                        // );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Mapresult(),
+                          ),
+                        );
                       },
                       child: Text(
                         '아니요, 다음에 수정할게요!',
