@@ -3,7 +3,7 @@ import 'dart:convert';
 
 class ApiService {
   static final String baseUrl = 'https://www.traitcompass.store';
-  static String? _accessToken; 
+  static String? _accessToken; // AccessToken을 스태틱으로 변경
 
   // AccessToken 설정 메서드 (static)
   static void setAccessToken(String token) {
@@ -50,88 +50,44 @@ class ApiService {
     return response;
   }
 
-  // POST 요청 메서드 (static)
-  static Future<http.Response> post(String endpoint, {Map<String, dynamic>? body}) async {
-    final url = Uri.parse('$baseUrl$endpoint');
-    final headers = _createHeaders();
-
-    // 로그 출력
-    _logRequest('POST', url.toString(), headers, body);
-
-    final response = await http.post(
-      url,
-      headers: headers,
-      body: body != null ? jsonEncode(body) : null,
-    );
-
-    print('Response status code: ${response.statusCode}');
-    print('Response body: ${response.body}');
-
-    return response;
-  }
-
-  // PUT 요청 메서드 (static)
-  static Future<http.Response> put(String endpoint, {Map<String, dynamic>? body}) async {
-    final url = Uri.parse('$baseUrl$endpoint');
-    final headers = _createHeaders();
-
-    // 로그 출력
-    _logRequest('PUT', url.toString(), headers, body);
-
-    final response = await http.put(
-      url,
-      headers: headers,
-      body: body != null ? jsonEncode(body) : null,
-    );
-
-    print('Response status code: ${response.statusCode}');
-    print('Response body: ${response.body}');
-
-    return response;
-  }
-
-  // DELETE 요청 메서드 (static)
-  static Future<http.Response> delete(String endpoint, {Map<String, dynamic>? body}) async {
-    final url = Uri.parse('$baseUrl$endpoint');
-    final headers = _createHeaders();
-
-    // 로그 출력
-    _logRequest('DELETE', url.toString(), headers, body);
-
-    final response = await http.delete(
-      url,
-      headers: headers,
-      body: body != null ? jsonEncode(body) : null,
-    );
-
-    print('Response status code: ${response.statusCode}');
-    print('Response body: ${response.body}');
-
-    return response;
-  }
-
   // 추천 여행지 API 호출 (static)
   static Future<List<Map<String, dynamic>>> fetchRecommendedSpots(String location) async {
     final response = await get('/spot/recommand', params: {'location': location});
 
     if (response.statusCode == 200) {
-      List<dynamic> data = json.decode(response.body);
-      return data.map((e) => e as Map<String, dynamic>).toList();
+      try {
+        Map<String, dynamic> data = json.decode(response.body);
+        if (data['result'] is List) {
+          List<dynamic> resultList = data['result'];
+          return resultList.map((e) => e as Map<String, dynamic>).toList();
+        } else {
+          throw Exception('Unexpected data format: result is not a list');
+        }
+      } catch (e) {
+        throw Exception('Failed to parse recommended spots. Error: $e');
+      }
     } else {
-      // 구체적인 오류 메시지 출력
       throw Exception('Failed to load recommended spots. Status code: ${response.statusCode}, Reason: ${response.reasonPhrase}');
     }
   }
 
   // 인기 여행지 API 호출 (static)
   static Future<List<Map<String, dynamic>>> fetchPopularSpots(String location) async {
-    final response = await get('/spot/popular',params: {'location': location});
+    final response = await get('/spot/popular', params: {'location': location});
 
     if (response.statusCode == 200) {
-      List<dynamic> data = json.decode(response.body);
-      return data.map((e) => e as Map<String, dynamic>).toList();
+      try {
+        Map<String, dynamic> data = json.decode(response.body);
+        if (data['result'] is List) {
+          List<dynamic> resultList = data['result'];
+          return resultList.map((e) => e as Map<String, dynamic>).toList();
+        } else {
+          throw Exception('Unexpected data format: result is not a list');
+        }
+      } catch (e) {
+        throw Exception('Failed to parse popular spots. Error: $e');
+      }
     } else {
-      // 구체적인 오류 메시지 출력
       throw Exception('Failed to load popular spots. Status code: ${response.statusCode}, Reason: ${response.reasonPhrase}');
     }
   }
@@ -141,10 +97,18 @@ class ApiService {
     final response = await get('/spot/mbti');
 
     if (response.statusCode == 200) {
-      List<dynamic> data = json.decode(response.body);
-      return data.map((e) => e as Map<String, dynamic>).toList();
+      try {
+        Map<String, dynamic> data = json.decode(response.body); // 최상위 Map으로 파싱
+        if (data['result'] != null && data['result']['tourList'] is List) {
+          List<dynamic> tourList = data['result']['tourList']; // 'result'에서 'tourList' 가져오기
+          return tourList.map((e) => e as Map<String, dynamic>).toList();
+        } else {
+          throw Exception('Unexpected data format: result or tourList is not valid');
+        }
+      } catch (e) {
+        throw Exception('Failed to parse MBTI spots. Error: $e');
+      }
     } else {
-      // 구체적인 오류 메시지 출력
       throw Exception('Failed to load MBTI spots. Status code: ${response.statusCode}, Reason: ${response.reasonPhrase}');
     }
   }
