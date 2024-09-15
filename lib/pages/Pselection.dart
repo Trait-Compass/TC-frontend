@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../hooks/calendarforP.dart'; // 경로 확인 필수
-import '../components/basic_frame_page.dart';
+import '../hooks/calendarforP.dart'; 
+import '../components/start/basicframe2.dart';
 import '../hooks/top3course.dart';
 
 class Pselection extends StatefulWidget {

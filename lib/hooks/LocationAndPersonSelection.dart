@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../pages/coursemake.dart';
-// import 'package:untitled/pages/coursemake.dart';
-import '../components/basic_frame_page.dart';
+import '../components/start/basicframe2.dart';
 import '../hooks/top3course.dart';
 
 class LocationAndPersonSelectionPage extends StatefulWidget {
@@ -53,7 +52,7 @@ class _LocationAndPersonSelectionPageState
       SnackBar(
         content: Text(
           '항목을 모두 선택해주세요',
-          style: TextStyle(color: Colors.black), // 텍스트 색상 설정
+          style: TextStyle(color: Colors.black), 
         ),
         backgroundColor: Colors.white,
         duration: Duration(seconds: 1),
@@ -142,7 +141,7 @@ class _LocationAndPersonSelectionPageState
                         setState(() {
                           selectedLocation = value;
                           print(
-                              'Selected location: $selectedLocation'); // 디버깅용 출력
+                              'Selected location: $selectedLocation'); 
                         });
                       },
                     ),
@@ -171,7 +170,7 @@ class _LocationAndPersonSelectionPageState
                       onChanged: (value) {
                         setState(() {
                           selectedGroup = value;
-                          print('Selected group: $selectedGroup'); // 디버깅용 출력
+                          print('Selected group: $selectedGroup'); 
                         });
                       },
                     ),
@@ -187,12 +186,12 @@ class _LocationAndPersonSelectionPageState
                               return Coursemake();
                             }));
                           } else {
-                            _showSnackbar(context); // 항목 선택 경고 메시지
+                            _showSnackbar(context); 
                           }
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor:
-                              Colors.grey[800], // 버튼 색을 grey[800]으로 설정
+                              Colors.grey[800], 
                           foregroundColor: Colors.white,
                           padding: EdgeInsets.symmetric(
                               vertical: 15, horizontal: 30),

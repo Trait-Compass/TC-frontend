@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../components/Mypage/myprofilefirstpage.dart';
-import '../components/mbti_selection_page.dart';
+import 'Mypage/myprofilefirstpage.dart';
+import 'mbti_selection_page.dart';
 import '../pages/travelplan.dart';
 
 class BasicFramePage extends StatefulWidget {
