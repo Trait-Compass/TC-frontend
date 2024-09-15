@@ -104,15 +104,15 @@ class ProfileSection extends StatelessWidget {
                                   Text(
                                     "같이 여행가면 재밌는 타입",
                                     style: TextStyle(
-                                      fontSize: 11,
+                                      fontSize: 8,
                                       fontWeight: FontWeight.bold,
                                     ),
                                     textAlign: TextAlign.center,
                                   ),
                                   Text(
-                                    "구체적인 계획은 잘 안짜는 타입",
+                                    "구체적인 계획은\n잘 안짜는 타입",
                                     style: TextStyle(
-                                      fontSize: 11,
+                                      fontSize: 8,
                                       fontWeight: FontWeight.bold,
                                     ),
                                     textAlign: TextAlign.center,
@@ -141,7 +141,7 @@ class ProfileSection extends StatelessWidget {
                                         "❤️ 찰떡궁합 ",
                                         style: GoogleFonts.notoColorEmoji(
                                           textStyle: TextStyle(
-                                            fontSize: 11,
+                                            fontSize: 8,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
@@ -149,7 +149,7 @@ class ProfileSection extends StatelessWidget {
                                       Text(
                                         "INFJ",
                                         style: TextStyle(
-                                          fontSize: 11,
+                                          fontSize: 8,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
@@ -163,7 +163,7 @@ class ProfileSection extends StatelessWidget {
                                         "😅 환장궁합 ",
                                         style: GoogleFonts.notoColorEmoji(
                                           textStyle: TextStyle(
-                                            fontSize: 11,
+                                            fontSize: 8,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
@@ -171,7 +171,7 @@ class ProfileSection extends StatelessWidget {
                                       Text(
                                         "ISTJ",
                                         style: TextStyle(
-                                          fontSize: 11,
+                                          fontSize: 8,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),

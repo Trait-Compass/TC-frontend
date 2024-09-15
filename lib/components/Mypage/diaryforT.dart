@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../basic_frame_page.dart';
+import '../start/basicframe3.dart'; // 정확한 경로로 수정 필요
 import '../Mypage/uploadmypictures.dart'; // 정확한 경로로 수정 필요
 import '../Mypage/hexagonalchart.dart'; // RadarChartWidget을 포함하고 있는 파일
 import '../Mypage/coursefeedback.dart'; // 여행 상세분석 파일 임포트

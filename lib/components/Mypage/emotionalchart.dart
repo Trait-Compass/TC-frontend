@@ -20,7 +20,7 @@ class _EmotionChartState extends State<EmotionChart> {
     },
     {
       'emoji': '😌',
-      'title': '편안함',
+      'title': '편안',
       'feelings': ['안락함', '따뜻함', '평화로움', '여유로움', '휴식']
     },
     {
@@ -83,14 +83,14 @@ class _EmotionChartState extends State<EmotionChart> {
                             Text(
                               emotion['emoji'],
                               style: GoogleFonts.notoColorEmoji(
-                                textStyle: TextStyle(fontSize: 24),
+                                textStyle: TextStyle(fontSize: 20),
                               ), // 이모지를 위한 폰트 설정
                             ),
                             SizedBox(height: 4),
                             Text(
                               emotion['title'],
                               style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold),
+                                  fontSize: 13, fontWeight: FontWeight.bold),
                             ),
                           ],
                         ),
@@ -135,7 +135,7 @@ class _EmotionChartState extends State<EmotionChart> {
                                   child: Center(
                                     child: Text(
                                       feeling,
-                                      style: TextStyle(fontSize: 10),
+                                      style: TextStyle(fontSize: 9),
                                       textAlign: TextAlign.center,
                                     ),
                                   ),
