@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'tripmodal.dart'; // TripDetailModal import
 import 'mapdetail.dart'; // MapdetailPage import
-import 'api.dart'; // ApiService import
+import 'package:untitled/components/map/api.dart'; // ApiService import
 
 class Trip extends StatefulWidget {
   final int selectedDayIndex;
@@ -19,15 +19,14 @@ class _TripState extends State<Trip> {
   String _searchText = '';
   String _selectedRegion = '경상남도';
   List<String> _filteredRegions = [];
-
-  List<Map<String, String>> recommendedSpots = [];
-  List<Map<String, String>> popularSpots = [];
-  List<Map<String, String>> mbtiSpots = [];
-  final ApiService apiService = ApiService();
+  List<Map<String, dynamic>> recommendedTrips = [];
+  List<Map<String, dynamic>> popularTrips = [];
+  List<Map<String, dynamic>> mbtiTrips = [];
 
   @override
   void initState() {
     super.initState();
+    _fetchInitialData();
     _titleController.addListener(() {
       setState(() {
         _searchText = _titleController.text;
@@ -38,7 +37,21 @@ class _TripState extends State<Trip> {
         }
       });
     });
-    _fetchAllSpots(); // 여행지 데이터 불러오기
+  }
+
+  Future<void> _fetchInitialData() async {
+    try {
+      // 추천 여행지 데이터 가져오기
+      recommendedTrips = await ApiService.fetchRecommendedSpots(_selectedRegion);
+      // 인기 여행지 데이터 가져오기
+      popularTrips = await ApiService.fetchPopularSpots(_selectedRegion);
+      // MBTI 여행지 데이터 가져오기
+      mbtiTrips = await ApiService.fetchMbtiSpots();
+
+      setState(() {}); // 데이터 업데이트 후 화면 갱신
+    } catch (e) {
+      print('Error fetching data: $e');
+    }
   }
 
   @override
@@ -47,42 +60,6 @@ class _TripState extends State<Trip> {
     _titleFocusNode.dispose();
     super.dispose();
   }
-
-  Future<void> _fetchAllSpots() async {
-  try {
-    List<Map<String, dynamic>> recommendedData =
-        await apiService.fetchRecommendedSpots(_selectedRegion);
-    List<Map<String, dynamic>> popularData =
-        await apiService.fetchPopularSpots(_selectedRegion);
-    List<Map<String, dynamic>> mbtiData = await apiService.fetchMbtiSpots();
-
-    setState(() {
-      // dynamic을 String으로 캐스팅
-      recommendedSpots = recommendedData.map((e) {
-        return {
-          'image': e['image'].toString(),
-          'title': e['title'].toString(),
-        };
-      }).toList();
-
-      popularSpots = popularData.map((e) {
-        return {
-          'image': e['image'].toString(),
-          'title': e['title'].toString(),
-        };
-      }).toList();
-
-      mbtiSpots = mbtiData.map((e) {
-        return {
-          'image': e['image'].toString(),
-          'title': e['title'].toString(),
-        };
-      }).toList();
-    });
-  } catch (e) {
-    print('Error fetching spots: $e');
-  }
-}
 
   Future<void> _fetchRecommendations(String query) async {
     List<String> allRegions = [
@@ -93,7 +70,9 @@ class _TripState extends State<Trip> {
 
     setState(() {
       if (query.isNotEmpty) {
-        _filteredRegions = allRegions.where((region) => region.contains(query)).toList();
+        _filteredRegions = allRegions
+            .where((region) => region.contains(query))
+            .toList();
       } else {
         _filteredRegions.clear();
       }
@@ -105,7 +84,8 @@ class _TripState extends State<Trip> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('여행지 추가', style: TextStyle(fontSize: 15, color: Colors.black)),
+        title:
+            Text('여행지 추가', style: TextStyle(fontSize: 15, color: Colors.black)),
         backgroundColor: Colors.white,
         elevation: 0,
         flexibleSpace: Container(
@@ -116,6 +96,7 @@ class _TripState extends State<Trip> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
+            // 이전 페이지로 돌아갈 때 tripDetails를 반환
             Navigator.pop(context, widget.tripDetails);
           },
         ),
@@ -128,11 +109,11 @@ class _TripState extends State<Trip> {
             _buildSearchSection(),
             SizedBox(height: 20),
             _buildSection('추천 여행지'),
-            _buildHorizontalImageList(recommendedSpots),
+            _buildHorizontalImageList(recommendedTrips),
             _buildSection('인기 여행지'),
-            _buildHorizontalImageList(popularSpots),
+            _buildHorizontalImageList(popularTrips),
             _buildSection('MBTI 여행지'),
-            _buildHorizontalImageList(mbtiSpots),
+            _buildHorizontalImageList(mbtiTrips),
           ],
         ),
       ),
@@ -266,13 +247,13 @@ class _TripState extends State<Trip> {
     );
   }
 
-  Widget _buildHorizontalImageList(List<Map<String, String>> spots) {
+  Widget _buildHorizontalImageList(List<Map<String, dynamic>> trips) {
     return Container(
       height: 150,
       padding: EdgeInsets.only(left: 18.0, right: 18.0),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: spots.length,
+        itemCount: trips.length,
         itemBuilder: (context, index) {
           return GestureDetector(
             onTap: () {
@@ -280,8 +261,8 @@ class _TripState extends State<Trip> {
                 context: context,
                 barrierColor: Colors.black.withOpacity(0.5),
                 builder: (context) => TripDetailModal(
-                  imagePath: spots[index]['image']!,
-                  title: spots[index]['title']!,
+                  imagePath: trips[index]['image'] ?? 'assets/city1.png',
+                  title: trips[index]['title'] ?? 'Unknown',
                 ),
               ).then((result) {
                 if (result != null) {
@@ -292,6 +273,7 @@ class _TripState extends State<Trip> {
                     }
                     widget.tripDetails[dayIndex]!.add(result);
                   });
+                  // MapdetailPage로 이동하면서 tripDetails 전달
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -303,7 +285,7 @@ class _TripState extends State<Trip> {
                 }
               });
             },
-            child: _buildImageItem(spots[index]['image']!, spots[index]['title']!),
+            child: _buildImageItem(trips[index]['image'] ?? 'assets/city1.png', trips[index]['title'] ?? 'Unknown'),
           );
         },
       ),
