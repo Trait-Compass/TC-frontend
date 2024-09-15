@@ -111,9 +111,9 @@ class _LoginScreenState extends State<LoginScreen> {
         if (response.statusCode == 201) {
           final Map<String, dynamic> responseBody = jsonDecode(response.body);
 
-          if (responseBody.containsKey('result')) { 
-            _accessToken = responseBody['result']; 
-            
+          // 서버로부터 받은 accessToken 저장
+          if (responseBody.containsKey('result')){
+            _accessToken = responseBody['result'];
             await _storageService.write(
                 key: 'accessToken', value: _accessToken!); // Secure Storage에 저장
             print('Access Token: $_accessToken'); 
