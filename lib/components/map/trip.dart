@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'tripmodal.dart'; // TripDetailModal import
 import 'mapdetail.dart'; // MapdetailPage import
+import 'package:untitled/components/map/api.dart'; // ApiService import
 
 class Trip extends StatefulWidget {
   final int selectedDayIndex;
@@ -18,17 +19,14 @@ class _TripState extends State<Trip> {
   String _searchText = '';
   String _selectedRegion = '경상남도';
   List<String> _filteredRegions = [];
-
-  // 여행지 목록 예시 데이터
-  final List<Map<String, String>> trips = [
-    {'image': 'assets/city1.png', 'title': '고부길 벽화마을'},
-    {'image': 'assets/city2.png', 'title': '산책로 공원'},
-    {'image': 'assets/city3.png', 'title': '역사 박물관'},
-  ];
+  List<Map<String, dynamic>> recommendedTrips = [];
+  List<Map<String, dynamic>> popularTrips = [];
+  List<Map<String, dynamic>> mbtiTrips = [];
 
   @override
   void initState() {
     super.initState();
+    _fetchInitialData();
     _titleController.addListener(() {
       setState(() {
         _searchText = _titleController.text;
@@ -39,6 +37,21 @@ class _TripState extends State<Trip> {
         }
       });
     });
+  }
+
+  Future<void> _fetchInitialData() async {
+    try {
+      // 추천 여행지 데이터 가져오기
+      recommendedTrips = await ApiService.fetchRecommendedSpots(_selectedRegion);
+      // 인기 여행지 데이터 가져오기
+      popularTrips = await ApiService.fetchPopularSpots(_selectedRegion);
+      // MBTI 여행지 데이터 가져오기
+      mbtiTrips = await ApiService.fetchMbtiSpots();
+
+      setState(() {}); // 데이터 업데이트 후 화면 갱신
+    } catch (e) {
+      print('Error fetching data: $e');
+    }
   }
 
   @override
@@ -96,11 +109,11 @@ class _TripState extends State<Trip> {
             _buildSearchSection(),
             SizedBox(height: 20),
             _buildSection('추천 여행지'),
-            _buildHorizontalImageList(),
+            _buildHorizontalImageList(recommendedTrips),
             _buildSection('인기 여행지'),
-            _buildHorizontalImageList(),
-            _buildSection('ENTP 여행지'),
-            _buildHorizontalImageList(),
+            _buildHorizontalImageList(popularTrips),
+            _buildSection('MBTI 여행지'),
+            _buildHorizontalImageList(mbtiTrips),
           ],
         ),
       ),
@@ -234,7 +247,7 @@ class _TripState extends State<Trip> {
     );
   }
 
-  Widget _buildHorizontalImageList() {
+  Widget _buildHorizontalImageList(List<Map<String, dynamic>> trips) {
     return Container(
       height: 150,
       padding: EdgeInsets.only(left: 18.0, right: 18.0),
@@ -248,8 +261,8 @@ class _TripState extends State<Trip> {
                 context: context,
                 barrierColor: Colors.black.withOpacity(0.5),
                 builder: (context) => TripDetailModal(
-                  imagePath: trips[index]['image']!,
-                  title: trips[index]['title']!,
+                  imagePath: trips[index]['image'] ?? 'assets/city1.png',
+                  title: trips[index]['title'] ?? 'Unknown',
                 ),
               ).then((result) {
                 if (result != null) {
@@ -272,7 +285,7 @@ class _TripState extends State<Trip> {
                 }
               });
             },
-            child: _buildImageItem(trips[index]['image']!, trips[index]['title']!),
+            child: _buildImageItem(trips[index]['image'] ?? 'assets/city1.png', trips[index]['title'] ?? 'Unknown'),
           );
         },
       ),
