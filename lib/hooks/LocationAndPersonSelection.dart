@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:untitled/pages/KeywordSelectionPage.dart';
+import '../pages/coursemake.dart';
 // import 'package:untitled/pages/coursemake.dart';
 import '../components/basic_frame_page.dart';
 import '../hooks/top3course.dart';
@@ -46,6 +46,19 @@ class _LocationAndPersonSelectionPageState
       DropdownMenuItem(value: '아이와 함께', child: Text('아이와 함께')),
       DropdownMenuItem(value: '부모님과 함께', child: Text('부모님과 함께')),
     ];
+  }
+
+  void _showSnackbar(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          '항목을 모두 선택해주세요',
+          style: TextStyle(color: Colors.black), // 텍스트 색상 설정
+        ),
+        backgroundColor: Colors.white,
+        duration: Duration(seconds: 1),
+      ),
+    );
   }
 
   @override
@@ -163,25 +176,28 @@ class _LocationAndPersonSelectionPageState
                       },
                     ),
                     SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed:
-                          (selectedLocation != null && selectedGroup != null)
-                              ? () {
-                                  Navigator.push(context,
-                                      MaterialPageRoute(builder: (context) {
-                                    return KeywordSelectionPage();
-                                  }));
-                                }
-                              : null, // 두 값이 모두 선택되지 않으면 버튼 비활성화
-                      child: Text('완료'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            (selectedLocation != null && selectedGroup != null)
-                                ? Colors.grey[800] // 버튼의 배경색을 활성화된 상태의 색으로 설정
-                                : Colors.grey[400], // 비활성화된 상태의 색으로 설정
-                        foregroundColor: Colors.white,
-                        padding:
-                            EdgeInsets.symmetric(vertical: 15, horizontal: 30),
+                    Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          if (selectedLocation != null &&
+                              selectedGroup != null) {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return Coursemake();
+                            }));
+                          } else {
+                            _showSnackbar(context); // 항목 선택 경고 메시지
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              Colors.grey[800], // 버튼 색을 grey[800]으로 설정
+                          foregroundColor: Colors.white,
+                          padding: EdgeInsets.symmetric(
+                              vertical: 15, horizontal: 30),
+                        ),
+                        child: Text('완료'),
                       ),
                     ),
                   ],

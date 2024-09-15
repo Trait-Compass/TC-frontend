@@ -200,7 +200,7 @@ class _AdvancedCalendarSelectionState extends State<AdvancedCalendarSelection> {
         Padding(
           padding: EdgeInsets.all(16.0),
           child: ElevatedButton(
-            onPressed: selectedDates.isNotEmpty
+            onPressed: selectedDates.length == 2
                 ? () {
                     Navigator.push(
                       context,
@@ -210,6 +210,13 @@ class _AdvancedCalendarSelectionState extends State<AdvancedCalendarSelection> {
                     );
                   }
                 : null,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: selectedDates.length == 2
+                  ? Colors.grey[800]
+                  : Colors.grey[400], // 조건에 따른 색상 설정
+              foregroundColor: Colors.white,
+              padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
+            ),
             child: Text('다음'),
           ),
         ),

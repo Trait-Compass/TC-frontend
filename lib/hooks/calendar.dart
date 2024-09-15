@@ -46,7 +46,8 @@ class _CustomCalendarState extends State<CustomCalendar> {
     // 선택된 날짜 사이에 있는지 확인
     bool isBetweenSelectedDates(DateTime date) {
       if (selectedDates.length < 2) return false;
-      return date.isAfter(selectedDates.first) && date.isBefore(selectedDates.last);
+      return date.isAfter(selectedDates.first) &&
+          date.isBefore(selectedDates.last);
     }
 
     // 박스의 데코레이션 스타일 설정
@@ -176,7 +177,8 @@ class _CustomCalendarState extends State<CustomCalendar> {
       while (currentDate.isBefore(lastDate.add(Duration(days: 1)))) {
         List<Widget> days = [];
         for (int i = 0; i < 7; i++) {
-          if ((i < currentDate.weekday % 7 && currentDate.day == 1) || currentDate.month != month) {
+          if ((i < currentDate.weekday % 7 && currentDate.day == 1) ||
+              currentDate.month != month) {
             days.add(Container(
               width: boxWidth,
               height: boxHeight,
@@ -233,7 +235,7 @@ class _CustomCalendarState extends State<CustomCalendar> {
         Padding(
           padding: EdgeInsets.all(16.0),
           child: ElevatedButton(
-            onPressed: selectedDates.isNotEmpty
+            onPressed: selectedDates.length == 2 // 날짜가 두 개 선택된 경우에만 활성화
                 ? () {
                     Navigator.push(
                       context,
@@ -243,7 +245,14 @@ class _CustomCalendarState extends State<CustomCalendar> {
                       ),
                     );
                   }
-                : null, // 선택된 날짜가 없으면 비활성화
+                : null,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: selectedDates.length == 2 // 두 날짜가 선택된 경우 색상 설정
+                  ? Colors.grey[800]
+                  : Colors.grey[400],
+              foregroundColor: Colors.white,
+              padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
+            ),
             child: Text('완료'),
           ),
         ),

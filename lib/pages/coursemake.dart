@@ -80,7 +80,7 @@ class _CoursemakeState extends State<Coursemake> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
-                      'STEP 04 | 코스 선택',
+                      'STEP 03 | 코스 선택',
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
@@ -102,14 +102,14 @@ class _CoursemakeState extends State<Coursemake> {
                           onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => MapPage()),
+                              MaterialPageRoute(
+                                  builder: (context) => MapPage()),
                             );
                           },
                           child: Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
                               color: Colors.white,
-
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.black12,
@@ -120,7 +120,8 @@ class _CoursemakeState extends State<Coursemake> {
                               ],
                             ),
                             child: ClipRRect(
-                              borderRadius: BorderRadius.all(Radius.circular(10)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
                               child: Column(
                                 children: [
                                   Expanded(
