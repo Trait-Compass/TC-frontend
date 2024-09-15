@@ -66,7 +66,7 @@ class ApiService {
 
   // 추천 여행지 API 호출
   Future<List<Map<String, dynamic>>> fetchRecommendedSpots(String location) async {
-    final response = await get('/spot/recommand?location=$location');
+    final response = await get('/spot/recommand');
 
     if (response.statusCode == 200) {
       List<dynamic> data = json.decode(response.body);
@@ -78,7 +78,7 @@ class ApiService {
 
   // 인기 여행지 API 호출
   Future<List<Map<String, dynamic>>> fetchPopularSpots(String location) async {
-    final response = await get('/spot/popular?location=$location');
+    final response = await get('/spot/popular');
 
     if (response.statusCode == 200) {
       List<dynamic> data = json.decode(response.body);
