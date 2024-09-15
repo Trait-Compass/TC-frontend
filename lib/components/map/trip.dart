@@ -17,7 +17,7 @@ class _TripState extends State<Trip> {
   final TextEditingController _titleController = TextEditingController();
   FocusNode _titleFocusNode = FocusNode();
   String _searchText = '';
-  String _selectedRegion = '창원시'; 
+  String _selectedRegion = '경상남도';
   List<String> _filteredRegions = [];
   List<Map<String, dynamic>> recommendedTrips = [];
   List<Map<String, dynamic>> popularTrips = [];
@@ -41,7 +41,6 @@ class _TripState extends State<Trip> {
 
   Future<void> _fetchInitialData() async {
     try {
-      // 선택한 하위 지역만 전송
       recommendedTrips = await ApiService.fetchRecommendedSpots(_selectedRegion);
       popularTrips = await ApiService.fetchPopularSpots(_selectedRegion);
       mbtiTrips = await ApiService.fetchMbtiSpots();
@@ -111,7 +110,6 @@ class _TripState extends State<Trip> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
-            // 이전 페이지로 돌아갈 때 tripDetails를 반환
             Navigator.pop(context, widget.tripDetails);
           },
         ),
@@ -201,7 +199,7 @@ class _TripState extends State<Trip> {
         controller: _titleController,
         focusNode: _titleFocusNode,
         decoration: InputDecoration(
-          hintText: '경상남도를 입력 후 경상남도 지역을 검색하세요',
+          hintText: '경상남도 지역을 검색하세요',
           hintStyle: TextStyle(
             color: Colors.grey,
             fontSize: 14,
@@ -264,72 +262,73 @@ class _TripState extends State<Trip> {
   }
 
   Widget _buildHorizontalImageList(List<Map<String, dynamic>> trips) {
-  return Container(
-    height: 150,
-    padding: EdgeInsets.only(left: 18.0, right: 18.0),
-    child: ListView.builder(
-      scrollDirection: Axis.horizontal,
-      itemCount: trips.length,
-      itemBuilder: (context, index) {
-        return GestureDetector(
-          onTap: () {
-            showDialog(
-              context: context,
-              barrierColor: Colors.black.withOpacity(0.5),
-              builder: (context) => TripDetailModal(
-                imagePath: trips[index]['imageUrl'] ?? 'assets/city1.png',  // 수정된 부분
-                title: trips[index]['title'] ?? 'Unknown',
-              ),
-            ).then((result) {
-              if (result != null) {
-                setState(() {
-                  int dayIndex = widget.selectedDayIndex;
-                  if (!widget.tripDetails.containsKey(dayIndex)) {
-                    widget.tripDetails[dayIndex] = [];
-                  }
-                  widget.tripDetails[dayIndex]!.add(result);
-                });
-                // MapdetailPage로 이동하면서 tripDetails 전달
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MapdetailPage(
-                      tripDetails: widget.tripDetails,
+    return Container(
+      height: 150,
+      padding: EdgeInsets.only(left: 18.0, right: 18.0),
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: trips.length,
+        itemBuilder: (context, index) {
+          return GestureDetector(
+            onTap: () {
+              showDialog(
+                context: context,
+                barrierColor: Colors.black.withOpacity(0.5),
+                builder: (context) => TripDetailModal(
+                  imageUrl: trips[index]['imageUrl'] ?? 'assets/city2.png',  
+                  title: trips[index]['title'] ?? '경상남도',
+                  address: trips[index]['address'] ?? '주소 정보 없음', 
+                ),
+              ).then((result) {
+                if (result != null) {
+                  setState(() {
+                    int dayIndex = widget.selectedDayIndex;
+                    if (!widget.tripDetails.containsKey(dayIndex)) {
+                      widget.tripDetails[dayIndex] = [];
+                    }
+                    widget.tripDetails[dayIndex]!.add(result);
+                  });
+                  // MapdetailPage로 이동하면서 tripDetails 전달
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MapdetailPage(
+                        tripDetails: widget.tripDetails,
+                      ),
                     ),
-                  ),
-                );
-              }
-            });
-          },
-          child: _buildImageItem(trips[index]['imageUrl'] ?? 'assets/city2.png', trips[index]['title'] ?? '경상남도'),  
-        );
-      },
-    ),
-  );
-}
+                  );
+                }
+              });
+            },
+            child: _buildImageItem(trips[index]['imageUrl'] ?? 'assets/city2.png', trips[index]['title'] ?? '경상남도'),  
+          );
+        },
+      ),
+    );
+  }
 
-Widget _buildImageItem(String imagePath, String title) {
-  return Container(
-    margin: EdgeInsets.symmetric(horizontal: 8),
-    width: 120,
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(10),
-      image: DecorationImage(
-        image: imagePath.startsWith('http')  
-            ? NetworkImage(imagePath)
-            : AssetImage(imagePath) as ImageProvider,
-        fit: BoxFit.cover,
+  Widget _buildImageItem(String imagePath, String title) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 8),
+      width: 120,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        image: DecorationImage(
+          image: imagePath.startsWith('http')  // 이미지 경로가 http로 시작하면 네트워크 이미지를 로드
+              ? NetworkImage(imagePath)
+              : AssetImage(imagePath) as ImageProvider,
+          fit: BoxFit.cover,
+        ),
       ),
-    ),
-    alignment: Alignment.bottomLeft,
-    padding: EdgeInsets.all(8),
-    child: Text(
-      title,
-      style: TextStyle(
-        color: Colors.white,
-        fontWeight: FontWeight.bold,
+      alignment: Alignment.bottomLeft,
+      padding: EdgeInsets.all(8),
+      child: Text(
+        title,
+        style: TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 }
