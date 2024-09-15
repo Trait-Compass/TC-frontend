@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import '../components/basic_frame_page.dart';
+import '../components/start/basicframe2.dart';  
 import '../components/map/MapPage.dart';
 import '../hooks/top3course.dart';
 
