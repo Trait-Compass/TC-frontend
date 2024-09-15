@@ -58,7 +58,7 @@ class WriteDiary extends StatelessWidget {
                               child: Text(
                                 "# 만족도 그래프",
                                 style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: 11,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -75,7 +75,7 @@ class WriteDiary extends StatelessWidget {
                               child: Text(
                                 "# 여행 상세분석",
                                 style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: 11,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -128,7 +128,7 @@ class WriteDiary extends StatelessWidget {
                               child: Text(
                                 "# 감정 차트",
                                 style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: 11,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -145,7 +145,7 @@ class WriteDiary extends StatelessWidget {
                               child: Text(
                                 "# 나의 감성 기록",
                                 style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: 11,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
