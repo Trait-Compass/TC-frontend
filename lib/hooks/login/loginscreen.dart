@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../components/mbti_selection_page.dart';
+import '../../components/mbti_selection_page.dart';
 import 'package:untitled/styles/loginstyles.dart';
-import '../services/auth_services.dart';
+import '../../services/auth_services.dart';
 import 'creataccount.dart';
-import '../components/basic_frame_page.dart';
+import '../../components/basic_frame_page.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:untitled/services/storagemobile.dart'; // 스토리지 서비스 임포트

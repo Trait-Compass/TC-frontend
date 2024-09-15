@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'MBTItestpage.dart';
+import '../MBTItestpage.dart';
 
 class UserInfoScreen extends StatefulWidget {
   final String id;
