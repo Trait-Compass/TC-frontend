@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'tripmodal.dart'; // TripDetailModal import
 import 'mapdetail.dart'; // MapdetailPage import
+import 'api.dart'; // ApiService import
 
 class Trip extends StatefulWidget {
   final int selectedDayIndex;
@@ -19,12 +20,10 @@ class _TripState extends State<Trip> {
   String _selectedRegion = '경상남도';
   List<String> _filteredRegions = [];
 
-  // 여행지 목록 예시 데이터
-  final List<Map<String, String>> trips = [
-    {'image': 'assets/city1.png', 'title': '고부길 벽화마을'},
-    {'image': 'assets/city2.png', 'title': '산책로 공원'},
-    {'image': 'assets/city3.png', 'title': '역사 박물관'},
-  ];
+  List<Map<String, String>> recommendedSpots = [];
+  List<Map<String, String>> popularSpots = [];
+  List<Map<String, String>> mbtiSpots = [];
+  final ApiService apiService = ApiService();
 
   @override
   void initState() {
@@ -39,6 +38,7 @@ class _TripState extends State<Trip> {
         }
       });
     });
+    _fetchAllSpots(); // 여행지 데이터 불러오기
   }
 
   @override
@@ -47,6 +47,42 @@ class _TripState extends State<Trip> {
     _titleFocusNode.dispose();
     super.dispose();
   }
+
+  Future<void> _fetchAllSpots() async {
+  try {
+    List<Map<String, dynamic>> recommendedData =
+        await apiService.fetchRecommendedSpots(_selectedRegion);
+    List<Map<String, dynamic>> popularData =
+        await apiService.fetchPopularSpots(_selectedRegion);
+    List<Map<String, dynamic>> mbtiData = await apiService.fetchMbtiSpots();
+
+    setState(() {
+      // dynamic을 String으로 캐스팅
+      recommendedSpots = recommendedData.map((e) {
+        return {
+          'image': e['image'].toString(),
+          'title': e['title'].toString(),
+        };
+      }).toList();
+
+      popularSpots = popularData.map((e) {
+        return {
+          'image': e['image'].toString(),
+          'title': e['title'].toString(),
+        };
+      }).toList();
+
+      mbtiSpots = mbtiData.map((e) {
+        return {
+          'image': e['image'].toString(),
+          'title': e['title'].toString(),
+        };
+      }).toList();
+    });
+  } catch (e) {
+    print('Error fetching spots: $e');
+  }
+}
 
   Future<void> _fetchRecommendations(String query) async {
     List<String> allRegions = [
@@ -57,9 +93,7 @@ class _TripState extends State<Trip> {
 
     setState(() {
       if (query.isNotEmpty) {
-        _filteredRegions = allRegions
-            .where((region) => region.contains(query))
-            .toList();
+        _filteredRegions = allRegions.where((region) => region.contains(query)).toList();
       } else {
         _filteredRegions.clear();
       }
@@ -71,8 +105,7 @@ class _TripState extends State<Trip> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title:
-            Text('여행지 추가', style: TextStyle(fontSize: 15, color: Colors.black)),
+        title: Text('여행지 추가', style: TextStyle(fontSize: 15, color: Colors.black)),
         backgroundColor: Colors.white,
         elevation: 0,
         flexibleSpace: Container(
@@ -83,7 +116,6 @@ class _TripState extends State<Trip> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
-            // 이전 페이지로 돌아갈 때 tripDetails를 반환
             Navigator.pop(context, widget.tripDetails);
           },
         ),
@@ -96,11 +128,11 @@ class _TripState extends State<Trip> {
             _buildSearchSection(),
             SizedBox(height: 20),
             _buildSection('추천 여행지'),
-            _buildHorizontalImageList(),
+            _buildHorizontalImageList(recommendedSpots),
             _buildSection('인기 여행지'),
-            _buildHorizontalImageList(),
-            _buildSection('ENTP 여행지'),
-            _buildHorizontalImageList(),
+            _buildHorizontalImageList(popularSpots),
+            _buildSection('MBTI 여행지'),
+            _buildHorizontalImageList(mbtiSpots),
           ],
         ),
       ),
@@ -234,13 +266,13 @@ class _TripState extends State<Trip> {
     );
   }
 
-  Widget _buildHorizontalImageList() {
+  Widget _buildHorizontalImageList(List<Map<String, String>> spots) {
     return Container(
       height: 150,
       padding: EdgeInsets.only(left: 18.0, right: 18.0),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: trips.length,
+        itemCount: spots.length,
         itemBuilder: (context, index) {
           return GestureDetector(
             onTap: () {
@@ -248,8 +280,8 @@ class _TripState extends State<Trip> {
                 context: context,
                 barrierColor: Colors.black.withOpacity(0.5),
                 builder: (context) => TripDetailModal(
-                  imagePath: trips[index]['image']!,
-                  title: trips[index]['title']!,
+                  imagePath: spots[index]['image']!,
+                  title: spots[index]['title']!,
                 ),
               ).then((result) {
                 if (result != null) {
@@ -260,7 +292,6 @@ class _TripState extends State<Trip> {
                     }
                     widget.tripDetails[dayIndex]!.add(result);
                   });
-                  // MapdetailPage로 이동하면서 tripDetails 전달
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -272,7 +303,7 @@ class _TripState extends State<Trip> {
                 }
               });
             },
-            child: _buildImageItem(trips[index]['image']!, trips[index]['title']!),
+            child: _buildImageItem(spots[index]['image']!, spots[index]['title']!),
           );
         },
       ),

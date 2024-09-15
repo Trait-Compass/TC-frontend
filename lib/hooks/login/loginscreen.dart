@@ -7,6 +7,7 @@ import '../../components/basic_frame_page.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:untitled/services/storagemobile.dart'; // 스토리지 서비스 임포트
+import 'package:untitled/components/map/api.dart'; // ApiService 임포트
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -18,52 +19,78 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final AuthService _authService = AuthService();
   final StorageService _storageService = StorageService(); // 스토리지 서비스 인스턴스 생성
+  final ApiService _apiService = ApiService(); // ApiService 인스턴스 생성
   bool _isRememberMeChecked = false;
   String _userInfo = '';
   String? _accessToken; // AccessToken 저장할 변수 추가
 
- // 로그인 API 호출 메서드
-Future<void> _login() async {
-  final String id = _idController.text;
-  final String password = _passwordController.text;
+  // 로그인 API 호출 메서드
+  Future<void> _login() async {
+    final String id = _idController.text;
+    final String password = _passwordController.text;
 
-  if (id.isEmpty || password.isEmpty) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('아이디와 비밀번호를 모두 입력해주세요.')),
-    );
-    return;
-  }
-
-  // 로그인 API 요청
-  final url = Uri.parse('https://www.traitcompass.store/user/login');
-  try {
-    final response = await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'id': id, 'password': password}),
-    );
-
-    print('Response Status Code: ${response.statusCode}');
-    print('Response Body: ${response.body}');
-
-    if (response.statusCode == 201) {
-      final Map<String, dynamic> responseBody = jsonDecode(response.body);
-
-      // 서버 응답에서 accessToken 추출
-      if (responseBody.containsKey('result') &&
-          responseBody['result'].containsKey('accessToken')) {
-        _accessToken = responseBody['result']['accessToken'];
-        print('Access Token: $_accessToken');
-
-        // 스토리지 서비스에 토큰 저장
-        await _storageService.write(key: 'accessToken', value: _accessToken!);
-        print('Access Token stored successfully.');
-      } else {
-        print('Access Token not found in the response.');
-      }
-
+    if (id.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('로그인 성공!')),
+        SnackBar(content: Text('아이디와 비밀번호를 모두 입력해주세요.')),
+      );
+      return;
+    }
+
+    // 로그인 API 요청
+    final url = Uri.parse('https://www.traitcompass.store/user/login');
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'id': id, 'password': password}),
+      );
+
+      print('Response Status Code: ${response.statusCode}');
+      print('Response Body: ${response.body}');
+
+      if (response.statusCode == 201) {
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+
+        // 서버 응답에서 accessToken 추출
+        if (responseBody.containsKey('result') &&
+            responseBody['result'].containsKey('accessToken')) {
+          _accessToken = responseBody['result']['accessToken'];// 정확한 구조로 변경
+          print('Access Token: $_accessToken');
+
+          // 스토리지 서비스에 토큰 저장
+          await _storageService.write(key: 'accessToken', value: _accessToken!);
+          print('Access Token stored successfully.');
+
+          // ApiService에 accessToken 설정
+          _apiService.setAccessToken(_accessToken!); // 여기서 설정
+
+        } else {
+          print('Access Token not found in the response.');
+        }
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('로그인 성공!')),
+        );
+
+        // 화면 전환
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => BasicFramePage(body: MBTISelectionPage()),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('아이디와 비밀번호를 확인해주세요')),
+        );
+      }
+    } catch (e, stacktrace) {
+      print('Exception during login: $e');
+      print('Stack trace: $stacktrace');
+
+      // 여기서 오류가 발생했을 때 성공처럼 처리
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('로그인 성공! (예외 발생)')),
       );
 
       // 화면 전환
@@ -73,97 +100,78 @@ Future<void> _login() async {
           builder: (context) => BasicFramePage(body: MBTISelectionPage()),
         ),
       );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('아이디와 비밀번호를 확인해주세요')),
-      );
     }
-  } catch (e, stacktrace) {
-    print('Exception during login: $e');
-    print('Stack trace: $stacktrace');
-
-    // 여기서 오류가 발생했을 때 성공처럼 처리
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('로그인 성공! (예외 발생)')),
-    );
-
-    // 화면 전환
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => BasicFramePage(body: MBTISelectionPage()),
-      ),
-    );
   }
-}
 
-  
+  // 카카오 로그인 후 서버로 토큰 전송
   Future<void> _signInWithKakao() async {
-  final token = await _authService.signInWithKakao(); 
+    final token = await _authService.signInWithKakao(); 
 
-  if (token != null) {
-    // 서버로 전송하여 로그인/회원가입 요청
-    final url = Uri.parse('https://www.traitcompass.store/oauth/kakao');
-    try {
-      final response = await http.post(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'accessToken': token, 'vendor': 'kakao'}),
-      );
+    if (token != null) {
+      // 서버로 전송하여 로그인/회원가입 요청
+      final url = Uri.parse('https://www.traitcompass.store/oauth/kakao');
+      try {
+        final response = await http.post(
+          url,
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode({'accessToken': token, 'vendor': 'kakao'}),
+        );
 
-      print('Response Status Code: ${response.statusCode}');
-      print('Response Body: ${response.body}');
+        print('Response Status Code: ${response.statusCode}');
+        print('Response Body: ${response.body}');
 
-      if (response.statusCode == 201) {
-        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        if (response.statusCode == 201) {
+          final Map<String, dynamic> responseBody = jsonDecode(response.body);
 
-        // JSON 구조를 정확하게 파악해야 합니다.
-        if (responseBody.containsKey('accessToken')) { 
-          final accessTokenInfo = responseBody['accessToken']; 
-          _accessToken = accessTokenInfo['access_token']; 
-          
-          await _storageService.write(
-              key: 'accessToken', value: _accessToken!); // Secure Storage에 저장
-          print('Access Token: $_accessToken'); 
+          // JSON 구조를 정확하게 파악해야 합니다.
+          if (responseBody.containsKey('accessToken')) { 
+            final accessTokenInfo = responseBody['accessToken']; 
+            _accessToken = accessTokenInfo['access_token']; 
+            
+            await _storageService.write(
+                key: 'accessToken', value: _accessToken!); // Secure Storage에 저장
+            print('Access Token: $_accessToken'); 
+
+            // ApiService에 accessToken 설정
+            _apiService.setAccessToken(_accessToken!); // 여기서 설정
+
+          } else {
+            print('Access Token not found in the response.');
+          }
+
+          setState(() {
+            _userInfo = '로그인 성공!';
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('로그인 성공!')),
+          );
+
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => BasicFramePage(body: MBTISelectionPage()),
+            ),
+          );
         } else {
-          print('Access Token not found in the response.');
+          setState(() {
+            _userInfo = '로그인 실패. 상태 코드: ${response.statusCode}';
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('로그인 실패. 상태 코드: ${response.statusCode}')),
+          );
         }
-
-        setState(() {
-          _userInfo = '로그인 성공!';
-        });
+      } catch (e) {
+        print('Error: $e');
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('로그인 성공!')),
-        );
-
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => BasicFramePage(body: MBTISelectionPage()),
-          ),
-        );
-      } else {
-        setState(() {
-          _userInfo = '로그인 실패. 상태 코드: ${response.statusCode}';
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('로그인 실패. 상태 코드: ${response.statusCode}')),
+          SnackBar(content: Text('로그인 중 오류가 발생했습니다: $e')),
         );
       }
-    } catch (e) {
-      print('Error: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('로그인 중 오류가 발생했습니다: $e')),
-      );
+    } else {
+      setState(() {
+        _userInfo = '로그인 실패';
+      });
     }
-  } else {
-    setState(() {
-      _userInfo = '로그인 실패';
-    });
   }
-}
-
-
 
   @override
   void dispose() {
