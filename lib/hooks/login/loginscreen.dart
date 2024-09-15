@@ -118,9 +118,8 @@ Future<void> _login() async {
           final Map<String, dynamic> responseBody = jsonDecode(response.body);
 
           // 서버로부터 받은 accessToken 저장
-          if (responseBody.containsKey('result') &&
-              responseBody['result'].containsKey('accessToken')) {
-            _accessToken = responseBody['result']['accessToken'];
+          if (responseBody.containsKey('result')){
+            _accessToken = responseBody['result'];
             await _storageService.write(
                 key: 'accessToken', value: _accessToken!); // Secure Storage에 저장
             print('Access Token: $_accessToken'); // 디버깅용
