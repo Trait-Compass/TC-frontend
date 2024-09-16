@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import '../components/start/basicframe2.dart';
 import '../components/map/MapPage.dart';
 import '../hooks/top3course.dart';
-import '../components/map/api.dart'; 
-import '../pages/coursemodell.dart'; 
+import '../components/map/api.dart';
+import '../pages/coursemodell.dart';
 
 class Coursemake extends StatefulWidget {
   final List<DateTime> selectedDates; // 날짜 받기
@@ -22,87 +22,56 @@ class Coursemake extends StatefulWidget {
 }
 
 class _CoursemakeState extends State<Coursemake> {
-  List<Map<String, String>> courseData = []; 
-  String mbti = "INFP"; // 예시 MBTI 타입
-  bool isLoading = true;
-  bool hasError = false;
+  Future<List<Map<String, String>>> _fetchCourseImages() async {
+    try {
+      print('Fetching course data from API...');
+      final result = await ApiService.fetchCourseForP(
+        mbti: 'INFP', // MBTI placeholder
+        startDate: widget.selectedDates[0].toIso8601String(),
+        endDate: widget.selectedDates[1].toIso8601String(),
+        location: widget.selectedLocation,
+        companion: widget.selectedGroup,
+      );
 
-  @override
-  void initState() {
-    super.initState();
-    _fetchCourseImages();
-  }
+      print('API Response: $result'); // 응답 데이터 로그 출력
 
-  Future<void> _fetchCourseImages() async {
-  try {
-    print('Fetching course data from API...');
-    final result = await ApiService.fetchCourseForP(
-      mbti: mbti,
-      startDate: widget.selectedDates[0].toIso8601String(),
-      endDate: widget.selectedDates[1].toIso8601String(),
-      location: widget.selectedLocation,
-      companion: widget.selectedGroup,
-    );
+      List<Map<String, String>> fetchedData = [];
 
-    print('API Response: $result'); // 응답 데이터 로그 출력
+      if (result['result'] != null && result['result'] is List) {
+        List<dynamic> coursesJson = result['result'];
+        List<Course> courses = coursesJson.map((json) {
+          try {
+            return Course.fromJson(json);
+          } catch (e) {
+            print('Error parsing course JSON: $e');
+            return null;
+          }
+        }).where((course) => course != null).cast<Course>().toList();  // null이 아닌 항목만 포함
 
-    List<Map<String, String>> fetchedData = [];
+        for (var course in courses) {
+          if (course.day1.isNotEmpty) {
+            String imageUrl = course.day1[0].imageUrl;
+            String region = course.region;
+            String courseName = course.courseName;
+            String duration = course.duration;
 
-    if (result['result'] != null && result['result'] is List) {
-      List<dynamic> coursesJson = result['result'];
-      List<Course> courses = coursesJson.map((json) {
-        try {
-          return Course.fromJson(json);  
-        } catch (e) {
-          print('Error parsing course JSON: $e');  
-          return null;
+            fetchedData.add({
+              'imageUrl': imageUrl,
+              'region': region,
+              'courseName': courseName,
+              'duration': duration,
+            });
+          }
         }
-      }).where((course) => course != null).cast<Course>().toList();  // null이 아닌 항목만 포함
-
-      for (var course in courses) {
-        if (course.day1.isNotEmpty) { 
-          String imageUrl = course.day1[0].imageUrl; 
-          String region = course.region;
-          String courseName = course.courseName;
-          String duration = course.duration;
-
-          fetchedData.add({
-            'imageUrl': imageUrl,
-            'region': region,
-            'courseName': courseName,
-            'duration': duration,
-          });
-        }
+      } else {
+        print('Result is null or not a list');
       }
-    } else {
-      print('Result is null or not a list');
+
+      return fetchedData;
+    } catch (e) {
+      print('Error fetching course images: $e');
+      throw e; // Propagate the error
     }
-
-    setState(() {
-      courseData = fetchedData;
-      isLoading = false;
-      hasError = false;
-      print('Course data fetched successfully: $courseData');
-    });
-  } catch (e) {
-    print('Error fetching course images: $e');
-    setState(() {
-      courseData = [];
-      isLoading = false;
-      hasError = true;
-    });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('코스 이미지를 불러오는 데 문제가 발생했습니다.'),
-      ),
-    );
-  }
-}
-
-  void shuffleCourses() {
-    setState(() {
-      courseData.shuffle(Random());
-    });
   }
 
   @override
@@ -158,25 +127,18 @@ class _CoursemakeState extends State<Coursemake> {
                   color: Colors.grey[200],
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      'STEP 03 | 코스 선택',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    if (isLoading)
-                      Center(child: CircularProgressIndicator())
-                    else if (hasError)
-                      Center(child: Text('코스 이미지를 불러오는 데 문제가 발생했습니다.'))
-                    else if (courseData.isEmpty)
-                      Center(child: Text('코스 이미지가 없습니다.'))
-                    else
-                      GridView.builder(
+                child: FutureBuilder<List<Map<String, String>>>(
+                  future: _fetchCourseImages(), // Fetch data
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('코스 이미지를 불러오는 데 문제가 발생했습니다.'));
+                    } else if (snapshot.hasData && snapshot.data!.isEmpty) {
+                      return Center(child: Text('코스 이미지가 없습니다.'));
+                    } else if (snapshot.hasData) {
+                      List<Map<String, String>> courseData = snapshot.data!;
+                      return GridView.builder(
                         physics: NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -227,7 +189,7 @@ class _CoursemakeState extends State<Coursemake> {
                                             child: CircularProgressIndicator(
                                               value: loadingProgress.expectedTotalBytes != null
                                                   ? loadingProgress.cumulativeBytesLoaded /
-                                                      loadingProgress.expectedTotalBytes!
+                                                  loadingProgress.expectedTotalBytes!
                                                   : null,
                                             ),
                                           );
@@ -255,23 +217,10 @@ class _CoursemakeState extends State<Coursemake> {
                             ),
                           );
                         },
-                      ),
-                    SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        shuffleCourses();
-                      },
-                      child: Text('코스 재생성'),
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(vertical: 15),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        backgroundColor: Colors.grey[800],
-                        foregroundColor: Colors.white,
-                      ),
-                    ),
-                  ],
+                      );
+                    }
+                    return Container(); // Fallback, should not be reached
+                  },
                 ),
               ),
             ),
