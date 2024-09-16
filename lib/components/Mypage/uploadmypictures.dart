@@ -4,8 +4,7 @@ import 'package:image_picker/image_picker.dart'; // Image Picker 패키지 임�
 import 'package:dotted_border/dotted_border.dart'; // Dotted Border 패키지 임포트
 import 'dart:io';
 import 'dart:typed_data'; // 이미지 데이터를 위한 패키지
-
-import '../Mypage/selectdate.dart'; // CalendarPage 임포트
+import 'selectdate.dart'; // CustomDateRangeSelector 파일 임포트
 
 class TravelDetailPage extends StatefulWidget {
   @override
@@ -26,7 +25,7 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
   int _nextBoxToShow = 1; // 사용자가 사진을 입력하면 다음 박스를 표시할 변수
   int loadingTime = 3; // 로딩 시간을 3초로 설정
 
-  DateTime? _selectedDate; // 선택된 날짜를 저장할 변수
+  List<DateTime>? _selectedDateRange; // 선택된 날짜 범위를 저장할 변수
 
   // 인덱스를 한글 숫자로 변환하는 함수
   String _getKoreanNumber(int index) {
@@ -91,23 +90,29 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
 
   // 여행 날짜 선택 다이얼로그 표시 함수
   void _showDateSelectionDialog() async {
-    final selectedDate = await showDialog<DateTime>(
+    await showDialog<void>(
       context: context,
       builder: (BuildContext context) {
         return Dialog(
+          backgroundColor: Colors.white, // 다이얼로그 배경색을 흰색으로 설정
           child: Container(
             padding: EdgeInsets.all(10),
-            child: CalendarPage(),
+            child: CustomDateRangeSelector(
+              onDateRangeSelected: (selectedDates) {
+                // 날짜 선택 콜백 처리
+              },
+            ),
           ),
         );
       },
     );
+  }
 
-    if (selectedDate != null) {
-      setState(() {
-        _selectedDate = selectedDate; // 선택된 날짜 업데이트
-      });
-    }
+  // 날짜를 'yyyy/MM/dd' 형식으로 변환하는 함수
+  String formatDateRange(List<DateTime> dateRange) {
+    String format(DateTime date) =>
+        '${date.year.toString().padLeft(4, '0')}/${date.month.toString().padLeft(2, '0')}/${date.day.toString().padLeft(2, '0')}';
+    return '${format(dateRange[0])} ~ ${format(dateRange[1])}';
   }
 
   @override
@@ -135,7 +140,9 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
                       Text(
                         '코스 이름:', // 박스 안의 텍스트
                         style: TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.bold),
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey[800]),
                       ),
                       Expanded(
                         child: TextField(
@@ -166,14 +173,18 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text(
-                          '여행 날짜:', // 박스 안의 텍스트
-                          style: TextStyle(
-                              fontSize: 14, fontWeight: FontWeight.bold),
-                        ),
-                        if (_selectedDate != null) // 선택된 날짜가 있을 경우 텍스트로 표시
+                        if (_selectedDateRange ==
+                            null) // 선택된 날짜가 없을 경우에만 '여행 날짜' 텍스트 표시
                           Text(
-                            ' ${_selectedDate!.toLocal()}'.split(' ')[0],
+                            '여행 날짜:', // 박스 안의 텍스트
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey[800]),
+                          ),
+                        if (_selectedDateRange != null) // 선택된 날짜가 있을 경우 텍스트로 표시
+                          Text(
+                            ' ${formatDateRange(_selectedDateRange!)}', // 선택된 날짜 형식 변환
                             style: TextStyle(
                                 fontSize: 14, fontWeight: FontWeight.bold),
                           ),
