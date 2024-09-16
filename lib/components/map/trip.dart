@@ -22,6 +22,7 @@ class _TripState extends State<Trip> {
   List<Map<String, dynamic>> recommendedTrips = [];
   List<Map<String, dynamic>> popularTrips = [];
   List<Map<String, dynamic>> mbtiTrips = [];
+  String mbtiType = '';  // MBTI 값을 저장할 변수 추가
 
   @override
   void initState() {
@@ -43,14 +44,17 @@ class _TripState extends State<Trip> {
     try {
       recommendedTrips = await ApiService.fetchRecommendedSpots(_selectedRegion);
       popularTrips = await ApiService.fetchPopularSpots(_selectedRegion);
-      mbtiTrips = await ApiService.fetchMbtiSpots();
+      
+      // MBTI 여행지 데이터와 MBTI 값을 가져옴
+      final mbtiData = await ApiService.fetchMbtiSpots();
+      mbtiTrips = mbtiData['tourList'];
+      mbtiType = mbtiData['mbti'];  // MBTI 값 저장
 
       setState(() {}); // 데이터 업데이트 후 화면 갱신
     } catch (e) {
       print('Error fetching data: $e');
     }
   }
-
   @override
   void dispose() {
     _titleController.dispose();
@@ -125,7 +129,7 @@ class _TripState extends State<Trip> {
             _buildHorizontalImageList(recommendedTrips),
             _buildSection('인기 여행지'),
             _buildHorizontalImageList(popularTrips),
-            _buildSection('MBTI 여행지'),
+             _buildSection('$mbtiType 여행지'),
             _buildHorizontalImageList(mbtiTrips),
           ],
         ),

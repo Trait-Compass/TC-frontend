@@ -4,6 +4,10 @@ import '../components/start/basicframe2.dart';
 import '../hooks/top3course.dart';
 
 class LocationAndPersonSelectionPage extends StatefulWidget {
+  final List<DateTime> selectedDates; // 이 부분에서 선택된 날짜를 받음
+
+  LocationAndPersonSelectionPage({required this.selectedDates}); // selectedDates 인자를 받는 생성자 추가
+
   @override
   _LocationAndPersonSelectionPageState createState() =>
       _LocationAndPersonSelectionPageState();
@@ -183,7 +187,11 @@ class _LocationAndPersonSelectionPageState
                               selectedGroup != null) {
                             Navigator.push(context,
                                 MaterialPageRoute(builder: (context) {
-                              return Coursemake();
+                              return Coursemake(
+                                selectedDates: widget.selectedDates, // 인자 추가
+                                selectedLocation: selectedLocation!,
+                                selectedGroup: selectedGroup!,
+                              );
                             }));
                           } else {
                             _showSnackbar(context); 

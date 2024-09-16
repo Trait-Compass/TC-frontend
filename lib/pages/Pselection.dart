@@ -10,11 +10,28 @@ class Pselection extends StatefulWidget {
 
 class _PselectionState extends State<Pselection> {
   List<DateTime> selectedDates = [];
+  DateTime? startDate; // 시작 날짜
+  DateTime? endDate;   // 끝 날짜
 
   void _onDatesSelected1(List<DateTime> dates) {
     setState(() {
       selectedDates = dates;
+      if (dates.isNotEmpty) {
+        startDate = dates.first;
+        endDate = dates.last;
+    
+        _proceedWithSelectedDates();
+      } else {
+        startDate = null;
+        endDate = null;
+      }
     });
+  }
+
+  void _proceedWithSelectedDates() {
+    print('Selected Dates: $selectedDates');
+    print('Start Date: $startDate');
+    print('End Date: $endDate');
   }
 
   @override
@@ -71,8 +88,7 @@ class _PselectionState extends State<Pselection> {
                   children: [
                     Text(
                       'STEP 01 | 여행 기간 선택',
-                      style:
-                          TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
                     ),
                     SizedBox(height: 10),
                     Container(
