@@ -17,7 +17,7 @@ class _TripState extends State<Trip> {
   final TextEditingController _titleController = TextEditingController();
   FocusNode _titleFocusNode = FocusNode();
   String _searchText = '';
-  String _selectedRegion = '경상남도';
+  String _selectedRegion = '창원시';
   List<String> _filteredRegions = [];
   List<Map<String, dynamic>> recommendedTrips = [];
   List<Map<String, dynamic>> popularTrips = [];

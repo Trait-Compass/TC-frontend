@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../components/mbti_selection_page.dart';
 import 'package:untitled/styles/loginstyles.dart';
-import '../../services/auth_services.dart';
+// import '../../services/auth_services.dart';
 import 'creataccount.dart';
 import '../../components/basic_frame_page.dart';
 import 'package:http/http.dart' as http;
@@ -17,10 +17,10 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final AuthService _authService = AuthService();
+  // final AuthService _authService = AuthService();
   final StorageService _storageService = StorageService(); // 스토리지 서비스 인스턴스 생성
   bool _isRememberMeChecked = false;
-  String _userInfo = '';
+  // String _userInfo = '';
   String? _accessToken; // AccessToken 저장할 변수 추가
 
   // 로그인 API 호출 메서드
@@ -91,73 +91,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  // 카카오 로그인 후 서버로 토큰 전송
-  Future<void> _signInWithKakao() async {
-    final token = await _authService.signInWithKakao(); 
-
-    if (token != null) {
-      // 서버로 전송하여 로그인/회원가입 요청
-      final url = Uri.parse('https://www.traitcompass.store/oauth/kakao');
-      try {
-        final response = await http.post(
-          url,
-          headers: {'Content-Type': 'application/json'},
-          body: jsonEncode({'accessToken': token, 'vendor': 'kakao'}),
-        );
-
-        print('Response Status Code: ${response.statusCode}');
-        print('Response Body: ${response.body}');
-
-        if (response.statusCode == 201) {
-          final Map<String, dynamic> responseBody = jsonDecode(response.body);
-
-          if (responseBody.containsKey('result')) { 
-            _accessToken = responseBody['result']; 
-            
-            await _storageService.write(
-                key: 'accessToken', value: _accessToken!); // Secure Storage에 저장
-            print('Access Token: $_accessToken'); 
-
-            // ApiService에 accessToken 설정
-            ApiService.setAccessToken(_accessToken!); // 스태틱 메서드로 설정
-
-            setState(() {
-              _userInfo = '로그인 성공!';
-            });
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('로그인 성공!')),
-            );
-
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => BasicFramePage(body: MBTISelectionPage()),
-              ),
-            );
-          } else {
-            print('Access Token not found in the response.');
-          }
-        } else {
-          setState(() {
-            _userInfo = '로그인 실패. 상태 코드: ${response.statusCode}';
-          });
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('로그인 실패. 상태 코드: ${response.statusCode}')),
-          );
-        }
-      } catch (e) {
-        print('Error: $e');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('로그인 중 오류가 발생했습니다: $e')),
-        );
-      }
-    } else {
-      setState(() {
-        _userInfo = '로그인 실패';
-      });
-    }
-  }
-
   @override
   void dispose() {
     _idController.dispose();
@@ -225,8 +158,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       Text(
                         '로그인 유지',
                         style: TextStyle(
-                          color:
-                              _isRememberMeChecked ? Colors.black : Colors.grey,
+                          color: _isRememberMeChecked ? Colors.black : Colors.grey,
                         ),
                       ),
                     ],
@@ -240,24 +172,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Text('로그인하기'),
                 style: loginButtonStyle,
               ),
-              SizedBox(height: 16),
-              // 카카오 로그인 버튼
-              ElevatedButton(
-                onPressed: _signInWithKakao,
-                style: kakaoButtonStyle,
-                child: Image.asset(
-                  'assets/kakao.png', // 경로 수정 필요 시 수정
-                  height: 24,
-                ),
-              ),
-              SizedBox(height: 24),
-              // 로그인 결과 메시지
-              if (_userInfo.isNotEmpty)
-                Text(
-                  _userInfo,
-                  style: TextStyle(fontSize: 16, color: Colors.black),
-                  textAlign: TextAlign.center,
-                ),
               SizedBox(height: 24),
               // 아이디/비밀번호 찾기 및 회원가입 링크
               Row(
