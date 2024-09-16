@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
 class TripDetailModal extends StatelessWidget {
-  final String imagePath;
+  final String? imageUrl;
   final String title;
+  final String address;
 
-  TripDetailModal({required this.imagePath, required this.title});
+  TripDetailModal({this.imageUrl, required this.title, required this.address});
 
   @override
   Widget build(BuildContext context) {
@@ -25,14 +26,29 @@ class TripDetailModal extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             ClipRRect(
-              borderRadius:
-                  BorderRadius.vertical(top: Radius.circular(40)),
-              child: Image.asset(
-                imagePath,
-                height: 200,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
+              child: imageUrl != null && imageUrl!.isNotEmpty 
+                  ? Image.network(
+                      imageUrl!,
+                      height: 200,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        // 네트워크 이미지 로딩에 실패하면 기본 이미지 사용
+                        return Image.asset(
+                          'assets/city2.png',
+                          height: 200,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        );
+                      },
+                    )
+                  : Image.asset(
+                      'assets/city2.png',
+                      height: 200,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
             ),
             Padding(
               padding: const EdgeInsets.all(16.0),
@@ -41,22 +57,19 @@ class TripDetailModal extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 8),
-                  Text('예시 주소입니다.'), // 예시 주소
+                  Text(address), 
                   SizedBox(height: 16),
                   Row(
-                    mainAxisAlignment:
-                        MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       ElevatedButton(
                         onPressed: () {
-                          // 모달을 닫고 데이터를 반환
                           Navigator.pop(context, {
                             'title': title,
-                            'address': '예시 주소입니다.',
+                            'address': address,
                           });
                         },
                         child: Text('추가하기'),

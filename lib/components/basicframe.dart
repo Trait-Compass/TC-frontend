@@ -21,13 +21,18 @@ class BasicFrame1Page extends StatelessWidget {
                 Image.asset('assets/mbtilogo.jpg', height: screenHeight * 0.05),
             backgroundColor: Colors.white,
             elevation: 0,
-            actions: [
-              IconButton(
-                icon: Image.asset('assets/alarm.jpg'),
-                onPressed: () {},
-              ),
-            ],
+             flexibleSpace: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
           ),
+        ),
+        actions: [
+          IconButton(
+            icon: Image.asset('assets/alarm.jpg'),
+            onPressed: () {},
+          ),
+        ],
+      ),
         ),
       ),
       body: body,

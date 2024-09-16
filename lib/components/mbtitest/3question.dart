@@ -116,7 +116,7 @@ class _Questions3State extends State<Questions3> {
                                           ),
                                           SizedBox(height: 10),
                                           Text(
-                                            '별은 무슨 인공위성이겠지',
+                                            '     별은 무슨 \n 인공위성이겠지',
                                             style: TextStyle(fontSize: 18),
                                           ),
                                         ],

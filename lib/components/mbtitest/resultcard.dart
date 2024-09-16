@@ -131,7 +131,7 @@ class ResultCard extends StatelessWidget {
                           onPressed: () {
                             // 저장 기능
                           },
-                          child: Text(
+                          child: Text( // api 달기 
                             'MBTI 저장하기',
                             style: TextStyle(fontSize: 18, color: Colors.white),
                           ),

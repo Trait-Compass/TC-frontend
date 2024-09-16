@@ -50,6 +50,26 @@ class ApiService {
     return response;
   }
 
+  // 사용자 프로필 API 호출 (static)
+  static Future<Map<String, dynamic>> fetchUserProfile() async {
+    final response = await get('/user/profile');
+
+    if (response.statusCode == 200) {
+      try {
+        Map<String, dynamic> data = json.decode(response.body);
+        if (data['result'] is Map<String, dynamic>) {
+          return data['result']; // 'result' 데이터 반환
+        } else {
+          throw Exception('Unexpected data format: result is not a Map');
+        }
+      } catch (e) {
+        throw Exception('Failed to parse user profile data. Error: $e');
+      }
+    } else {
+      throw Exception('Failed to load user profile. Status code: ${response.statusCode}, Reason: ${response.reasonPhrase}');
+    }
+  }
+
   // 추천 여행지 API 호출 (static)
   static Future<List<Map<String, dynamic>>> fetchRecommendedSpots(String location) async {
     final response = await get('/spot/recommand', params: {'location': location});

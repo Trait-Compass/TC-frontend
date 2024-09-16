@@ -42,7 +42,7 @@ class StartTestSection extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.zero,
                         child: Image.asset(
-                          '../assets/airplane.png',
+                          'assets/airplane.png',
                           height: 50,
                           fit: BoxFit.contain,
                         ),
@@ -61,7 +61,7 @@ class StartTestSection extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.zero,
                         child: Image.asset(
-                          '../assets/airplane2.png',
+                          'assets/airplane2.png',
                           height: 40,
                           fit: BoxFit.contain,
                         ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '../MBTItestpage.dart';
+import '../../components/mbtitest/MBTItestpage.dart';
 
 class UserInfoScreen extends StatefulWidget {
   final String id;
@@ -21,22 +21,8 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   bool isnicknameUnique = false;
 
   final List<String> _mbtiList = [
-    'INTJ',
-    'INTP',
-    'ENTJ',
-    'ENTP',
-    'INFJ',
-    'INFP',
-    'ENFJ',
-    'ENFP',
-    'ISTJ',
-    'ISFJ',
-    'ESTJ',
-    'ESFJ',
-    'ISTP',
-    'ISFP',
-    'ESTP',
-    'ESFP'
+    'INTJ', 'INTP', 'ENTJ', 'ENTP', 'INFJ', 'INFP', 'ENFJ', 'ENFP',
+    'ISTJ', 'ISFJ', 'ESTJ', 'ESFJ', 'ISTP', 'ISFP', 'ESTP', 'ESFP'
   ];
 
   void _updateButtonState() {
@@ -60,45 +46,44 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
     super.dispose();
   }
 
- Future<void> _submitUserInfo() async {
-  final String nickname = _nicknameController.text;
-  final String mbti = _mbti;
-  final String gender = _gender;
-  final bool isOauth = false;
+  Future<void> _submitUserInfo() async {
+    final String nickname = _nicknameController.text;
+    final String mbti = _mbti;
+    final String gender = _gender;
+    final bool isOauth = false;
 
-  final Map<String, dynamic> requestBody = {
-    'id': widget.id,
-    'password': widget.password,
-    'nickname': nickname,
-    'mbti': mbti,
-    'gender': gender,
-    'isOauth': isOauth,
-  };
+    final Map<String, dynamic> requestBody = {
+      'id': widget.id,
+      'password': widget.password,
+      'nickname': nickname,
+      'mbti': mbti,
+      'gender': gender,
+      'isOauth': isOauth,
+    };
 
-  print('Request Body: $requestBody');  // 요청 본문을 출력하여 디버깅
+    print('Request Body: $requestBody'); // 요청 본문을 출력하여 디버깅
 
-  final response = await http.post(
-    Uri.parse('https://www.traitcompass.store/user'),
-    headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-    body: jsonEncode(requestBody),
-  );
-
-  print('Response Status Code: ${response.statusCode}');  // 상태 코드 출력
-  print('Response Body: ${response.body}');  // 응답 본문 출력하여 디버깅
-
-  if (response.statusCode == 201) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('회원정보가 성공적으로 제출되었습니다.')),
+    final response = await http.post(
+      Uri.parse('https://www.traitcompass.store/user'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(requestBody),
     );
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('회원정보 제출에 실패했습니다. 상태 코드: ${response.statusCode}')),
-    );
+
+    print('Response Status Code: ${response.statusCode}'); // 상태 코드 출력
+    print('Response Body: ${response.body}'); // 응답 본문 출력하여 디버깅
+
+    if (response.statusCode == 201) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('회원정보가 성공적으로 제출되었습니다.')),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('회원정보 제출에 실패했습니다. 상태 코드: ${response.statusCode}')),
+      );
+    }
   }
-}
-
 
   Future<void> _checkDuplicateNickname() async {
     final String nickname = _nicknameController.text;
@@ -138,7 +123,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => MBTItestselection()), 
+          builder: (context) => MBTItestselection()),
     );
   }
 
@@ -153,7 +138,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
         child: Container(
           width: screenWidth * 0.9,
           height: screenHeight * 0.8,
-          padding: const EdgeInsets.all(32.0),
+          padding: const EdgeInsets.all(16.0), 
           child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -190,7 +175,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                               decoration: InputDecoration(
                                 hintText: '닉네임을 입력해주세요',
                                 hintStyle: TextStyle(
-                                  fontSize: screenHeight * 0.017,
+                                  fontSize: screenHeight * 0.018, 
                                   color: Color(0xFF676767),
                                 ),
                                 filled: true,
@@ -211,7 +196,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                   ),
                                 ),
                                 contentPadding: EdgeInsets.symmetric(
-                                    horizontal: screenWidth * 0.04),
+                                    horizontal: screenWidth * 0.04, vertical: screenHeight * 0.015), 
                               ),
                             ),
                           ),
@@ -225,7 +210,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                             child: Text(
                               '중복 확인',
                               style: TextStyle(
-                                fontSize: screenHeight * 0.017,
+                                fontSize: screenHeight * 0.017, 
                                 color: Colors.black,
                               ),
                             ),
@@ -272,7 +257,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                   hint: Text(
                                     'MBTI를 설정해주세요',
                                     style: TextStyle(
-                                        fontSize: screenHeight * 0.017,
+                                        fontSize: screenHeight * 0.018, 
                                         color: Color(0xFF676767)),
                                   ),
                                   icon: Icon(Icons.arrow_drop_down),
@@ -300,22 +285,30 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                               ),
                               SizedBox(height: screenHeight * 0.01),
                               Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    '아직 내 MBTI를 모른다면',
-                                    style: TextStyle(
-                                        fontSize: 10,
-                                        color: Colors.grey[600]),
-                                  ),
-                                  TextButton(
-                                    onPressed: _navigateToMBTITest,
+                                  Flexible(
+                                    flex: 1,
                                     child: Text(
-                                      '내 MBTI 알아보러 가기 GO',
+                                      '아직 내 MBTI를 모른다면',
                                       style: TextStyle(
                                           fontSize: 10,
-                                          color: Colors.black),
+                                          color: Colors.grey[600]),
+                                    ),
+                                  ),
+                                  SizedBox(width: screenWidth * 0.02), 
+                                  Expanded(
+                                    flex: 2, 
+                                    child: TextButton(
+                                      onPressed: _navigateToMBTITest,
+                                      child: Text(
+                                        '내 MBTI 알아보러 가기         \n               GO',
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          color: Colors.black,
+                                        ),
+                                        softWrap: true,
+                                        overflow: TextOverflow.visible, 
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -341,7 +334,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      '남성',
+                                      'M',
                                       style: TextStyle(
                                           fontSize: screenHeight * 0.015),
                                     ),
@@ -358,9 +351,9 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                           MaterialTapTargetSize.shrinkWrap,
                                       visualDensity: VisualDensity.compact,
                                     ),
-                                    SizedBox(width: screenWidth * 0.01),
+                                    SizedBox(width: 0),
                                     Text(
-                                      '여성',
+                                      'F',
                                       style: TextStyle(
                                           fontSize: screenHeight * 0.015),
                                     ),

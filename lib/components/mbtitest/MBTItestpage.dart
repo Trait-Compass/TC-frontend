@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../components/basicframe.dart';
-import '../components/mbtitest/0question.dart';
+import '../basicframe.dart';
+import '0question.dart';
 // import '../components/mbtitest/1question.dart';
 // import '../components/mbtitest/2question.dart';
 
@@ -70,7 +70,7 @@ class _MBTItestselectionState extends State<MBTItestselection> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.asset('../assets/mascoat.png', height: 100),
+                    Image.asset('assets/mascoat.png', height: 100),
                     SizedBox(height: 20),
                     Text(
                       '안녕하세요 창녕군 마스코트 따오기예요!',

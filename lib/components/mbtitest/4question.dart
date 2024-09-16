@@ -162,7 +162,7 @@ class _Questions4State extends State<Questions4> {
                                           ),
                                           SizedBox(height: 10),
                                           Text(
-                                            '여기도 가고 저기도 갔다가..',
+                                            '   여기도 가고 \n 저기도 갔다가..',
                                             style: TextStyle(fontSize: 18),
                                           ),
                                         ],

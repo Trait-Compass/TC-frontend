@@ -60,7 +60,7 @@ class TravelPreferencePage extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Image.asset(
-                                '../assets/nature.png',
+                                'assets/nature.png',
                                 height: 60,
                               ),
                               SizedBox(height: 10),
@@ -107,7 +107,7 @@ class TravelPreferencePage extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Image.asset(
-                                '../assets/city.png',
+                                'assets/city.png',
                                 height: 60,
                               ),
                               SizedBox(height: 10),
@@ -126,7 +126,7 @@ class TravelPreferencePage extends StatelessWidget {
             ),
             Positioned(
               child: Image.asset(
-                '../assets/vs.png',
+                'assets/vs.png',
                 height: 100,
               ),
             ),

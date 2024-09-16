@@ -118,7 +118,7 @@ class _Questions2State extends State<Questions2> {
                                           ),
                                           SizedBox(height: 10),
                                           Text(
-                                            '왔던 길로 되돌아가자',
+                                            '  왔던 길로 \n 되돌아가자',
                                             style: TextStyle(fontSize: 18),
                                           ),
                                         ],
