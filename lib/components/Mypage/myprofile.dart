@@ -111,11 +111,12 @@ class ProfileSection extends StatelessWidget {
                                   height: 25,
                                   alignment: Alignment.center,
                                   child: Text(
-                                    profileData['mbtiDescription'][0] ?? "",
+                                    _addLineBreakAfterFiveChars(profileData['mbtiDescription'][0] ?? ""),
                                     style: TextStyle(
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
-                                        color: Color(0xFFD07C58)),
+                                      fontSize: 8,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xFFD07C58),
+                                    ),
                                   ),
                                 ),
                                 SizedBox(width: 10),
@@ -126,7 +127,7 @@ class ProfileSection extends StatelessWidget {
                                   child: Text(
                                     profileData['nickname'] ?? "",
                                     style: TextStyle(
-                                      fontSize: 17,
+                                      fontSize: 13,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -147,7 +148,7 @@ class ProfileSection extends StatelessWidget {
                                         Text(
                                           profileData['mbtiDescription'][1] ?? "",
                                           style: TextStyle(
-                                            fontSize: 8,
+                                            fontSize: 9,
                                             fontWeight: FontWeight.bold,
                                           ),
                                           textAlign: TextAlign.center,
@@ -235,5 +236,13 @@ class ProfileSection extends StatelessWidget {
         }
       },
     );
+  }
+
+  // 문자열에서 5자 뒤에 줄바꿈을 추가하는 메서드
+  String _addLineBreakAfterFiveChars(String text) {
+    if (text.length > 9) {
+      return text.substring(0, 9) + '\n' + text.substring(9);
+    }
+    return text;
   }
 }
