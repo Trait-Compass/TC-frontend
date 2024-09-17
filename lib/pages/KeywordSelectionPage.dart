@@ -1,10 +1,21 @@
+// keyword_selection_page.dart
 import 'package:flutter/material.dart';
+import 'package:untitled/components/map/MapPage.dart';
 import 'package:untitled/pages/coursemakej.dart';
-import '../hooks/top3course.dart'; 
 import '../components/start/basicframe2.dart';
-import '../components/map/MapPage.dart';
+import '../hooks/top3course.dart';
 
 class KeywordSelectionPage extends StatefulWidget {
+  final List<DateTime> selectedDates;
+  final String selectedLocation;
+  final String selectedGroup;
+
+  KeywordSelectionPage({
+    required this.selectedDates,
+    required this.selectedLocation,
+    required this.selectedGroup,
+  });
+
   @override
   _KeywordSelectionPageState createState() => _KeywordSelectionPageState();
 }
@@ -141,10 +152,15 @@ class _KeywordSelectionPageState extends State<KeywordSelectionPage> {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => Coursemakej(),
+                            builder: (context) => Coursemakej(
+                              selectedDates: widget.selectedDates,
+                              selectedLocation: widget.selectedLocation,
+                              selectedGroup: widget.selectedGroup,
+                              selectedKeywords: selectedKeywords,
+                            ),
                           ),
                         );
-                      }, // 항상 버튼 활성화
+                      }, // 버튼 활성화 조건을 추가하려면 여기에 로직 추가
                       child: Text('AI에게 추천코스 받기'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.grey[800],
@@ -158,12 +174,16 @@ class _KeywordSelectionPageState extends State<KeywordSelectionPage> {
                       onPressed: () {
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(
-                            builder: (context) => MapPage(),
+                            MaterialPageRoute(
+                            builder: (context) => MapPage(
+                              // selectedDates: widget.selectedDates,
+                              // selectedLocation: widget.selectedLocation,
+                              // selectedGroup: widget.selectedGroup,
+                            ),
                           ),
                         );
                         // 선택된 키워드를 이용해 코스를 만들어야 함
-                      }, // 항상 버튼 활성화
+                      }, // 버튼 활성화 조건을 추가하려면 여기에 로직 추가
                       child: Text('직접 코스 만들기'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.grey[800],

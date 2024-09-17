@@ -3,27 +3,24 @@ import 'dart:convert';
 
 class ApiService {
   static final String baseUrl = 'https://www.traitcompass.store';
-  static String? _accessToken; // AccessToken을 스태틱으로 변경
+  static String? _accessToken;
 
-  // AccessToken 설정 메서드 (static)
   static void setAccessToken(String token) {
     _accessToken = token;
-    print('Access token set: $_accessToken'); // 토큰 설정 로그 추가
+    print('Access token set: $_accessToken');
   }
 
-  // 공통 헤더 생성 메서드 (static)
   static Map<String, String> _createHeaders() {
     final headers = {
       'Content-Type': 'application/json',
     };
     if (_accessToken != null) {
       headers['Authorization'] = 'Bearer $_accessToken';
-      print('Authorization header set: Bearer $_accessToken'); // Authorization 헤더 설정 로그 추가
+      print('Authorization header set: Bearer $_accessToken');
     }
     return headers;
   }
 
-  // 요청 로그 출력 메서드 (static)
   static void _logRequest(String method, String url, Map<String, String> headers, [Map<String, dynamic>? body]) {
     print('--- $method Request ---');
     print('URL: $url');
@@ -34,21 +31,41 @@ class ApiService {
     print('-----------------------');
   }
 
-  // GET 요청 메서드 (static)
-  static Future<http.Response> get(String endpoint, {Map<String, String>? params}) async {
-    final uri = Uri.parse('$baseUrl$endpoint').replace(queryParameters: params);
-    final headers = _createHeaders();
+static Future<http.Response> get(String endpoint, {Map<String, dynamic>? params}) async {
+  String path = endpoint.startsWith('/') ? endpoint : '/$endpoint';
 
-    // 로그 출력
-    _logRequest('GET', uri.toString(), headers);
+  String queryString = '';
+  if (params != null) {
+    List<String> queryParts = [];
 
-    final response = await http.get(uri, headers: headers);
-    
-    print('Response status code: ${response.statusCode}');
-    print('Response body: ${response.body}');
+    params.forEach((key, value) {
+      if (value is List) {
+        for (var item in value) {
+          queryParts.add('${Uri.encodeQueryComponent(key)}=${Uri.encodeQueryComponent(item.toString())}');
+        }
+      } else {
+        queryParts.add('${Uri.encodeQueryComponent(key)}=${Uri.encodeQueryComponent(value.toString())}');
+      }
+    });
 
-    return response;
+    queryString = queryParts.join('&');
   }
+
+  Uri uri = Uri.parse('$baseUrl$path${queryString.isNotEmpty ? '?$queryString' : ''}');
+
+  final headers = _createHeaders();
+
+  // 요청 로그 출력
+  _logRequest('GET', uri.toString(), headers);
+
+  final response = await http.get(uri, headers: headers);
+
+  print('Response status code: ${response.statusCode}');
+  print('Response body: ${response.body}');
+
+  return response;
+}
+
 
   // P형 여행 일정 API 호출 (static)
   static Future<Map<String, dynamic>> fetchCourseForP({
@@ -84,7 +101,7 @@ class ApiService {
     required String endDate,
     required String location,
     required String companion,
-    required String keyword,
+    required List<String> keyword,
   }) async {
     final response = await get('/course/j', params: {
       'mbti': mbti,

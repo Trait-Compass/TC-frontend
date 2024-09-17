@@ -1,10 +1,24 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import '../components/start/basicframe2.dart';  
-import '../components/map/MapPage.dart';
+import 'package:untitled/pages/Tripdetail.dart';
+import '../components/start/basicframe2.dart';
 import '../hooks/top3course.dart';
+import '../pages/coursemodell.dart';
+import '../components/map/api.dart';
 
 class Coursemakej extends StatefulWidget {
+  final List<DateTime> selectedDates; // 선택된 날짜
+  final String selectedLocation; // 선택된 장소
+  final String selectedGroup; // 선택된 인원 그룹
+  final List<String> selectedKeywords; // 선택된 키워드
+
+  Coursemakej({
+    required this.selectedDates,
+    required this.selectedLocation,
+    required this.selectedGroup,
+    required this.selectedKeywords,
+  });
+
   @override
   _CoursemakejState createState() => _CoursemakejState();
 }
@@ -21,6 +35,67 @@ class _CoursemakejState extends State<Coursemakej> {
     setState(() {
       courseImages.shuffle(Random());
     });
+  }
+
+  Future<List<Map<String, dynamic>>> _fetchCourseImages() async {
+    try {
+      print('Fetching course data from API...');
+      final result = await ApiService.fetchCourseForJ(
+        mbti: 'INFP', // MBTI placeholder, 실제로는 사용자 데이터를 활용
+        startDate: widget.selectedDates[0].toIso8601String(),
+        endDate: widget.selectedDates[1].toIso8601String(),
+        location: widget.selectedLocation,
+        companion: widget.selectedGroup,
+        keyword: widget.selectedKeywords,
+      );
+
+      print('API Response: $result'); // 응답 데이터 로그 출력
+
+      List<Map<String, dynamic>> fetchedData = [];
+
+      if (result['result'] != null && result['result'] is List) {
+        List<dynamic> coursesJson = result['result'];
+        List<Course> courses = coursesJson.map((json) {
+          try {
+            return Course.fromJson(json);
+          } catch (e) {
+            print('Error parsing course JSON: $e');
+            return null;
+          }
+        }).where((course) => course != null).cast<Course>().toList(); // null이 아닌 항목만 포함
+
+        for (var course in courses) {
+          if (course.day1.isNotEmpty) {
+            String imageUrl = course.day1[0].imageUrl;
+            String region = course.region;
+            String courseName = course.courseName;
+            String duration = course.duration;
+
+            // Day 객체 리스트를 Map으로 변환
+            List<Map<String, dynamic>> day1Maps = course.day1.map((day) => day.toMap()).toList();
+            List<Map<String, dynamic>> day2Maps = course.day2.map((day) => day.toMap()).toList();
+            List<Map<String, dynamic>> day3Maps = course.day3.map((day) => day.toMap()).toList();
+
+            fetchedData.add({
+              'imageUrl': imageUrl,
+              'region': region,
+              'courseName': courseName,
+              'duration': duration,
+              'day1': day1Maps,
+              'day2': day2Maps,
+              'day3': day3Maps,
+            });
+          }
+        }
+      } else {
+        print('Result is null or not a list');
+      }
+
+      return fetchedData;
+    } catch (e) {
+      print('Error fetching course images: $e');
+      throw e; // 에러 전파
+    }
   }
 
   @override
@@ -76,82 +151,159 @@ class _CoursemakejState extends State<Coursemakej> {
                   color: Colors.grey[200],
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      'STEP 04 | 코스 선택',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    GridView.builder(
-                      physics: NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
-                        childAspectRatio: 1.25,
-                      ),
-                      itemCount: courseImages.length,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => MapPage()),
-                            );
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.white,
+                child: FutureBuilder<List<Map<String, dynamic>>>(
+                  future: _fetchCourseImages(), // 데이터 가져오기
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('코스 이미지를 불러오는 데 문제가 발생했습니다.'));
+                    } else if (snapshot.hasData && snapshot.data!.isEmpty) {
+                      return Center(child: Text('코스 이미지가 없습니다.'));
+                    } else if (snapshot.hasData) {
+                      List<Map<String, dynamic>> courseData = snapshot.data!;
+                      return GridView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                          childAspectRatio: 1.25,
+                        ),
+                        itemCount: courseData.length,
+                        itemBuilder: (context, index) {
+                          final course = courseData[index];
+                          
+                          Map<int, List<Map<String, dynamic>>> tripDetails = {};
+                          int totalDays = 1; // 당일치기
 
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black12,
-                                  blurRadius: 4,
-                                  spreadRadius: 2,
-                                  offset: Offset(2, 2),
+                          if (widget.selectedDates.length == 2) {
+                            tripDetails[0] = course['day1'];
+                            tripDetails[1] = course['day2'];
+                            totalDays = 2; // 1박 2일
+                          } else if (widget.selectedDates.length > 2) {
+                            tripDetails[0] = course['day1'];
+                            tripDetails[1] = course['day2'];
+                            tripDetails[2] = course['day3'];
+                            totalDays = 3; // 2박 3일
+                          } else {
+                            tripDetails[0] = course['day1'];
+                          }
+
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => PdetailPage(
+                                    tripDetails: tripDetails,
+                                    totalDays: totalDays,
+                                  ),
                                 ),
-                              ],
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.all(Radius.circular(10)),
-                              child: Column(
+                              );
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black12,
+                                    blurRadius: 4,
+                                    spreadRadius: 2,
+                                    offset: Offset(2, 2),
+                                  ),
+                                ],
+                              ),
+                              child: Stack(
                                 children: [
-                                  Expanded(
-                                    child: Image.asset(
-                                      courseImages[index],
+                                  // 이미지
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: Image.network(
+                                      course['imageUrl']!,
+                                      width: double.infinity,
+                                      height: double.infinity, 
                                       fit: BoxFit.cover,
+                                      loadingBuilder: (BuildContext context,
+                                          Widget child,
+                                          ImageChunkEvent? loadingProgress) {
+                                        if (loadingProgress == null) return child;
+                                        return Center(
+                                          child: CircularProgressIndicator(
+                                            value: loadingProgress.expectedTotalBytes != null
+                                                ? loadingProgress.cumulativeBytesLoaded /
+                                                    loadingProgress.expectedTotalBytes!
+                                                : null,
+                                          ),
+                                        );
+                                      },
+                                      errorBuilder: (BuildContext context,
+                                          Object exception,
+                                          StackTrace? stackTrace) {
+                                        return Icon(Icons.broken_image,
+                                            size: 50);
+                                      },
+                                    ),
+                                  ),
+                                  Positioned(
+                                    bottom: 10,
+                                    right: 10,
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.end, 
+                                      children: [
+                                        Text(
+                                          course['courseName']!,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white, 
+                                            shadows: [
+                                              Shadow(
+                                                offset: Offset(1.0, 1.0),
+                                                blurRadius: 3.0,
+                                                color: Colors.black,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Text(
+                                          course['region']!,
+                                          style: TextStyle(
+                                            color: Colors.white, // 흰색 텍스트
+                                            shadows: [
+                                              Shadow(
+                                                offset: Offset(1.0, 1.0),
+                                                blurRadius: 3.0,
+                                                color: Colors.black, // 그림자
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Text(
+                                          course['duration']!,
+                                          style: TextStyle(
+                                            color: Colors.white, 
+                                            shadows: [
+                                              Shadow(
+                                                offset: Offset(1.0, 1.0),
+                                                blurRadius: 3.0,
+                                                color: Colors.black, 
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-                          ),
-                        );
-                      },
-                    ),
-                    SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        shuffleCourses();
-                      },
-                      child: Text('코스 재생성'),
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(vertical: 15),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        backgroundColor: Colors.grey[800],
-                        foregroundColor: Colors.white,
-                      ),
-                    ),
-                  ],
+                          );
+                        },
+                      );
+                    }
+                    return Container(); 
+                  },
                 ),
               ),
             ),

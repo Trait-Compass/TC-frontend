@@ -1,17 +1,17 @@
+// calendarforJ.dart
 import 'package:flutter/material.dart';
-import '../Pages/LocationAndPersonSelectionJ.dart'; // 임포트 경로 확인 필요
+import '../pages/LocationAndPersonSelectionJ.dart'; // 임포트 경로 확인 필요
 
-class AdvancedCalendarSelection extends StatefulWidget {
+class CalendarForJ extends StatefulWidget {
   final Function(List<DateTime>) onDatesSelected;
 
-  AdvancedCalendarSelection({required this.onDatesSelected});
+  CalendarForJ({required this.onDatesSelected});
 
   @override
-  _AdvancedCalendarSelectionState createState() =>
-      _AdvancedCalendarSelectionState();
+  _CalendarForJState createState() => _CalendarForJState();
 }
 
-class _AdvancedCalendarSelectionState extends State<AdvancedCalendarSelection> {
+class _CalendarForJState extends State<CalendarForJ> {
   List<DateTime> selectedDates = [];
 
   void toggleDateSelection(DateTime date) {
@@ -205,7 +205,7 @@ class _AdvancedCalendarSelectionState extends State<AdvancedCalendarSelection> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => LocationAndPersonSelectionJ(),
+                        builder: (context) => LocationAndPersonSelectionJ(selectedDates: selectedDates),
                       ),
                     );
                   }

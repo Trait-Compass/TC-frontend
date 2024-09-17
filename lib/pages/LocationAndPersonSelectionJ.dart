@@ -1,16 +1,19 @@
+// location_and_person_selection_j.dart
 import 'package:flutter/material.dart';
-import 'package:untitled/pages/KeywordSelectionPage.dart';
+import 'package:untitled/pages/KeywordSelectionPage.dart'; // 경로와 파일 이름을 실제 프로젝트에 맞게 수정하세요.
 import '../components/start/basicframe2.dart';
 import '../hooks/top3course.dart';
 
 class LocationAndPersonSelectionJ extends StatefulWidget {
+  final List<DateTime> selectedDates;
+
+  LocationAndPersonSelectionJ({required this.selectedDates});
+
   @override
-  _LocationAndPersonSelectionJState createState() =>
-      _LocationAndPersonSelectionJState();
+  _LocationAndPersonSelectionJState createState() => _LocationAndPersonSelectionJState();
 }
 
-class _LocationAndPersonSelectionJState
-    extends State<LocationAndPersonSelectionJ> {
+class _LocationAndPersonSelectionJState extends State<LocationAndPersonSelectionJ> {
   String? selectedLocation;
   String? selectedGroup;
 
@@ -52,7 +55,7 @@ class _LocationAndPersonSelectionJState
       SnackBar(
         content: Text(
           '항목을 모두 선택해주세요',
-          style: TextStyle(color: Colors.black), // 텍스트 색상 설정
+          style: TextStyle(color: Colors.black),
         ),
         backgroundColor: Colors.white,
         duration: Duration(seconds: 1),
@@ -140,6 +143,7 @@ class _LocationAndPersonSelectionJState
                       onChanged: (value) {
                         setState(() {
                           selectedLocation = value;
+                          print('Selected location: $selectedLocation');
                         });
                       },
                     ),
@@ -168,6 +172,7 @@ class _LocationAndPersonSelectionJState
                       onChanged: (value) {
                         setState(() {
                           selectedGroup = value;
+                          print('Selected group: $selectedGroup');
                         });
                       },
                     ),
@@ -177,15 +182,20 @@ class _LocationAndPersonSelectionJState
                         if (selectedLocation == null || selectedGroup == null) {
                           _showSnackbar(context);
                         } else {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
-                            return KeywordSelectionPage();
-                          }));
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => KeywordSelectionPage(
+                                selectedDates: widget.selectedDates,
+                                selectedLocation: selectedLocation!,
+                                selectedGroup: selectedGroup!,
+                              ),
+                            ),
+                          );
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            Colors.grey[800], // 버튼 색을 grey[800]으로 설정
+                        backgroundColor: Colors.grey[800],
                         foregroundColor: Colors.white,
                         padding:
                             EdgeInsets.symmetric(vertical: 15, horizontal: 30),
