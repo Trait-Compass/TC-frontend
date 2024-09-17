@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../map/mapresult.dart'; // 필요에 따라 import
+import '../map/mapresult.dart'; 
 
 class MapdetailPage extends StatefulWidget {
   final Map<int, List<Map<String, String>>> tripDetails;
@@ -13,67 +13,82 @@ class MapdetailPage extends StatefulWidget {
 class _MapdetailPageState extends State<MapdetailPage> {
   int selectedDayIndex = 0;
 
-  void _showConfirmationDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(40),
-          ),
-          content: Container(
-            height: 200,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  '저장하시겠습니까?',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
+void _showConfirmationDialog() {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20), // 라운드된 테두리
+        ),
+        content: Container(
+          height: 200, // 높이 조정
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                '저장하시겠습니까?',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 40),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                    
+                      Navigator.of(context).pop();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.grey[200], 
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 60), 
+                    ),
+                    child: Text(
+                      '네! 코스 저장할게요',
+                      style: TextStyle(color: Colors.black, fontSize: 18),
+                    ),
                   ),
-                ),
-                SizedBox(height: 60),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        // 저장 로직 추가
-                        Navigator.of(context).pop();
-                      },
-                      child: Text(
-                        '네, 저장할게요!',
-                        style: TextStyle(color: Colors.grey[600]),
+                  SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(); 
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Mapresult(),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.grey[200], // 배경색
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
+                      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 35), // 버튼 크기 조정
                     ),
-                    TextButton(
-                      onPressed: () {
-                        // 다음에 수정하기 로직 추가
-                        Navigator.of(context).pop(); // Dialog 닫기
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Mapresult(),
-                          ),
-                        );
-                      },
-                      child: Text(
-                        '아니요, 다음에 수정할게요!',
-                        style: TextStyle(color: Colors.grey[600]),
-                      ),
+                    child: Text(
+                      '아니요! 코스 저장안할게요 ',
+                      style: TextStyle(color: Colors.black, fontSize: 18),
                     ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                ],
+              ),
+            ],
           ),
-        );
-      },
-    );
-  }
+        ),
+      );
+    },
+  );
+}
+
 
   @override
   Widget build(BuildContext context) {
