@@ -1,5 +1,6 @@
 // keyword_selection_page.dart
 import 'package:flutter/material.dart';
+import 'package:untitled/components/map/MapPage.dart';
 import 'package:untitled/pages/coursemakej.dart';
 import '../components/start/basicframe2.dart';
 import '../hooks/top3course.dart';
@@ -174,10 +175,10 @@ class _KeywordSelectionPageState extends State<KeywordSelectionPage> {
                         Navigator.pushReplacement(
                           context,
                             MaterialPageRoute(
-                            builder: (context) => KeywordSelectionPage(
-                              selectedDates: widget.selectedDates,
-                              selectedLocation: widget.selectedLocation,
-                              selectedGroup: widget.selectedGroup,
+                            builder: (context) => MapPage(
+                              // selectedDates: widget.selectedDates,
+                              // selectedLocation: widget.selectedLocation,
+                              // selectedGroup: widget.selectedGroup,
                             ),
                           ),
                         );
