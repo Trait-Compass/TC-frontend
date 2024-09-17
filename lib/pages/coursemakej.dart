@@ -1,8 +1,7 @@
-// coursemakej.dart
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:untitled/pages/Tripdetail.dart';
 import '../components/start/basicframe2.dart';
-import '../components/map/MapPage.dart';
 import '../hooks/top3course.dart';
 import '../pages/coursemodell.dart';
 import '../components/map/api.dart';
@@ -38,7 +37,7 @@ class _CoursemakejState extends State<Coursemakej> {
     });
   }
 
-  Future<List<Map<String, String>>> _fetchCourseImages() async {
+  Future<List<Map<String, dynamic>>> _fetchCourseImages() async {
     try {
       print('Fetching course data from API...');
       final result = await ApiService.fetchCourseForJ(
@@ -52,7 +51,7 @@ class _CoursemakejState extends State<Coursemakej> {
 
       print('API Response: $result'); // 응답 데이터 로그 출력
 
-      List<Map<String, String>> fetchedData = [];
+      List<Map<String, dynamic>> fetchedData = [];
 
       if (result['result'] != null && result['result'] is List) {
         List<dynamic> coursesJson = result['result'];
@@ -72,11 +71,19 @@ class _CoursemakejState extends State<Coursemakej> {
             String courseName = course.courseName;
             String duration = course.duration;
 
+            // Day 객체 리스트를 Map으로 변환
+            List<Map<String, dynamic>> day1Maps = course.day1.map((day) => day.toMap()).toList();
+            List<Map<String, dynamic>> day2Maps = course.day2.map((day) => day.toMap()).toList();
+            List<Map<String, dynamic>> day3Maps = course.day3.map((day) => day.toMap()).toList();
+
             fetchedData.add({
               'imageUrl': imageUrl,
               'region': region,
               'courseName': courseName,
               'duration': duration,
+              'day1': day1Maps,
+              'day2': day2Maps,
+              'day3': day3Maps,
             });
           }
         }
@@ -144,7 +151,7 @@ class _CoursemakejState extends State<Coursemakej> {
                   color: Colors.grey[200],
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: FutureBuilder<List<Map<String, String>>>(
+                child: FutureBuilder<List<Map<String, dynamic>>>(
                   future: _fetchCourseImages(), // 데이터 가져오기
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
@@ -154,7 +161,7 @@ class _CoursemakejState extends State<Coursemakej> {
                     } else if (snapshot.hasData && snapshot.data!.isEmpty) {
                       return Center(child: Text('코스 이미지가 없습니다.'));
                     } else if (snapshot.hasData) {
-                      List<Map<String, String>> courseData = snapshot.data!;
+                      List<Map<String, dynamic>> courseData = snapshot.data!;
                       return GridView.builder(
                         physics: NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
@@ -167,12 +174,32 @@ class _CoursemakejState extends State<Coursemakej> {
                         itemCount: courseData.length,
                         itemBuilder: (context, index) {
                           final course = courseData[index];
+                          
+                          Map<int, List<Map<String, dynamic>>> tripDetails = {};
+                          int totalDays = 1; // 당일치기
+
+                          if (widget.selectedDates.length == 2) {
+                            tripDetails[0] = course['day1'];
+                            tripDetails[1] = course['day2'];
+                            totalDays = 2; // 1박 2일
+                          } else if (widget.selectedDates.length > 2) {
+                            tripDetails[0] = course['day1'];
+                            tripDetails[1] = course['day2'];
+                            tripDetails[2] = course['day3'];
+                            totalDays = 3; // 2박 3일
+                          } else {
+                            tripDetails[0] = course['day1'];
+                          }
+
                           return GestureDetector(
                             onTap: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => MapPage(),
+                                  builder: (context) => PdetailPage(
+                                    tripDetails: tripDetails,
+                                    totalDays: totalDays,
+                                  ),
                                 ),
                               );
                             },
@@ -196,22 +223,17 @@ class _CoursemakejState extends State<Coursemakej> {
                                     child: Image.network(
                                       course['imageUrl']!,
                                       width: double.infinity,
-                                      height: double.infinity, // 전체 공간을 차지하도록
+                                      height: double.infinity, 
                                       fit: BoxFit.cover,
                                       loadingBuilder: (BuildContext context,
                                           Widget child,
                                           ImageChunkEvent? loadingProgress) {
-                                        if (loadingProgress == null)
-                                          return child;
+                                        if (loadingProgress == null) return child;
                                         return Center(
                                           child: CircularProgressIndicator(
-                                            value: loadingProgress
-                                                        .expectedTotalBytes !=
-                                                    null
-                                                ? loadingProgress
-                                                        .cumulativeBytesLoaded /
-                                                    loadingProgress
-                                                        .expectedTotalBytes!
+                                            value: loadingProgress.expectedTotalBytes != null
+                                                ? loadingProgress.cumulativeBytesLoaded /
+                                                    loadingProgress.expectedTotalBytes!
                                                 : null,
                                           ),
                                         );
@@ -224,24 +246,22 @@ class _CoursemakejState extends State<Coursemakej> {
                                       },
                                     ),
                                   ),
-                                  // 텍스트가 이미지 오른쪽 아래에 위치하도록 Positioned 사용
                                   Positioned(
                                     bottom: 10,
                                     right: 10,
                                     child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end, // 오른쪽 정렬
+                                      crossAxisAlignment: CrossAxisAlignment.end, 
                                       children: [
                                         Text(
                                           course['courseName']!,
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            color: Colors.white, // 흰색 텍스트
+                                            color: Colors.white, 
                                             shadows: [
                                               Shadow(
                                                 offset: Offset(1.0, 1.0),
                                                 blurRadius: 3.0,
-                                                color: Colors.black, // 그림자
+                                                color: Colors.black,
                                               ),
                                             ],
                                           ),
@@ -262,12 +282,12 @@ class _CoursemakejState extends State<Coursemakej> {
                                         Text(
                                           course['duration']!,
                                           style: TextStyle(
-                                            color: Colors.white, // 흰색 텍스트
+                                            color: Colors.white, 
                                             shadows: [
                                               Shadow(
                                                 offset: Offset(1.0, 1.0),
                                                 blurRadius: 3.0,
-                                                color: Colors.black, // 그림자
+                                                color: Colors.black, 
                                               ),
                                             ],
                                           ),
@@ -282,7 +302,7 @@ class _CoursemakejState extends State<Coursemakej> {
                         },
                       );
                     }
-                    return Container(); // 도달하지 않아야 함
+                    return Container(); 
                   },
                 ),
               ),

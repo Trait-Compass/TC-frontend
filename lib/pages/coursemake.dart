@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import '../components/start/basicframe2.dart';
-import '../components/map/MapPage.dart';
 import '../hooks/top3course.dart';
 import '../components/map/api.dart';
 import '../pages/coursemodell.dart';
+import '../pages/Tripdetail.dart'; // PdetailPage를 가져오기 위한 import 추가
 
 class Coursemake extends StatefulWidget {
   final List<DateTime> selectedDates; // 날짜 받기
@@ -21,7 +21,7 @@ class Coursemake extends StatefulWidget {
 }
 
 class _CoursemakeState extends State<Coursemake> {
-  Future<List<Map<String, String>>> _fetchCourseImages() async {
+  Future<List<Map<String, dynamic>>> _fetchCourseImages() async {
     try {
       print('Fetching course data from API...');
       final result = await ApiService.fetchCourseForP(
@@ -34,7 +34,7 @@ class _CoursemakeState extends State<Coursemake> {
 
       print('API Response: $result'); // 응답 데이터 로그 출력
 
-      List<Map<String, String>> fetchedData = [];
+      List<Map<String, dynamic>> fetchedData = [];
 
       if (result['result'] != null && result['result'] is List) {
         List<dynamic> coursesJson = result['result'];
@@ -54,11 +54,19 @@ class _CoursemakeState extends State<Coursemake> {
             String courseName = course.courseName;
             String duration = course.duration;
 
+            // Day 객체 리스트를 Map으로 변환
+            List<Map<String, dynamic>> day1Maps = course.day1.map((day) => day.toMap()).toList();
+            List<Map<String, dynamic>> day2Maps = course.day2.map((day) => day.toMap()).toList();
+            List<Map<String, dynamic>> day3Maps = course.day3.map((day) => day.toMap()).toList();
+
             fetchedData.add({
               'imageUrl': imageUrl,
               'region': region,
               'courseName': courseName,
               'duration': duration,
+              'day1': day1Maps, // day1 데이터를 Map으로 변환하여 추가
+              'day2': day2Maps, 
+              'day3': day3Maps,
             });
           }
         }
@@ -69,7 +77,7 @@ class _CoursemakeState extends State<Coursemake> {
       return fetchedData;
     } catch (e) {
       print('Error fetching course images: $e');
-      throw e; // Propagate the error
+      throw e; 
     }
   }
 
@@ -126,7 +134,7 @@ class _CoursemakeState extends State<Coursemake> {
                   color: Colors.grey[200],
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: FutureBuilder<List<Map<String, String>>>(
+                child: FutureBuilder<List<Map<String, dynamic>>>(
                   future: _fetchCourseImages(), // Fetch data
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
@@ -136,7 +144,7 @@ class _CoursemakeState extends State<Coursemake> {
                     } else if (snapshot.hasData && snapshot.data!.isEmpty) {
                       return Center(child: Text('코스 이미지가 없습니다.'));
                     } else if (snapshot.hasData) {
-                      List<Map<String, String>> courseData = snapshot.data!;
+                      List<Map<String, dynamic>> courseData = snapshot.data!;
                       return GridView.builder(
                         physics: NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
@@ -149,12 +157,33 @@ class _CoursemakeState extends State<Coursemake> {
                         itemCount: courseData.length,
                         itemBuilder: (context, index) {
                           final course = courseData[index];
+                          
+                          // 여행 기간에 따른 필요한 데이터만 추출
+                          Map<int, List<Map<String, dynamic>>> tripDetails = {};
+                          int totalDays = 1; // 기본값은 당일치기
+
+                          if (widget.selectedDates.length == 2) {
+                            tripDetails[0] = course['day1'];
+                            tripDetails[1] = course['day2'];
+                            totalDays = 2; // 1박 2일
+                          } else if (widget.selectedDates.length > 2) {
+                            tripDetails[0] = course['day1'];
+                            tripDetails[1] = course['day2'];
+                            tripDetails[2] = course['day3'];
+                            totalDays = 3; // 2박 3일
+                          } else {
+                            tripDetails[0] = course['day1'];
+                          }
+
                           return GestureDetector(
                             onTap: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => MapPage(),
+                                  builder: (context) => PdetailPage(
+                                    tripDetails: tripDetails,
+                                    totalDays: totalDays,
+                                  ),
                                 ),
                               );
                             },
@@ -178,31 +207,24 @@ class _CoursemakeState extends State<Coursemake> {
                                     child: Image.network(
                                       course['imageUrl']!,
                                       width: double.infinity,
-                                      height: double.infinity, 
+                                      height: double.infinity,
                                       fit: BoxFit.cover,
                                       loadingBuilder: (BuildContext context,
                                           Widget child,
                                           ImageChunkEvent? loadingProgress) {
-                                        if (loadingProgress == null)
-                                          return child;
+                                        if (loadingProgress == null) return child;
                                         return Center(
                                           child: CircularProgressIndicator(
-                                            value: loadingProgress
-                                                        .expectedTotalBytes !=
-                                                    null
-                                                ? loadingProgress
-                                                        .cumulativeBytesLoaded /
-                                                    loadingProgress
-                                                        .expectedTotalBytes!
+                                            value: loadingProgress.expectedTotalBytes != null
+                                                ? loadingProgress.cumulativeBytesLoaded /
+                                                    loadingProgress.expectedTotalBytes!
                                                 : null,
                                           ),
                                         );
                                       },
-                                      errorBuilder: (BuildContext context,
-                                          Object exception,
+                                      errorBuilder: (BuildContext context, Object exception,
                                           StackTrace? stackTrace) {
-                                        return Icon(Icons.broken_image,
-                                            size: 50);
+                                        return Icon(Icons.broken_image, size: 50);
                                       },
                                     ),
                                   ),
@@ -210,8 +232,7 @@ class _CoursemakeState extends State<Coursemake> {
                                     bottom: 10,
                                     right: 10,
                                     child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end, 
+                                      crossAxisAlignment: CrossAxisAlignment.end,
                                       children: [
                                         Text(
                                           course['courseName']!,
@@ -222,7 +243,7 @@ class _CoursemakeState extends State<Coursemake> {
                                               Shadow(
                                                 offset: Offset(1.0, 1.0),
                                                 blurRadius: 3.0,
-                                                color: Colors.black, 
+                                                color: Colors.black,
                                               ),
                                             ],
                                           ),
@@ -235,7 +256,7 @@ class _CoursemakeState extends State<Coursemake> {
                                               Shadow(
                                                 offset: Offset(1.0, 1.0),
                                                 blurRadius: 3.0,
-                                                color: Colors.black, 
+                                                color: Colors.black,
                                               ),
                                             ],
                                           ),
@@ -243,12 +264,12 @@ class _CoursemakeState extends State<Coursemake> {
                                         Text(
                                           course['duration']!,
                                           style: TextStyle(
-                                            color: Colors.white, 
+                                            color: Colors.white,
                                             shadows: [
                                               Shadow(
                                                 offset: Offset(1.0, 1.0),
                                                 blurRadius: 3.0,
-                                                color: Colors.black, 
+                                                color: Colors.black,
                                               ),
                                             ],
                                           ),
@@ -263,7 +284,7 @@ class _CoursemakeState extends State<Coursemake> {
                         },
                       );
                     }
-                    return Container(); 
+                    return Container();
                   },
                 ),
               ),
