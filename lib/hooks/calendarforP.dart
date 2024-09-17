@@ -205,7 +205,9 @@ class _CustomCalendarSelectionState extends State<CustomCalendarSelection> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => LocationAndPersonSelectionPage(),
+                        builder: (context) => LocationAndPersonSelectionPage(
+                          selectedDates: selectedDates, // 'selectedDates' 전달
+                        ),
                       ),
                     );
                   }

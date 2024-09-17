@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../components/mbti_selection_page.dart';
 import 'package:untitled/styles/loginstyles.dart';
-import '../../services/auth_services.dart';
+// import '../../services/auth_services.dart';
 import 'creataccount.dart';
 import '../../components/basic_frame_page.dart';
 import 'package:http/http.dart' as http;
@@ -17,10 +17,10 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final AuthService _authService = AuthService();
+  // final AuthService _authService = AuthService();
   final StorageService _storageService = StorageService(); // 스토리지 서비스 인스턴스 생성
   bool _isRememberMeChecked = false;
-  String _userInfo = '';
+  // String _userInfo = '';
   String? _accessToken; // AccessToken 저장할 변수 추가
 
   // 로그인 API 호출 메서드
@@ -90,6 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     }
   }
+
 
   // 카카오 로그인 후 서버로 토큰 전송
   Future<void> _signInWithKakao() async {
@@ -225,8 +226,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       Text(
                         '로그인 유지',
                         style: TextStyle(
-                          color:
-                              _isRememberMeChecked ? Colors.black : Colors.grey,
+                          color: _isRememberMeChecked ? Colors.black : Colors.grey,
                         ),
                       ),
                     ],
@@ -240,24 +240,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Text('로그인하기'),
                 style: loginButtonStyle,
               ),
-              SizedBox(height: 16),
-              // 카카오 로그인 버튼
-              ElevatedButton(
-                onPressed: _signInWithKakao,
-                style: kakaoButtonStyle,
-                child: Image.asset(
-                  'assets/kakao.png', // 경로 수정 필요 시 수정
-                  height: 24,
-                ),
-              ),
-              SizedBox(height: 24),
-              // 로그인 결과 메시지
-              if (_userInfo.isNotEmpty)
-                Text(
-                  _userInfo,
-                  style: TextStyle(fontSize: 16, color: Colors.black),
-                  textAlign: TextAlign.center,
-                ),
               SizedBox(height: 24),
               // 아이디/비밀번호 찾기 및 회원가입 링크
               Row(

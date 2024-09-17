@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:untitled/components/mbtitest/MBTItestpage.dart';
 import 'package:untitled/components/map/api.dart'; 
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+// import 'package:http/http.dart' as http;
+// import 'dart:convert';
 
 class ProfileSection extends StatelessWidget {
   @override

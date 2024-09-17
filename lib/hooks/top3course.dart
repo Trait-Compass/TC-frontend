@@ -15,11 +15,7 @@ class Top3Courses extends StatelessWidget {
                 '인기 코스 TOP 3',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-              Text(
-                '더보기',
-                style: TextStyle(
-                    fontSize: 13, color: Colors.black.withOpacity(0.5)),
-              ),
+          
             ],
           ),
         ),
@@ -32,7 +28,7 @@ class Top3Courses extends StatelessWidget {
                 width: double.infinity,
                 margin: EdgeInsets.symmetric(vertical: 5),
                 child: Image.asset(
-                  '../assets/changwon.png',
+                  'assets/changwon.png',
                   fit: BoxFit.cover,
                 ),
               ),
@@ -40,7 +36,7 @@ class Top3Courses extends StatelessWidget {
                 width: double.infinity,
                 margin: EdgeInsets.symmetric(vertical: 5),
                 child: Image.asset(
-                  '../assets/namhae.png',
+                  'assets/namhae.png',
                   fit: BoxFit.cover,
                 ),
               ),
@@ -48,7 +44,7 @@ class Top3Courses extends StatelessWidget {
                 width: double.infinity,
                 margin: EdgeInsets.symmetric(vertical: 5),
                 child: Image.asset(
-                  '../assets/geoje.png',
+                  'assets/geoje.png',
                   fit: BoxFit.cover,
                 ),
               ),

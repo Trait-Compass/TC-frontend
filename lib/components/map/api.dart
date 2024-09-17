@@ -50,6 +50,62 @@ class ApiService {
     return response;
   }
 
+  // P형 여행 일정 API 호출 (static)
+  static Future<Map<String, dynamic>> fetchCourseForP({
+    required String mbti,
+    required String startDate,
+    required String endDate,
+    required String location,
+    required String companion,
+  }) async {
+    final response = await get('/course/p', params: {
+      'mbti': mbti,
+      'startDate': startDate,
+      'endDate': endDate,
+      'location': location,
+      'companion': companion,
+    });
+
+    if (response.statusCode == 200) {
+      try {
+        return json.decode(response.body);
+      } catch (e) {
+        throw Exception('실패: $e');
+      }
+    } else {
+      throw Exception('실패: ${response.statusCode}, Reason: ${response.reasonPhrase}');
+    }
+  } 
+
+  // J형 여행 일정 API 호출 (static)
+  static Future<Map<String, dynamic>> fetchCourseForJ({
+    required String mbti,
+    required String startDate,
+    required String endDate,
+    required String location,
+    required String companion,
+    required String keyword,
+  }) async {
+    final response = await get('/course/j', params: {
+      'mbti': mbti,
+      'startDate': startDate,
+      'endDate': endDate,
+      'location': location,
+      'companion': companion,
+      'keyword': keyword,
+    });
+
+    if (response.statusCode == 200) {
+      try {
+        return json.decode(response.body);
+      } catch (e) {
+        throw Exception('Failed to parse J course data. Error: $e');
+      }
+    } else {
+      throw Exception('Failed to load J course. Status code: ${response.statusCode}, Reason: ${response.reasonPhrase}');
+    }
+  }
+
   // 사용자 프로필 API 호출 (static)
   static Future<Map<String, dynamic>> fetchUserProfile() async {
     final response = await get('/user/profile');
@@ -113,7 +169,7 @@ class ApiService {
   }
 
   // MBTI 여행지 API 호출 (static)
-  static Future<List<Map<String, dynamic>>> fetchMbtiSpots() async {
+  static Future<Map<String, dynamic>> fetchMbtiSpots() async {
     final response = await get('/spot/mbti');
 
     if (response.statusCode == 200) {
@@ -121,7 +177,11 @@ class ApiService {
         Map<String, dynamic> data = json.decode(response.body); // 최상위 Map으로 파싱
         if (data['result'] != null && data['result']['tourList'] is List) {
           List<dynamic> tourList = data['result']['tourList']; // 'result'에서 'tourList' 가져오기
-          return tourList.map((e) => e as Map<String, dynamic>).toList();
+          String mbti = data['result']['mbti']; // 'mbti' 값 가져오기
+          return {
+            'mbti': mbti,
+            'tourList': tourList.map((e) => e as Map<String, dynamic>).toList(),
+          };
         } else {
           throw Exception('Unexpected data format: result or tourList is not valid');
         }
