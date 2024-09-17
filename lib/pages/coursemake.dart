@@ -3,7 +3,7 @@ import '../components/start/basicframe2.dart';
 import '../hooks/top3course.dart';
 import '../components/map/api.dart';
 import '../pages/coursemodell.dart';
-import '../pages/Tripdetail.dart'; // PdetailPage를 가져오기 위한 import 추가
+import '../pages/Tripdetail.dart'; 
 
 class Coursemake extends StatefulWidget {
   final List<DateTime> selectedDates; // 날짜 받기
@@ -27,7 +27,7 @@ class _CoursemakeState extends State<Coursemake> {
       final result = await ApiService.fetchCourseForP(
         mbti: 'INFP', // MBTI placeholder
         startDate: widget.selectedDates[0].toIso8601String(),
-        endDate: widget.selectedDates[1].toIso8601String(),
+        endDate: widget.selectedDates[widget.selectedDates.length - 1].toIso8601String(),
         location: widget.selectedLocation,
         companion: widget.selectedGroup,
       );
@@ -162,17 +162,21 @@ class _CoursemakeState extends State<Coursemake> {
                           Map<int, List<Map<String, dynamic>>> tripDetails = {};
                           int totalDays = 1; // 기본값은 당일치기
 
-                          if (widget.selectedDates.length == 2) {
-                            tripDetails[0] = course['day1'];
-                            tripDetails[1] = course['day2'];
-                            totalDays = 2; // 1박 2일
-                          } else if (widget.selectedDates.length > 2) {
-                            tripDetails[0] = course['day1'];
-                            tripDetails[1] = course['day2'];
-                            tripDetails[2] = course['day3'];
-                            totalDays = 3; // 2박 3일
-                          } else {
-                            tripDetails[0] = course['day1'];
+                          // 여행 일수 계산
+                          DateTime startDate = widget.selectedDates.first;
+                          DateTime endDate = widget.selectedDates.last;
+                          int daysDifference = endDate.difference(startDate).inDays + 1;
+                          totalDays = daysDifference;
+
+                          // tripDetails 설정
+                          for (int i = 0; i < totalDays; i++) {
+                            var dayData = course['day${i + 1}'];
+                            if (dayData != null && dayData.isNotEmpty) {
+                              tripDetails[i] = dayData;
+                            } else {
+                              // 데이터가 없을 경우 처리 (빈 리스트로 초기화)
+                              tripDetails[i] = [];
+                            }
                           }
 
                           return GestureDetector(

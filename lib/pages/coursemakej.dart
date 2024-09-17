@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:untitled/pages/Tripdetail.dart';
+import 'package:untitled/pages/Tripdetail.dart'; // PdetailPage import 경로 수정 필요
 import '../components/start/basicframe2.dart';
 import '../hooks/top3course.dart';
 import '../pages/coursemodell.dart';
@@ -43,7 +43,7 @@ class _CoursemakejState extends State<Coursemakej> {
       final result = await ApiService.fetchCourseForJ(
         mbti: 'INFP', // MBTI placeholder, 실제로는 사용자 데이터를 활용
         startDate: widget.selectedDates[0].toIso8601String(),
-        endDate: widget.selectedDates[1].toIso8601String(),
+        endDate: widget.selectedDates[widget.selectedDates.length - 1].toIso8601String(),
         location: widget.selectedLocation,
         companion: widget.selectedGroup,
         keyword: widget.selectedKeywords,
@@ -174,21 +174,25 @@ class _CoursemakejState extends State<Coursemakej> {
                         itemCount: courseData.length,
                         itemBuilder: (context, index) {
                           final course = courseData[index];
-                          
-                          Map<int, List<Map<String, dynamic>>> tripDetails = {};
-                          int totalDays = 1; // 당일치기
 
-                          if (widget.selectedDates.length == 2) {
-                            tripDetails[0] = course['day1'];
-                            tripDetails[1] = course['day2'];
-                            totalDays = 2; // 1박 2일
-                          } else if (widget.selectedDates.length > 2) {
-                            tripDetails[0] = course['day1'];
-                            tripDetails[1] = course['day2'];
-                            tripDetails[2] = course['day3'];
-                            totalDays = 3; // 2박 3일
-                          } else {
-                            tripDetails[0] = course['day1'];
+                          Map<int, List<Map<String, dynamic>>> tripDetails = {};
+                          int totalDays = 1; // 기본값은 1일차
+
+                          // 여행 일수 계산
+                          DateTime startDate = widget.selectedDates.first;
+                          DateTime endDate = widget.selectedDates.last;
+                          int daysDifference = endDate.difference(startDate).inDays + 1;
+                          totalDays = daysDifference;
+
+                          // tripDetails 설정
+                          for (int i = 0; i < totalDays; i++) {
+                            var dayData = course['day${i + 1}'];
+                            if (dayData != null && dayData.isNotEmpty) {
+                              tripDetails[i] = dayData;
+                            } else {
+                              // 데이터가 없을 경우 처리 (빈 리스트로 초기화)
+                              tripDetails[i] = [];
+                            }
                           }
 
                           return GestureDetector(
@@ -223,7 +227,7 @@ class _CoursemakejState extends State<Coursemakej> {
                                     child: Image.network(
                                       course['imageUrl']!,
                                       width: double.infinity,
-                                      height: double.infinity, 
+                                      height: double.infinity,
                                       fit: BoxFit.cover,
                                       loadingBuilder: (BuildContext context,
                                           Widget child,
@@ -241,8 +245,7 @@ class _CoursemakejState extends State<Coursemakej> {
                                       errorBuilder: (BuildContext context,
                                           Object exception,
                                           StackTrace? stackTrace) {
-                                        return Icon(Icons.broken_image,
-                                            size: 50);
+                                        return Icon(Icons.broken_image, size: 50);
                                       },
                                     ),
                                   ),
@@ -250,13 +253,13 @@ class _CoursemakejState extends State<Coursemakej> {
                                     bottom: 10,
                                     right: 10,
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.end, 
+                                      crossAxisAlignment: CrossAxisAlignment.end,
                                       children: [
                                         Text(
                                           course['courseName']!,
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            color: Colors.white, 
+                                            color: Colors.white,
                                             shadows: [
                                               Shadow(
                                                 offset: Offset(1.0, 1.0),
@@ -282,12 +285,12 @@ class _CoursemakejState extends State<Coursemakej> {
                                         Text(
                                           course['duration']!,
                                           style: TextStyle(
-                                            color: Colors.white, 
+                                            color: Colors.white,
                                             shadows: [
                                               Shadow(
                                                 offset: Offset(1.0, 1.0),
                                                 blurRadius: 3.0,
-                                                color: Colors.black, 
+                                                color: Colors.black,
                                               ),
                                             ],
                                           ),
@@ -302,7 +305,7 @@ class _CoursemakejState extends State<Coursemakej> {
                         },
                       );
                     }
-                    return Container(); 
+                    return Container();
                   },
                 ),
               ),

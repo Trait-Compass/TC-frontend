@@ -103,8 +103,13 @@ class _PdetailPageState extends State<PdetailPage> {
         ],
         backgroundColor: Colors.white,
         elevation: 0,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+          ),
+        ), // 여기에 닫는 괄호 추가
         iconTheme: IconThemeData(color: Colors.black),
-      ),
+      ), // AppBar 닫는 괄호
       body: Column(
         children: [
           // 날짜 선택 부분
