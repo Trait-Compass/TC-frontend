@@ -1,6 +1,6 @@
 // calendarforJ.dart
 import 'package:flutter/material.dart';
-import '../pages/LocationAndPersonSelectionJ.dart'; // 임포트 경로 확인 필요
+import '../pages/LocationAndPersonSelectionJ.dart'; 
 
 class CalendarForJ extends StatefulWidget {
   final Function(List<DateTime>) onDatesSelected;
@@ -25,7 +25,25 @@ class _CalendarForJState extends State<CalendarForJ> {
         selectedDates.add(date);
         selectedDates.sort();
       }
-      widget.onDatesSelected(selectedDates);
+
+     
+      int daysSelected = selectedDates.length > 1
+          ? selectedDates.last.difference(selectedDates.first).inDays + 1
+          : 0;
+
+      if (daysSelected > 5) {
+    
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('4박 5일까지 선택 가능합니다!'),
+          ),
+        );
+
+    
+        selectedDates.remove(date);
+      } else {
+        widget.onDatesSelected(selectedDates); 
+      }
     });
   }
 
@@ -190,6 +208,11 @@ class _CalendarForJState extends State<CalendarForJ> {
       return Column(children: months);
     }
 
+  
+    int daysSelected = selectedDates.length > 1
+        ? selectedDates.last.difference(selectedDates.first).inDays + 1
+        : 0;
+
     return Column(
       children: [
         Expanded(
@@ -200,20 +223,22 @@ class _CalendarForJState extends State<CalendarForJ> {
         Padding(
           padding: EdgeInsets.all(16.0),
           child: ElevatedButton(
-            onPressed: selectedDates.length == 2
+            onPressed: (selectedDates.length >= 1 && daysSelected <= 5)
                 ? () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => LocationAndPersonSelectionJ(selectedDates: selectedDates),
+                        builder: (context) => LocationAndPersonSelectionJ(
+                          selectedDates: selectedDates,
+                        ),
                       ),
                     );
                   }
                 : null,
             style: ElevatedButton.styleFrom(
-              backgroundColor: selectedDates.length == 2
+              backgroundColor: (selectedDates.length >= 1 && daysSelected <= 5)
                   ? Colors.grey[800]
-                  : Colors.grey[400], // 조건에 따른 색상 설정
+                  : Colors.grey[400], 
               foregroundColor: Colors.white,
               padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
             ),

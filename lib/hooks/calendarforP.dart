@@ -25,7 +25,26 @@ class _CustomCalendarSelectionState extends State<CustomCalendarSelection> {
         selectedDates.add(date);
         selectedDates.sort();
       }
-      widget.onDatesSelected(selectedDates);
+
+ 
+      int daysSelected = selectedDates.length > 1
+          ? selectedDates.last.difference(selectedDates.first).inDays + 1
+          : 0;
+
+   
+      if (daysSelected > 5) {
+    
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('4박 5일까지 선택 가능합니다!'),
+          ),
+        );
+
+        
+        selectedDates.remove(date);
+      } else {
+        widget.onDatesSelected(selectedDates); 
+      }
     });
   }
 
@@ -85,7 +104,7 @@ class _CustomCalendarSelectionState extends State<CustomCalendarSelection> {
           fontSize: 16.0,
         );
       } else if (isBetweenSelectedDates(date)) {
-        return TextStyle(); // 범위 내의 날짜 글자 스타일
+        return TextStyle(); 
       } else {
         return TextStyle(
           color: Colors.black,
@@ -190,6 +209,11 @@ class _CustomCalendarSelectionState extends State<CustomCalendarSelection> {
       return Column(children: months);
     }
 
+
+    int daysSelected = selectedDates.length > 1
+        ? selectedDates.last.difference(selectedDates.first).inDays + 1
+        : 0;
+
     return Column(
       children: [
         Expanded(
@@ -200,22 +224,22 @@ class _CustomCalendarSelectionState extends State<CustomCalendarSelection> {
         Padding(
           padding: EdgeInsets.all(16.0),
           child: ElevatedButton(
-            onPressed: selectedDates.length == 2
+            onPressed: (selectedDates.length >= 1 && daysSelected <= 5)
                 ? () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => LocationAndPersonSelectionPage(
-                          selectedDates: selectedDates, // 'selectedDates' 전달
+                          selectedDates: selectedDates,
                         ),
                       ),
                     );
                   }
                 : null,
             style: ElevatedButton.styleFrom(
-              backgroundColor: selectedDates.length == 2
+              backgroundColor: (selectedDates.length >= 1 && daysSelected <= 5)
                   ? Colors.grey[800]
-                  : Colors.grey[400], // 조건에 따른 색상 설정
+                  : Colors.grey[400],
               foregroundColor: Colors.white,
               padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
             ),
