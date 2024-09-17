@@ -91,6 +91,74 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+
+  // 카카오 로그인 후 서버로 토큰 전송
+  Future<void> _signInWithKakao() async {
+    final token = await _authService.signInWithKakao(); 
+
+    if (token != null) {
+      // 서버로 전송하여 로그인/회원가입 요청
+      final url = Uri.parse('https://www.traitcompass.store/oauth/kakao');
+      try {
+        final response = await http.post(
+          url,
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode({'accessToken': token, 'vendor': 'kakao'}),
+        );
+
+        print('Response Status Code: ${response.statusCode}');
+        print('Response Body: ${response.body}');
+
+        if (response.statusCode == 201) {
+          final Map<String, dynamic> responseBody = jsonDecode(response.body);
+
+          // 서버로부터 받은 accessToken 저장
+          if (responseBody.containsKey('result')){
+            _accessToken = responseBody['result'];
+            await _storageService.write(
+                key: 'accessToken', value: _accessToken!); // Secure Storage에 저장
+            print('Access Token: $_accessToken'); 
+
+            // ApiService에 accessToken 설정
+            ApiService.setAccessToken(_accessToken!); // 스태틱 메서드로 설정
+
+            setState(() {
+              _userInfo = '로그인 성공!';
+            });
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('로그인 성공!')),
+            );
+
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => BasicFramePage(body: MBTISelectionPage()),
+              ),
+            );
+          } else {
+            print('Access Token not found in the response.');
+          }
+        } else {
+          setState(() {
+            _userInfo = '로그인 실패. 상태 코드: ${response.statusCode}';
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('로그인 실패. 상태 코드: ${response.statusCode}')),
+          );
+        }
+      } catch (e) {
+        print('Error: $e');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('로그인 중 오류가 발생했습니다: $e')),
+        );
+      }
+    } else {
+      setState(() {
+        _userInfo = '로그인 실패';
+      });
+    }
+  }
+
   @override
   void dispose() {
     _idController.dispose();

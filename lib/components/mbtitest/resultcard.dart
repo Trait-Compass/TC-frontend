@@ -111,6 +111,8 @@ class ResultCard extends StatelessWidget {
                         mbtiType: mbtiData.bestMatchType,
                         description: mbtiData.bestMatchDescription,
                         mascotImage: mbtiData.bestMatchImage,
+                        mascotName: mbtiData.bestMatchName,
+                        mascotRegion: mbtiData.bestMatchRegion,
                         traits: mbtiData.traits,
                         color: Colors.orange[100]!,
                       ),
@@ -121,6 +123,8 @@ class ResultCard extends StatelessWidget {
                         mbtiType: mbtiData.worstMatchType,
                         description: mbtiData.worstMatchDescription,
                         mascotImage: mbtiData.worstMatchImage,
+                        mascotName: mbtiData.worstMatchName,
+                        mascotRegion: mbtiData.worstMatchRegion,
                         traits: mbtiData.traits,
                         color: Colors.red[100]!,
                       ),
@@ -162,6 +166,8 @@ Widget buildMBTICard({
   required String mbtiType,
   required String description,
   required String mascotImage,
+  required String mascotName, // 추가된 파라미터
+  required String mascotRegion, // 추가된 파라미터
   required List<String> traits,
   required Color color,
 }) {
@@ -197,9 +203,24 @@ Widget buildMBTICard({
                   mascotImage,
                   height: 80,
                 ),
+                SizedBox(height: 5), // 이미지와 텍스트 사이의 간격
+                Text(
+                  mascotName, // 마스코트 이름 추가
+                  style: TextStyle(
+                    fontSize: 14, // 텍스트 크기를 10으로 설정
+                    color: Colors.black,
+                  ),
+                ),
+                Text(
+                  mascotRegion, // 마스코트 지역 추가
+                  style: TextStyle(
+                    fontSize: 12, // 텍스트 크기를 10으로 설정
+                    color: Colors.black,
+                  ),
+                ),
               ],
             ),
-            SizedBox(width: 20),
+            SizedBox(width: 10),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -222,10 +243,10 @@ Widget buildMBTICard({
                           ),
                         ),
                       ),
-                      SizedBox(width: 10),
+                      SizedBox(width: 5),
                       Text(
                         description,
-                        style: TextStyle(fontSize: 16, color: textColor),
+                        style: TextStyle(fontSize: 15, color: textColor),
                       ),
                     ],
                   ),
