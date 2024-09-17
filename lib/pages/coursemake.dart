@@ -45,7 +45,7 @@ class _CoursemakeState extends State<Coursemake> {
             print('Error parsing course JSON: $e');
             return null;
           }
-        }).where((course) => course != null).cast<Course>().toList();  // null이 아닌 항목만 포함
+        }).where((course) => course != null).cast<Course>().toList(); // null이 아닌 항목만 포함
 
         for (var course in courses) {
           if (course.day1.isNotEmpty) {
@@ -161,7 +161,6 @@ class _CoursemakeState extends State<Coursemake> {
                             child: Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
-                                color: Colors.white,
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.black12,
@@ -171,43 +170,89 @@ class _CoursemakeState extends State<Coursemake> {
                                   ),
                                 ],
                               ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              child: Stack(
                                 children: [
-                                  Expanded(
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
-                                      child: Image.network(
-                                        course['imageUrl']!,
-                                        width: double.infinity,
-                                        fit: BoxFit.cover,
-                                        loadingBuilder: (BuildContext context, Widget child,
-                                            ImageChunkEvent? loadingProgress) {
-                                          if (loadingProgress == null) return child;
-                                          return Center(
-                                            child: CircularProgressIndicator(
-                                              value: loadingProgress.expectedTotalBytes != null
-                                                  ? loadingProgress.cumulativeBytesLoaded /
-                                                  loadingProgress.expectedTotalBytes!
-                                                  : null,
-                                            ),
-                                          );
-                                        },
-                                        errorBuilder: (BuildContext context, Object exception,
-                                            StackTrace? stackTrace) {
-                                          return Icon(Icons.broken_image, size: 50);
-                                        },
-                                      ),
+                                  // 이미지
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: Image.network(
+                                      course['imageUrl']!,
+                                      width: double.infinity,
+                                      height: double.infinity, 
+                                      fit: BoxFit.cover,
+                                      loadingBuilder: (BuildContext context,
+                                          Widget child,
+                                          ImageChunkEvent? loadingProgress) {
+                                        if (loadingProgress == null)
+                                          return child;
+                                        return Center(
+                                          child: CircularProgressIndicator(
+                                            value: loadingProgress
+                                                        .expectedTotalBytes !=
+                                                    null
+                                                ? loadingProgress
+                                                        .cumulativeBytesLoaded /
+                                                    loadingProgress
+                                                        .expectedTotalBytes!
+                                                : null,
+                                          ),
+                                        );
+                                      },
+                                      errorBuilder: (BuildContext context,
+                                          Object exception,
+                                          StackTrace? stackTrace) {
+                                        return Icon(Icons.broken_image,
+                                            size: 50);
+                                      },
                                     ),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
+                                  Positioned(
+                                    bottom: 10,
+                                    right: 10,
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end, 
                                       children: [
-                                        Text(course['courseName']!, style: TextStyle(fontWeight: FontWeight.bold)),
-                                        Text(course['region']!, style: TextStyle(color: Colors.grey)),
-                                        Text(course['duration']!, style: TextStyle(color: Colors.grey)),
+                                        Text(
+                                          course['courseName']!,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                            shadows: [
+                                              Shadow(
+                                                offset: Offset(1.0, 1.0),
+                                                blurRadius: 3.0,
+                                                color: Colors.black, 
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Text(
+                                          course['region']!,
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            shadows: [
+                                              Shadow(
+                                                offset: Offset(1.0, 1.0),
+                                                blurRadius: 3.0,
+                                                color: Colors.black, 
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Text(
+                                          course['duration']!,
+                                          style: TextStyle(
+                                            color: Colors.white, 
+                                            shadows: [
+                                              Shadow(
+                                                offset: Offset(1.0, 1.0),
+                                                blurRadius: 3.0,
+                                                color: Colors.black, 
+                                              ),
+                                            ],
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -218,7 +263,7 @@ class _CoursemakeState extends State<Coursemake> {
                         },
                       );
                     }
-                    return Container(); // Fallback, should not be reached
+                    return Container(); 
                   },
                 ),
               ),

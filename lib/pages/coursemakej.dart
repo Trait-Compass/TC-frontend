@@ -179,7 +179,6 @@ class _CoursemakejState extends State<Coursemakej> {
                             child: Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
-                                color: Colors.white,
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.black12,
@@ -189,43 +188,90 @@ class _CoursemakejState extends State<Coursemakej> {
                                   ),
                                 ],
                               ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              child: Stack(
                                 children: [
-                                  Expanded(
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
-                                      child: Image.network(
-                                        course['imageUrl']!,
-                                        width: double.infinity,
-                                        fit: BoxFit.cover,
-                                        loadingBuilder: (BuildContext context, Widget child,
-                                            ImageChunkEvent? loadingProgress) {
-                                          if (loadingProgress == null) return child;
-                                          return Center(
-                                            child: CircularProgressIndicator(
-                                              value: loadingProgress.expectedTotalBytes != null
-                                                  ? loadingProgress.cumulativeBytesLoaded /
-                                                      loadingProgress.expectedTotalBytes!
-                                                  : null,
-                                            ),
-                                          );
-                                        },
-                                        errorBuilder: (BuildContext context, Object exception,
-                                            StackTrace? stackTrace) {
-                                          return Icon(Icons.broken_image, size: 50);
-                                        },
-                                      ),
+                                  // 이미지
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: Image.network(
+                                      course['imageUrl']!,
+                                      width: double.infinity,
+                                      height: double.infinity, // 전체 공간을 차지하도록
+                                      fit: BoxFit.cover,
+                                      loadingBuilder: (BuildContext context,
+                                          Widget child,
+                                          ImageChunkEvent? loadingProgress) {
+                                        if (loadingProgress == null)
+                                          return child;
+                                        return Center(
+                                          child: CircularProgressIndicator(
+                                            value: loadingProgress
+                                                        .expectedTotalBytes !=
+                                                    null
+                                                ? loadingProgress
+                                                        .cumulativeBytesLoaded /
+                                                    loadingProgress
+                                                        .expectedTotalBytes!
+                                                : null,
+                                          ),
+                                        );
+                                      },
+                                      errorBuilder: (BuildContext context,
+                                          Object exception,
+                                          StackTrace? stackTrace) {
+                                        return Icon(Icons.broken_image,
+                                            size: 50);
+                                      },
                                     ),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
+                                  // 텍스트가 이미지 오른쪽 아래에 위치하도록 Positioned 사용
+                                  Positioned(
+                                    bottom: 10,
+                                    right: 10,
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end, // 오른쪽 정렬
                                       children: [
-                                        Text(course['courseName']!, style: TextStyle(fontWeight: FontWeight.bold)),
-                                        Text(course['region']!, style: TextStyle(color: Colors.grey)),
-                                        Text(course['duration']!, style: TextStyle(color: Colors.grey)),
+                                        Text(
+                                          course['courseName']!,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white, // 흰색 텍스트
+                                            shadows: [
+                                              Shadow(
+                                                offset: Offset(1.0, 1.0),
+                                                blurRadius: 3.0,
+                                                color: Colors.black, // 그림자
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Text(
+                                          course['region']!,
+                                          style: TextStyle(
+                                            color: Colors.white, // 흰색 텍스트
+                                            shadows: [
+                                              Shadow(
+                                                offset: Offset(1.0, 1.0),
+                                                blurRadius: 3.0,
+                                                color: Colors.black, // 그림자
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Text(
+                                          course['duration']!,
+                                          style: TextStyle(
+                                            color: Colors.white, // 흰색 텍스트
+                                            shadows: [
+                                              Shadow(
+                                                offset: Offset(1.0, 1.0),
+                                                blurRadius: 3.0,
+                                                color: Colors.black, // 그림자
+                                              ),
+                                            ],
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ),
