@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import '../components/start/basicframe2.dart';
 import '../components/map/MapPage.dart';

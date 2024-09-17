@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../components/mbti_selection_page.dart';
 import 'package:untitled/styles/loginstyles.dart';
-// import '../../services/auth_services.dart';
+import 'package:untitled/services/auth_services.dart'; // AuthService 임포트
 import 'creataccount.dart';
 import '../../components/basic_frame_page.dart';
 import 'package:http/http.dart' as http;
@@ -17,10 +17,10 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  // final AuthService _authService = AuthService();
+  final AuthService _authService = AuthService();
   final StorageService _storageService = StorageService(); // 스토리지 서비스 인스턴스 생성
   bool _isRememberMeChecked = false;
-  // String _userInfo = '';
+  String _userInfo = '';
   String? _accessToken; // AccessToken 저장할 변수 추가
 
   // 로그인 API 호출 메서드
