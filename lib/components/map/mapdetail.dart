@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
-import '../map/mapresult.dart'; 
+import '../map/mapresult.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import '../map/api.dart'; // ApiService import
 
 class MapdetailPage extends StatefulWidget {
   final Map<int, List<Map<String, String>>> tripDetails;
@@ -12,95 +16,132 @@ class MapdetailPage extends StatefulWidget {
 
 class _MapdetailPageState extends State<MapdetailPage> {
   int selectedDayIndex = 0;
+  List<String> travelDurations = [];
 
-void _showConfirmationDialog() {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20), // 라운드된 테두리
-        ),
-        content: Container(
-          height: 200, // 높이 조정
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                '저장하시겠습니까?',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 40),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                    
-                      Navigator.of(context).pop();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.grey[200], 
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 60), 
-                    ),
-                    child: Text(
-                      '네! 코스 저장할게요',
-                      style: TextStyle(color: Colors.black, fontSize: 18),
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop(); 
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Mapresult(),
-                        ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.grey[200], // 배경색
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 35), // 버튼 크기 조정
-                    ),
-                    child: Text(
-                      '아니요! 코스 저장안할게요 ',
-                      style: TextStyle(color: Colors.black, fontSize: 18),
-                    ),
-                  ),
-                ],
-              ),
-            ],
+  @override
+  void initState() {
+    super.initState();
+    _calculateTravelDurations();
+  }
+
+  Future<void> _calculateTravelDurations() async {
+    List<Map<String, String>> currentTripDetails = widget.tripDetails[selectedDayIndex] ?? [];
+
+    travelDurations.clear(); // Clear previous data
+
+    for (int i = 0; i < currentTripDetails.length - 1; i++) {
+      final startX = currentTripDetails[i]['x'];
+      final startY = currentTripDetails[i]['y'];
+      final endX = currentTripDetails[i + 1]['x'];
+      final endY = currentTripDetails[i + 1]['y'];
+
+      try {
+        final response = await ApiService.get('/spot/distance', params: {
+          'startX': startX,
+          'startY': startY,
+          'endX': endX,
+          'endY': endY,
+        });
+
+        if (response.statusCode == 200) {
+          final jsonResponse = json.decode(response.body);
+          final travelTime = jsonResponse['carTime'] ?? '정보 없음'; // 자동차 이동 시간
+          travelDurations.add(travelTime);
+        } else {
+          travelDurations.add('정보 없음'); // 요청 실패 시
+        }
+      } catch (e) {
+        print('Failed to fetch travel duration: $e');
+        travelDurations.add('정보 없음'); // 예외 발생 시
+      }
+    }
+
+    setState(() {}); // UI 업데이트
+  }
+
+  void _showConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
           ),
-        ),
-      );
-    },
-  );
-}
-
+          content: Container(
+            height: 200,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  '저장하시겠습니까?',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 40),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey[200],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 60),
+                      ),
+                      child: Text(
+                        '네! 코스 저장할게요',
+                        style: TextStyle(color: Colors.black, fontSize: 18),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Mapresult(),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey[200],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 35),
+                      ),
+                      child: Text(
+                        '아니요! 코스 저장안할게요 ',
+                        style: TextStyle(color: Colors.black, fontSize: 18),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    // 선택한 날짜의 여행지 리스트 가져오기
-    List<Map<String, String>> currentTripDetails =
-        widget.tripDetails[selectedDayIndex] ?? [];
+    List<Map<String, String>> currentTripDetails = widget.tripDetails[selectedDayIndex] ?? [];
 
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title:
-            Text('내 일정', style: TextStyle(fontSize: 15, color: Colors.black)),
+        title: Text('내 일정', style: TextStyle(fontSize: 15, color: Colors.black)),
         actions: [
           TextButton(
             onPressed: _showConfirmationDialog,
@@ -127,14 +168,13 @@ void _showConfirmationDialog() {
                     setState(() {
                       selectedDayIndex = index;
                     });
+                    _calculateTravelDurations(); // 날짜 선택 시 이동 거리 재계산
                   },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: Chip(
                       label: Text('${index + 1}일차'),
-                      backgroundColor: selectedDayIndex == index
-                          ? Colors.grey[300]
-                          : Colors.white,
+                      backgroundColor: selectedDayIndex == index ? Colors.grey[300] : Colors.white,
                     ),
                   ),
                 );
@@ -181,57 +221,41 @@ void _showConfirmationDialog() {
                               child: Padding(
                                 padding: const EdgeInsets.all(16.0),
                                 child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     // 여행지 이름과 메뉴 버튼
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Expanded(
                                           child: Text(
-                                            currentTripDetails[index]
-                                                ['title']!,
-                                            style: TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold),
+                                            currentTripDetails[index]['title']!,
+                                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                                           ),
                                         ),
                                         PopupMenuButton<String>(
                                           icon: Icon(Icons.more_vert),
                                           color: Colors.white,
                                           shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8.0),
+                                            borderRadius: BorderRadius.circular(8.0),
                                           ),
                                           offset: Offset(0, 10),
                                           onSelected: (value) {
                                             if (value == 'delete') {
                                               setState(() {
-                                                currentTripDetails
-                                                    .removeAt(index);
-                                                // 삭제 후 데이터 업데이트
-                                                widget.tripDetails[
-                                                        selectedDayIndex] =
-                                                    currentTripDetails;
+                                                currentTripDetails.removeAt(index);
+                                                widget.tripDetails[selectedDayIndex] = currentTripDetails;
                                               });
                                             }
                                           },
-                                          itemBuilder:
-                                              (BuildContext context) =>
-                                                  <PopupMenuEntry<String>>[
+                                          itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
                                             PopupMenuItem<String>(
                                               value: 'delete',
                                               child: Container(
-                                                padding: EdgeInsets.symmetric(
-                                                    vertical: 10.0,
-                                                    horizontal: 16.0),
+                                                padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
                                                 decoration: BoxDecoration(
                                                   color: Colors.white,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          8.0),
+                                                  borderRadius: BorderRadius.circular(8.0),
                                                 ),
                                                 child: Text(
                                                   '삭제하기',
@@ -250,9 +274,7 @@ void _showConfirmationDialog() {
                                     // 주소
                                     Text(
                                       currentTripDetails[index]['address']!,
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.grey[600]),
+                                      style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                                     ),
                                   ],
                                 ),
@@ -265,14 +287,13 @@ void _showConfirmationDialog() {
                     // 이동 시간 표시
                     if (index < currentTripDetails.length - 1)
                       Padding(
-                        padding:
-                            const EdgeInsets.only(left: 40.0, top: 8.0),
+                        padding: const EdgeInsets.only(left: 40.0, top: 8.0),
                         child: Row(
                           children: [
-                            Icon(Icons.directions_bus, size: 20),
+                            Icon(Icons.directions_car, size: 20), // 자동차 아이콘
                             SizedBox(width: 8),
                             Text(
-                              '약 32분 소요',
+                              travelDurations.length > index ? travelDurations[index] : '정보 없음', // 백엔드에서 받아온 데이터 사용
                               style: TextStyle(fontSize: 14),
                             ),
                           ],
@@ -285,8 +306,7 @@ void _showConfirmationDialog() {
           ),
           // 하단 공유하기 버튼
           Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
