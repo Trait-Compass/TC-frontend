@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
+// PdetailPage 클래스
 class PdetailPage extends StatefulWidget {
   final Map<int, List<Map<String, dynamic>>> tripDetails; // 각 일차별 여행지 목록
   final int totalDays; // 총 일차
 
-  PdetailPage({required this.tripDetails, required this.totalDays}); // 수정된 부분
+  PdetailPage({required this.tripDetails, required this.totalDays});
 
   @override
   _PdetailPageState createState() => _PdetailPageState();
@@ -111,7 +112,7 @@ class _PdetailPageState extends State<PdetailPage> {
             height: 50,
             child: ListView(
               scrollDirection: Axis.horizontal,
-              children: List.generate(widget.totalDays, (index) { // 수정된 부분
+              children: List.generate(widget.totalDays, (index) {
                 return GestureDetector(
                   onTap: () {
                     setState(() {
@@ -192,7 +193,6 @@ class _PdetailPageState extends State<PdetailPage> {
                                             if (value == 'delete') {
                                               setState(() {
                                                 currentTripDetails.removeAt(index);
-                                                // 삭제 후 데이터 업데이트
                                                 widget.tripDetails[selectedDayIndex] = currentTripDetails;
                                               });
                                             }
@@ -249,10 +249,17 @@ class _PdetailPageState extends State<PdetailPage> {
                         padding: const EdgeInsets.only(left: 40.0, top: 8.0),
                         child: Row(
                           children: [
-                            Icon(Icons.directions_bus, size: 20),
+                            Icon(Icons.directions_car, size: 20), 
                             SizedBox(width: 8),
                             Text(
-                              '약 32분 소요', // 이동 시간을 실제 데이터에 맞게 수정 가능
+                              currentTripDetails[index]['travelInfoToNext']?['carTime'] ?? '차 이동 정보 없음',
+                              style: TextStyle(fontSize: 14),
+                            ),
+                            SizedBox(width: 16),
+                            Icon(Icons.directions_walk, size: 20), 
+                            SizedBox(width: 8),
+                            Text(
+                              currentTripDetails[index]['travelInfoToNext']?['walkingTime'] ?? '도보 이동 정보 없음',
                               style: TextStyle(fontSize: 14),
                             ),
                           ],

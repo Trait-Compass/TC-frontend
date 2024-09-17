@@ -64,8 +64,8 @@ class _CoursemakeState extends State<Coursemake> {
               'region': region,
               'courseName': courseName,
               'duration': duration,
-              'day1': day1Maps, // day1 데이터를 Map으로 변환하여 추가
-              'day2': day2Maps, 
+              'day1': day1Maps,
+              'day2': day2Maps,
               'day3': day3Maps,
             });
           }
