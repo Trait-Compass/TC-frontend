@@ -189,8 +189,8 @@ class _CustomDateRangeSelectorState extends State<CustomDateRangeSelector> {
 
     return Center(
       child: Container(
-        width: screenWidth * 0.7, // 원하는 너비로 설정 (화면 너비의 90%)
-        height: screenHeight * 0.6, // 원하는 높이로 설정 (화면 높이의 80%)
+        width: screenWidth * 0.8, // 원하는 너비로 설정 (화면 너비의 90%)
+        height: screenHeight * 0.8, // 원하는 높이로 설정 (화면 높이의 80%)
         color: Colors.white, // 전체 배경색 흰색으로 설정
         child: Column(
           children: [

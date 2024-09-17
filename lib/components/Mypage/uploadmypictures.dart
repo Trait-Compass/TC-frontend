@@ -94,12 +94,15 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
       context: context,
       builder: (BuildContext context) {
         return Dialog(
-          backgroundColor: Colors.white, // 다이얼로그 배경색을 흰색으로 설정
+          backgroundColor: Colors.grey, // 다이얼로그 배경색을 흰색으로 설정
           child: Container(
             padding: EdgeInsets.all(10),
             child: CustomDateRangeSelector(
               onDateRangeSelected: (selectedDates) {
                 // 날짜 선택 콜백 처리
+                setState(() {
+                  _selectedDateRange = selectedDates;
+                });
               },
             ),
           ),
