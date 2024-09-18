@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-
-// PdetailPage 클래스
 class PdetailPage extends StatefulWidget {
-  final Map<int, List<Map<String, dynamic>>> tripDetails; // 각 일차별 여행지 목록
-  final int totalDays; // 총 일차
+  final Map<int, List<Map<String, dynamic>>> tripDetails;
+  final int totalDays;
 
   PdetailPage({required this.tripDetails, required this.totalDays});
 
@@ -12,7 +10,7 @@ class PdetailPage extends StatefulWidget {
 }
 
 class _PdetailPageState extends State<PdetailPage> {
-  int selectedDayIndex = 0; // 선택된 날짜 인덱스
+  int selectedDayIndex = 0;
 
   void _showConfirmationDialog() {
     showDialog(
@@ -31,10 +29,7 @@ class _PdetailPageState extends State<PdetailPage> {
                 Text(
                   '저장하시겠습니까?',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 40),
                 Column(
@@ -85,7 +80,6 @@ class _PdetailPageState extends State<PdetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    // 선택한 날짜의 여행지 리스트 가져오기
     List<Map<String, dynamic>> currentTripDetails = widget.tripDetails[selectedDayIndex] ?? [];
 
     return Scaffold(
@@ -103,13 +97,7 @@ class _PdetailPageState extends State<PdetailPage> {
         ],
         backgroundColor: Colors.white,
         elevation: 0,
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-          ),
-        ), // 여기에 닫는 괄호 추가
-        iconTheme: IconThemeData(color: Colors.black),
-      ), // AppBar 닫는 괄호
+      ),
       body: Column(
         children: [
           // 날짜 선택 부분
@@ -225,13 +213,11 @@ class _PdetailPageState extends State<PdetailPage> {
                                       ],
                                     ),
                                     SizedBox(height: 8),
-                                    // 키워드와 주소
                                     Text(
                                       '키워드: ${currentTripDetails[index]['keywords']?.join(', ') ?? '정보 없음'}',
                                       style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                                     ),
                                     SizedBox(height: 8),
-                                    // 이미지
                                     currentTripDetails[index]['imageUrl'] != null
                                         ? Image.network(
                                             currentTripDetails[index]['imageUrl'],
@@ -254,14 +240,14 @@ class _PdetailPageState extends State<PdetailPage> {
                         padding: const EdgeInsets.only(left: 40.0, top: 8.0),
                         child: Row(
                           children: [
-                            Icon(Icons.directions_car, size: 20), 
+                            Icon(Icons.directions_car, size: 20),
                             SizedBox(width: 8),
                             Text(
                               currentTripDetails[index]['travelInfoToNext']?['carTime'] ?? '차 이동 정보 없음',
                               style: TextStyle(fontSize: 14),
                             ),
                             SizedBox(width: 16),
-                            Icon(Icons.directions_walk, size: 20), 
+                            Icon(Icons.directions_walk, size: 20),
                             SizedBox(width: 8),
                             Text(
                               currentTripDetails[index]['travelInfoToNext']?['walkingTime'] ?? '도보 이동 정보 없음',
@@ -275,7 +261,6 @@ class _PdetailPageState extends State<PdetailPage> {
               },
             ),
           ),
-          // 하단 공유하기 버튼
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
             child: Row(
