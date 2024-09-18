@@ -52,7 +52,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
         // 서버 응답에서 accessToken 추출
         if (responseBody.containsKey('result')) {
-          _accessToken = responseBody['result'];
+          final result = responseBody['result']; 
+         _accessToken = result['accessToken']; 
+
           print('Access Token: $_accessToken');
 
           // 스토리지 서비스에 토큰 저장
