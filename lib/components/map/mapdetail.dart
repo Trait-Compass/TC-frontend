@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../map/mapresult.dart';
 import 'dart:async';
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 import '../map/api.dart'; // ApiService import
 
 class MapdetailPage extends StatefulWidget {

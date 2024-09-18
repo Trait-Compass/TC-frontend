@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../components/map/api.dart';
 class PdetailPage extends StatefulWidget {
   final Map<int, List<Map<String, dynamic>>> tripDetails;
   final int totalDays;
@@ -36,21 +37,51 @@ class _PdetailPageState extends State<PdetailPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey[200],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 60),
-                      ),
-                      child: Text(
-                        '네! 코스 저장할게요',
-                        style: TextStyle(color: Colors.black, fontSize: 18),
-                      ),
-                    ),
+  onPressed: () async {
+    // 네! 코스 저장할게요 버튼을 누르면 course/p post 요청 실행
+    Navigator.of(context).pop();
+
+    // 저장할 데이터를 ApiService로 전달하여 서버에 POST 요청
+    List<Map<String, dynamic>> tripDetails = widget.tripDetails[selectedDayIndex] ?? [];
+    List<int> contentIds = [];
+
+    // 각 여행지의 contentId 추출
+    for (var item in tripDetails) {
+      if (item.containsKey('contentId')) {
+        contentIds.add(item['contentId']);
+      }
+    }
+
+    // tripDetails에서 필요한 값을 추출 (region, courseName, duration)
+    String region = tripDetails.isNotEmpty ? tripDetails[0]['region'] ?? '알 수 없음' : '알 수 없음';
+    String courseName = tripDetails.isNotEmpty ? tripDetails[0]['courseName'] ?? '알 수 없음' : '알 수 없음';
+    String duration = tripDetails.isNotEmpty ? tripDetails[0]['duration'] ?? '알 수 없음' : '알 수 없음';
+
+    // course/p POST 요청 실행 (region, courseName, duration은 실제 데이터로 사용)
+    await ApiService.saveCourseToServer(
+      region,           // 실제 region 값
+      courseName,       // 실제 courseName 값
+      duration,         // 실제 duration 값
+      contentIds,       // 추출된 contentId 리스트
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('코스가 성공적으로 저장되었습니다!')),
+    );
+  },
+  style: ElevatedButton.styleFrom(
+    backgroundColor: Colors.grey[200],
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(10),
+    ),
+    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 60),
+  ),
+  child: Text(
+    '네! 코스 저장할게요',
+    style: TextStyle(color: Colors.black, fontSize: 18),
+  ),
+),
+
                     SizedBox(height: 10),
                     ElevatedButton(
                       onPressed: () {
