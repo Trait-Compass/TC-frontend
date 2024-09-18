@@ -57,12 +57,12 @@ class _PdetailPageState extends State<PdetailPage> {
     String courseName = tripDetails.isNotEmpty ? tripDetails[0]['courseName'] ?? '알 수 없음' : '알 수 없음';
     String duration = tripDetails.isNotEmpty ? tripDetails[0]['duration'] ?? '알 수 없음' : '알 수 없음';
 
-    // course/p POST 요청 실행 (region, courseName, duration은 실제 데이터로 사용)
+
     await ApiService.saveCourseToServer(
-      region,           // 실제 region 값
-      courseName,       // 실제 courseName 값
-      duration,         // 실제 duration 값
-      contentIds,       // 추출된 contentId 리스트
+      region,          
+      courseName,     
+      duration,      
+      contentIds,      
     );
 
     ScaffoldMessenger.of(context).showSnackBar(
