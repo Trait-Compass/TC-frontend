@@ -51,9 +51,26 @@ class ResultCard extends StatelessWidget {
                               children: [
                                 Column(
                                   children: [
-                                    Image.asset(
-                                      mbtiData.mascotImage,
-                                      height: 60,
+                                    Column(
+                                      children: [
+                                        Image.asset(
+                                          mbtiData.mascotImage,
+                                          height: 60,
+                                        ),
+                                        Container(height: 5),
+                                        Text(
+                                          mbtiData.mascotName,
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.black),
+                                        ),
+                                        Text(
+                                          mbtiData.mascotRegion,
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.black),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
@@ -135,7 +152,8 @@ class ResultCard extends StatelessWidget {
                           onPressed: () {
                             // 저장 기능
                           },
-                          child: Text( // api 달기 
+                          child: Text(
+                            // api 달기
                             'MBTI 저장하기',
                             style: TextStyle(fontSize: 18, color: Colors.white),
                           ),
