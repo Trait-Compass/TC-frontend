@@ -194,7 +194,7 @@ class _MapdetailPageState extends State<MapdetailPage> {
 
       final response = await ApiService.post('/course/j', requestBody);
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         print('Trip details posted successfully.');
         return true;
       } else {
