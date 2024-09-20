@@ -60,11 +60,12 @@ class _RadarChartWidgetState extends State<RadarChartWidget> {
             onPanUpdate: (details) {
               _updateData(details.localPosition);
             },
-            child: SizedBox(
-              width: radius * 2,
-              height: radius * 2,
+            child: Container(
+              color: Colors.transparent,
+              width: radius * 2.2,
+              height: radius * 2.2,
               child: CustomPaint(
-                size: Size(radius * 2, radius * 2),
+                size: Size(radius * 2.2, radius * 2.2),
                 painter: _RadarChartPainter(
                   values: values,
                   labels: labels,

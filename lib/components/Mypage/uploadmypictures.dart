@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:permission_handler/permission_handler.dart';
 import 'selectdate.dart';
 import 'api_Mypage.dart'; // API 호출 파일 임포트
 
@@ -40,32 +41,47 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
     return koreanNumbers[index];
   }
 
+  // 권한 요청 함수
+  Future<void> _requestPermissions(int index) async {
+    PermissionStatus status = await Permission.photos.request(); // 사진 접근 권한 요청
+
+    if (status.isGranted) {
+      _pickImage(index); // 권한이 허용되면 이미지 선택 함수 호출
+    } else {
+      print("사진 접근 권한이 필요합니다.");
+    }
+  }
+
   Future<void> _pickImage(int index) async {
-    final ImagePicker picker = ImagePicker();
-    final XFile? pickedFile =
-        await picker.pickImage(source: ImageSource.gallery);
+    try {
+      final ImagePicker picker = ImagePicker();
+      final XFile? pickedFile =
+          await picker.pickImage(source: ImageSource.gallery);
 
-    if (pickedFile != null) {
-      setState(() {
-        _isLoading[index] = true;
-      });
-
-      await Future.delayed(Duration(seconds: loadingTime));
-
-      if (kIsWeb) {
-        Uint8List webImageBytes = await pickedFile.readAsBytes();
+      if (pickedFile != null) {
         setState(() {
-          _webImages[index] = webImageBytes;
-          _isLoading[index] = false;
-          if (index + 1 < 10) _nextBoxToShow = index + 2;
+          _isLoading[index] = true;
         });
-      } else {
-        setState(() {
-          _selectedImages[index] = File(pickedFile.path);
-          _isLoading[index] = false;
-          if (index + 1 < 10) _nextBoxToShow = index + 2;
-        });
+
+        await Future.delayed(Duration(seconds: loadingTime));
+
+        if (kIsWeb) {
+          Uint8List webImageBytes = await pickedFile.readAsBytes();
+          setState(() {
+            _webImages[index] = webImageBytes;
+            _isLoading[index] = false;
+            if (index + 1 < 10) _nextBoxToShow = index + 2;
+          });
+        } else {
+          setState(() {
+            _selectedImages[index] = File(pickedFile.path);
+            _isLoading[index] = false;
+            if (index + 1 < 10) _nextBoxToShow = index + 2;
+          });
+        }
       }
+    } catch (e) {
+      print("이미지를 선택하는 중 오류가 발생했습니다: $e");
     }
   }
 
@@ -171,7 +187,7 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
                       Text(
                         '코스 이름:',
                         style: TextStyle(
-                            fontSize: 14,
+                            fontSize: 10,
                             fontWeight: FontWeight.bold,
                             color: Colors.grey[800]),
                       ),
@@ -216,7 +232,7 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
                           Text(
                             '${formatDateRange(_selectedDateRange!)}',
                             style: TextStyle(
-                                fontSize: 14, fontWeight: FontWeight.bold),
+                                fontSize: 10, fontWeight: FontWeight.bold),
                           ),
                       ],
                     ),
@@ -249,10 +265,6 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
           ),
           SizedBox(height: 10),
           Divider(color: Color(0xFFE4E4E4), thickness: 1, height: 1),
-          ElevatedButton(
-            onPressed: _submitDataToServer,
-            child: Text('일기 제출하기'),
-          ),
         ],
       ),
     );
@@ -363,7 +375,7 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
   // "사진 추가하기" 버튼을 빌드하는 함수
   Widget _buildAddButton(int index) {
     return TextButton(
-      onPressed: () => _pickImage(index), // 버튼 클릭 시 파일 선택기 열기
+      onPressed: () => _requestPermissions(index), // 권한 요청 후 파일 선택
       style: ButtonStyle(
         backgroundColor:
             WidgetStateProperty.all<Color>(Color(0xFFE0E0E0)), // 회색 배경색 설정
