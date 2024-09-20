@@ -99,7 +99,10 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
             padding: EdgeInsets.all(10),
             child: CustomDateRangeSelector(
               onDateRangeSelected: (selectedDates) {
-                // 날짜 선택 콜백 처리
+                // 날짜 선택 콜백 처리: 선택된 날짜 범위를 업데이트
+                setState(() {
+                  _selectedDateRange = selectedDates;
+                });
               },
             ),
           ),
@@ -173,8 +176,8 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        if (_selectedDateRange ==
-                            null) // 선택된 날짜가 없을 경우에만 '여행 날짜' 텍스트 표시
+                        if (_selectedDateRange == null)
+                          // 선택된 날짜가 없을 경우에만 '여행 날짜' 텍스트 표시
                           Text(
                             '여행 날짜:', // 박스 안의 텍스트
                             style: TextStyle(
@@ -182,9 +185,10 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
                                 fontWeight: FontWeight.bold,
                                 color: Colors.grey[800]),
                           ),
-                        if (_selectedDateRange != null) // 선택된 날짜가 있을 경우 텍스트로 표시
+                        if (_selectedDateRange != null)
+                          // 선택된 날짜가 있을 경우 텍스트로 표시
                           Text(
-                            ' ${formatDateRange(_selectedDateRange!)}', // 선택된 날짜 형식 변환
+                            '${formatDateRange(_selectedDateRange!)}', // 선택된 날짜 형식 변환
                             style: TextStyle(
                                 fontSize: 14, fontWeight: FontWeight.bold),
                           ),
