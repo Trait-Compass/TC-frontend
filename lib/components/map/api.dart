@@ -229,6 +229,27 @@ class ApiService {
           'Failed to load J course. Status code: ${response.statusCode}, Reason: ${response.reasonPhrase}');
     }
   }
+  
+ static Future<List<Map<String, dynamic>>> fetchSavedCourses() async {
+    final response = await get('/course/my');
+
+    if (response.statusCode == 200) {
+      try {
+        Map<String, dynamic> data = json.decode(response.body);
+        if (data['result'] is List) {
+          List<dynamic> resultList = data['result'];
+          return resultList.map((e) => e as Map<String, dynamic>).toList();
+        } else {
+          throw Exception('Unexpected data format: result is not a list');
+        }
+      } catch (e) {
+        throw Exception('Failed to parse saved courses. Error: $e');
+      }
+    } else {
+      throw Exception('Failed to load saved courses. Status code: ${response.statusCode}, Reason: ${response.reasonPhrase}');
+    }
+  }
+
 
   // 사용자 프로필 API 호출 (static)
   static Future<Map<String, dynamic>> fetchUserProfile() async {
