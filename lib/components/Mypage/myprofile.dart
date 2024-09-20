@@ -19,7 +19,7 @@ class ProfileSection extends StatelessWidget {
               children: [
                 SizedBox(height: 10),
                 Text(
-                  '프로필 데이터를 가져오지 못했어요 \n 프로필을 등록하고 싶다면 회원가입을 진행해주세요!',
+                  '프로필 데이터를 가져오지 못했어요 \n MBTI를 등록해주세요!',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 15,
