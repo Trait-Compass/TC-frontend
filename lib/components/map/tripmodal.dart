@@ -4,8 +4,10 @@ class TripDetailModal extends StatelessWidget {
   final String? imageUrl;
   final String title;
   final String address;
+  final int code;
+  final int contentId;
 
-  TripDetailModal({this.imageUrl, required this.title, required this.address});
+  TripDetailModal({this.imageUrl, required this.title, required this.address, required this.code, required this.contentId});
 
   @override
   Widget build(BuildContext context) {
@@ -70,6 +72,8 @@ class TripDetailModal extends StatelessWidget {
                           Navigator.pop(context, {
                             'title': title,
                             'address': address,
+                            'code': code.toString(),
+                            'contentId': contentId.toString(),
                           });
                         },
                         child: Text('추가하기'),

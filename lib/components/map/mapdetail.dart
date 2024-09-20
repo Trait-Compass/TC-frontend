@@ -3,7 +3,8 @@ import '../map/mapresult.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../map/api.dart'; // ApiService import
+import '../map/api.dart';
+import 'api.dart'; // ApiService import
 
 class MapdetailPage extends StatefulWidget {
   final Map<int, List<Map<String, String>>> tripDetails;
@@ -86,8 +87,19 @@ class _MapdetailPageState extends State<MapdetailPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
+                      onPressed: () async {
+                        bool success = await _postTripDetails(); // Call the API method
+
+                        if (success) {
+                          Navigator.of(context).pop();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('코스가 성공적으로 저장되었습니다!')),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('다시 시도해주세요.')),
+                          );
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.grey[200],
@@ -120,7 +132,7 @@ class _MapdetailPageState extends State<MapdetailPage> {
                         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 35),
                       ),
                       child: Text(
-                        '아니요! 코스 저장안할게요 ',
+                        '아니요! 코스 저장안할게요',
                         style: TextStyle(color: Colors.black, fontSize: 18),
                       ),
                     ),
@@ -133,6 +145,50 @@ class _MapdetailPageState extends State<MapdetailPage> {
       },
     );
   }
+
+  Future<bool> _postTripDetails() async {
+    try {
+      Map<String, dynamic> requestBody = {
+        'code': 3,
+      };
+
+      for (int dayIndex = 0; dayIndex <= 2; dayIndex++) {
+        String dayKeyString = 'day${dayIndex + 1}';
+
+        if (widget.tripDetails.containsKey(dayIndex)) {
+          List<Map<String, String>> dayTripDetails = widget.tripDetails[dayIndex]!;
+
+          requestBody[dayKeyString] = dayTripDetails.map((detail) {
+            print(detail);
+            return {
+              'contentId': detail['contentId']!,
+            };
+          }).toList();
+
+          print('Day ${dayIndex + 1} Trip Details:');
+          for (int i = 0; i < dayTripDetails.length; i++) {
+            print('  Location ${i + 1}: ${dayTripDetails[i]}');
+          }
+        } else {
+          print('No trip details for Day ${dayIndex + 1}.');
+        }
+      }
+
+      final response = await ApiService.post('/course/j', requestBody);
+
+      if (response.statusCode == 200) {
+        print('Trip details posted successfully.');
+        return true;
+      } else {
+        print('Failed to post trip details. Status Code: ${response.statusCode}');
+        return false;
+      }
+    } catch (e) {
+      print('Error occurred while saving trip details: $e');
+      return false;
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {

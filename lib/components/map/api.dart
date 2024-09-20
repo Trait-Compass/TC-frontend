@@ -71,6 +71,28 @@ class ApiService {
 
     return response;
   }
+  
+  static Future<http.Response> post(String endpoint, Map<String, dynamic> body) async {
+    String path = endpoint.startsWith('/') ? endpoint : '/$endpoint';
+    Uri uri = Uri.parse('$baseUrl$path');
+
+    final headers = _createHeaders();
+
+    _logRequest('POST', uri.toString(), headers, body);
+
+    final response = await http.post(
+      uri,
+      headers: headers,
+      body: json.encode(body),
+    );
+
+    print('Response status code: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
+    return response;
+  }
+
+
 
   // P형 여행 일정 API 호출 (static)
   static Future<Map<String, dynamic>> fetchCourseForP({
