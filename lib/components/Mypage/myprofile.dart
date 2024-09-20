@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:untitled/components/mbtitest/MBTItestpage.dart';
-import 'package:untitled/components/map/api.dart'; 
-// import 'package:http/http.dart' as http;
-// import 'dart:convert';
+import 'package:untitled/components/map/api.dart';
 
 class ProfileSection extends StatelessWidget {
   @override
@@ -12,7 +10,7 @@ class ProfileSection extends StatelessWidget {
       future: ApiService.fetchUserProfile(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator()); 
+          return Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
           // 프로필 데이터를 가져오지 못한 경우
           return Center(
@@ -33,11 +31,22 @@ class ProfileSection extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => MBTItestselection(), 
+                        builder: (context) => MBTItestselection(),
                       ),
                     );
                   },
-                  child: Text('MBTI 검사 시작하기'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFFEDEDED), // 버튼 배경색
+                    foregroundColor: Colors.black, // 텍스트 색상
+                  ),
+                  child: Text(
+                    'MBTI 검사 시작하기',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black, // 텍스트 색상 검정
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -111,7 +120,9 @@ class ProfileSection extends StatelessWidget {
                                   height: 25,
                                   alignment: Alignment.center,
                                   child: Text(
-                                    _addLineBreakAfterFiveChars(profileData['mbtiDescription'][0] ?? ""),
+                                    _addLineBreakAfterFiveChars(
+                                        profileData['mbtiDescription'][0] ??
+                                            ""),
                                     style: TextStyle(
                                       fontSize: 8,
                                       fontWeight: FontWeight.bold,
@@ -143,10 +154,12 @@ class ProfileSection extends StatelessWidget {
                                     padding: const EdgeInsets.all(8.0),
                                     alignment: Alignment.center,
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Text(
-                                          profileData['mbtiDescription'][1] ?? "",
+                                          profileData['mbtiDescription'][1] ??
+                                              "",
                                           style: TextStyle(
                                             fontSize: 9,
                                             fontWeight: FontWeight.bold,
@@ -168,10 +181,12 @@ class ProfileSection extends StatelessWidget {
                                     padding: const EdgeInsets.all(8.0),
                                     alignment: Alignment.center,
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
                                           children: [
                                             Text(
                                               "❤️ 찰떡궁합 ",
@@ -183,7 +198,9 @@ class ProfileSection extends StatelessWidget {
                                               ),
                                             ),
                                             Text(
-                                              profileData['mbtiMatchups']['chalTeok'] ?? "",
+                                              profileData['mbtiMatchups']
+                                                      ['chalTeok'] ??
+                                                  "",
                                               style: TextStyle(
                                                 fontSize: 8,
                                                 fontWeight: FontWeight.bold,
@@ -193,7 +210,8 @@ class ProfileSection extends StatelessWidget {
                                         ),
                                         SizedBox(height: 5),
                                         Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
                                           children: [
                                             Text(
                                               "😅 환장궁합 ",
@@ -205,7 +223,9 @@ class ProfileSection extends StatelessWidget {
                                               ),
                                             ),
                                             Text(
-                                              profileData['mbtiMatchups']['hwanJang'] ?? "",
+                                              profileData['mbtiMatchups']
+                                                      ['hwanJang'] ??
+                                                  "",
                                               style: TextStyle(
                                                 fontSize: 8,
                                                 fontWeight: FontWeight.bold,
@@ -226,7 +246,7 @@ class ProfileSection extends StatelessWidget {
                           ],
                         ),
                       ),
-                      SizedBox(width: 15), 
+                      SizedBox(width: 15),
                     ],
                   ),
                 ),

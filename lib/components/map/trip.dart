@@ -281,7 +281,9 @@ class _TripState extends State<Trip> {
                 builder: (context) => TripDetailModal(
                   imageUrl: trips[index]['imageUrl'] ?? 'assets/city2.png',  
                   title: trips[index]['title'] ?? '경상남도',
-                  address: trips[index]['address'] ?? '주소 정보 없음', 
+                  address: trips[index]['address'] ?? '주소 정보 없음',
+                  code: trips[index]['code'],
+                  contentId: trips[index]['contentId'],
                 ),
               ).then((result) {
                 if (result != null) {
