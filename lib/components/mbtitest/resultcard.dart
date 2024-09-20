@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'mbtidata.dart';
 import '../basicframe.dart';
+import '../map/api.dart';
 
 class ResultCard extends StatelessWidget {
   final String selectedOption;
@@ -149,11 +150,21 @@ class ResultCard extends StatelessWidget {
                       Container(
                         margin: EdgeInsets.only(bottom: 10),
                         child: ElevatedButton(
-                          onPressed: () {
-                            // 저장 기능
+                          onPressed: () async {
+                            try {
+                              await ApiService.saveUserMBTI(
+                                  selectedOption); 
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('MBTI가 성공적으로 저장되었습니다.')),
+                              );
+                            } catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('MBTI 저장에 실패했습니다.')),
+                              );
+                              print('Error: $e');
+                            }
                           },
                           child: Text(
-                            // api 달기
                             'MBTI 저장하기',
                             style: TextStyle(fontSize: 18, color: Colors.white),
                           ),

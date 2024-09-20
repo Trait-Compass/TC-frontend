@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:untitled/components/map/api.dart';
-import 'package:untitled/hooks/login/creataccount.dart';
+import 'package:untitled/components/mbtitest/MBTItestpage.dart';
 
 class ProfileSection extends StatelessWidget {
   @override
@@ -32,7 +32,7 @@ class ProfileSection extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => SignupScreen(),
+                        builder: (context) => MBTItestselection(),
                       ),
                     );
                   },

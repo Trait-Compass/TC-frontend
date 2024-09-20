@@ -92,6 +92,19 @@ class ApiService {
     return response;
   }
 
+  // MBTI 저장 API 호출 (static)
+  static Future<void> saveUserMBTI(String mbti) async {
+    final response = await http.patch(
+      Uri.parse('$baseUrl/user/mbti'),
+      headers: _createHeaders(),
+    );
+
+    if (response.statusCode == 200) {
+      print('MBTI 저장 성공');
+    } else {
+      throw Exception('MBTI 저장 실패: 상태 코드 ${response.statusCode}, 이유: ${response.reasonPhrase}');
+    }
+  }
 
 
   // P형 여행 일정 API 호출 (static)
@@ -248,3 +261,5 @@ class ApiService {
     }
   }
 }
+
+
