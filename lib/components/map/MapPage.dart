@@ -1,3 +1,4 @@
+// MapPage.dart
 import 'package:flutter/material.dart';
 import '../map/trip.dart';
 
@@ -7,7 +8,8 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> {
-  int selectedDayIndex = 0;
+  // 선택된 일자 인덱스를 nullable로 변경 (초기에는 선택된 일자가 없음)
+  int? selectedDayIndex;
 
   // 날짜별 여행지 리스트를 관리하기 위한 변수
   Map<int, List<Map<String, String>>> tripDetails = {};
@@ -41,19 +43,30 @@ class _MapPageState extends State<MapPage> {
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: List.generate(3, (index) {
+                bool isSelected = selectedDayIndex == index;
                 return GestureDetector(
                   onTap: () {
                     setState(() {
-                      selectedDayIndex = index;
+                      // 이미 선택된 일자를 다시 누르면 선택 해제
+                      if (isSelected) {
+                        selectedDayIndex = null;
+                      } else {
+                        selectedDayIndex = index;
+                      }
                     });
                   },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: Chip(
                       label: Text('${index + 1}일차'),
-                      backgroundColor: selectedDayIndex == index
-                          ? Colors.grey[300]
-                          : Colors.white,
+                      backgroundColor: isSelected ? Colors.grey[300] : Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        side: BorderSide(
+                          color: isSelected ? Colors.grey : Colors.grey[400]!,
+                          width: 1,
+                        ),
+                      ),
                     ),
                   ),
                 );
@@ -64,22 +77,32 @@ class _MapPageState extends State<MapPage> {
             child: Center(
               child: GestureDetector(
                 onTap: () {
-                  // Trip 페이지로 이동할 때 선택한 날짜 인덱스와 현재의 tripDetails를 전달
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Trip(
-                        selectedDayIndex: selectedDayIndex,
-                        tripDetails: tripDetails,
+                  if (selectedDayIndex == null) {
+                    // 선택된 일자가 없으면 Snackbar 표시
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('일자를 선택한 후 여행지를 추가해주세요'),
+                        duration: Duration(seconds: 2),
                       ),
-                    ),
-                  ).then((result) {
-                    if (result != null) {
-                      setState(() {
-                        tripDetails = result;
-                      });
-                    }
-                  });
+                    );
+                  } else {
+                    // 선택된 일자가 있으면 Trip 페이지로 이동
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Trip(
+                          selectedDayIndex: selectedDayIndex!,
+                          tripDetails: tripDetails,
+                        ),
+                      ),
+                    ).then((result) {
+                      if (result != null && result is Map<int, List<Map<String, String>>>) {
+                        setState(() {
+                          tripDetails = result;
+                        });
+                      }
+                    });
+                  }
                 },
                 child: Container(
                   width: 150,
@@ -105,12 +128,11 @@ class _MapPageState extends State<MapPage> {
           ),
           // 하단 수정하기 및 공유하기 버튼 (필요에 따라 추가)
           Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                // 수정하기 및 공유하기 버튼 추가 가능
+                
               ],
             ),
           ),

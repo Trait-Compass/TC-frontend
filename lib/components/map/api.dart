@@ -92,6 +92,26 @@ class ApiService {
     return response;
   }
 
+ static Future<void> saveUserMBTI(String mbti) async {
+  // 쿼리 파라미터로 'mbti'를 포함하여 URI 생성
+  final uri = Uri.parse('$baseUrl/user/mbti').replace(queryParameters: {
+    'mbti': mbti,
+  });
+
+  // PATCH 요청 보내기
+  final response = await http.patch(
+    uri,
+    headers: _createHeaders(),
+  );
+
+  // 요청 결과 처리
+  if (response.statusCode == 200) {
+    print('MBTI 저장 성공');
+  } else {
+    throw Exception(
+        'MBTI 저장 실패: 상태 코드 ${response.statusCode}, 이유: ${response.reasonPhrase}');
+  }
+}
 
 
   // P형 여행 일정 API 호출 (static)
@@ -315,3 +335,5 @@ static Future<void> saveCourseToServer(
     }
   }
 }
+
+

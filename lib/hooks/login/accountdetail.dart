@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:untitled/components/mbtitest/MBTItestpage.dart';
 import 'package:untitled/components/start/basicframe3.dart';
 import 'dart:convert';
 import 'package:untitled/components/mbti_selection_page.dart';
@@ -126,11 +127,11 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   }
 
   void _navigateToMBTITest() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => BasicFramePage(body: MBTISelectionPage())),
-    );
+     Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MBTItestselection(),
+                          ),);
   }
 
   @override

@@ -5,7 +5,6 @@ import 'dart:convert';
 import '../map/api.dart'; 
 import 'package:http/http.dart' as http;
 import '../map/api.dart';
-import 'api.dart'; // ApiService import
 
 
 class MapdetailPage extends StatefulWidget {
