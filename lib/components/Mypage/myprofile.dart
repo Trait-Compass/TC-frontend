@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:untitled/components/mbtitest/MBTItestpage.dart';
 import 'package:untitled/components/map/api.dart';
+import 'package:untitled/hooks/login/creataccount.dart';
 
 class ProfileSection extends StatelessWidget {
   @override
@@ -17,11 +18,12 @@ class ProfileSection extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                SizedBox(height: 10),
                 Text(
-                  '프로필 데이터를 가져오지 못했습니다.\nMBTI 검사를 진행해주세요!',
+                  '프로필 데이터를 가져오지 못했어요 \n 프로필을 등록하고 싶다면 회원가입을 진행해주세요!',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 15,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -31,7 +33,7 @@ class ProfileSection extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => MBTItestselection(),
+                        builder: (context) => SignupScreen(),
                       ),
                     );
                   },
@@ -48,6 +50,7 @@ class ProfileSection extends StatelessWidget {
                     ),
                   ),
                 ),
+                SizedBox(height: 10),
               ],
             ),
           );
