@@ -92,122 +92,113 @@ class ApiService {
     return response;
   }
 
- static Future<void> saveUserMBTI(String mbti) async {
-  // 쿼리 파라미터로 'mbti'를 포함하여 URI 생성
-  final uri = Uri.parse('$baseUrl/user/mbti').replace(queryParameters: {
-    'mbti': mbti,
-  });
+  static Future<void> saveUserMBTI(String mbti) async {
+    // 쿼리 파라미터로 'mbti'를 포함하여 URI 생성
+    final uri = Uri.parse('$baseUrl/user/mbti').replace(queryParameters: {
+      'mbti': mbti,
+    });
 
-  // PATCH 요청 보내기
-  final response = await http.patch(
-    uri,
-    headers: _createHeaders(),
-  );
-
-  // 요청 결과 처리
-  if (response.statusCode == 200) {
-    print('MBTI 저장 성공');
-  } else {
-    throw Exception(
-        'MBTI 저장 실패: 상태 코드 ${response.statusCode}, 이유: ${response.reasonPhrase}');
-  }
-}
-
-
-  // P형 여행 일정 API 호출 (static)
-static Future<Map<String, dynamic>> fetchCourseForP({
-  required String mbti,
-  required String startDate,
-  required String endDate,
-  required String location,
-  required String companion,
-}) async {
-  final response = await get('/course/p', params: {
-    'mbti': mbti,
-    'startDate': startDate,
-    'endDate': endDate,
-    'location': location,
-    'companion': companion,
-  });
-
-  if (response.statusCode == 200) {
-    try {
-      final data = json.decode(response.body);
-
-      final course = data['result'];
-      final region = course['region'];
-      final courseName = course['courseName'];
-      final duration = course['duration'];
-      final day1 = course['day1'];
-      final day2 = course['day2'];
-      final day3 = course['day3'];
-
-     
-      List<int> contentIds = [];
-      for (var item in day1) {
-        contentIds.add(item['contentId']);
-      }
-      for (var item in day2) {
-        contentIds.add(item['contentId']);
-      }
-      for (var item in day3) {
-        contentIds.add(item['contentId']);
-      }
-
-      print('추출된 contentId 값들: $contentIds');
-      print('지역: $region, 코스 이름: $courseName, 기간: $duration');
-
-      // POST 요청으로 모든 정보를 서버에 저장하기
-      await saveCourseToServer(region, courseName, duration, contentIds);
-
-      return data;
-    } catch (e) {
-      throw Exception('실패: $e');
-    }
-  } else {
-    throw Exception('실패: ${response.statusCode}, Reason: ${response.reasonPhrase}');
-  }
-}
-
-// POST 요청으로 course 정보와 contentId 값 저장하는 함수
-static Future<void> saveCourseToServer(
-  String region,
-  String courseName,
-  String duration,
-  List<int> contentIds,
-) async {
-  final url = Uri.parse('$baseUrl/course/p');
-  try {
-    // POST 요청 보내기
-    final response = await http.post(
-      url,
-      headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer $_accessToken'},
-      body: jsonEncode({
-        'region': region,             
-        'courseName': courseName,      
-        'duration': duration,          
-        'day1': contentIds.map((id) => {'contentId': id}).toList(),
-        'day2': contentIds.map((id) => {'contentId': id}).toList(),
-        'day3': contentIds.map((id) => {'contentId': id}).toList(),
-      }),
+    // PATCH 요청 보내기
+    final response = await http.patch(
+      uri,
+      headers: _createHeaders(),
     );
 
-    // 응답 상태 확인
-    if (response.statusCode == 201) {
-      print('코스 정보와 contentId 값들이 성공적으로 저장되었습니다!');
+    // 요청 결과 처리
+    if (response.statusCode == 200) {
+      print('MBTI 저장 성공');
     } else {
-      print('코스 정보 저장 실패. 상태 코드: ${response.statusCode}');
-    }
-  } catch (e) {
-    print('코스 정보 저장 중 오류 발생: $e');
-  }
-}
-
       throw Exception(
-          '실패: ${response.statusCode}, Reason: ${response.reasonPhrase}');
+          'MBTI 저장 실패: 상태 코드 ${response.statusCode}, 이유: ${response.reasonPhrase}');
+    } 
+  } 
+  // P형 여행 일정 API 호출 (static)
+  static Future<Map<String, dynamic>> fetchCourseForP({
+    required String mbti,
+    required String startDate,
+    required String endDate,
+    required String location,
+    required String companion,
+  }) async {
+    final response = await get('/course/p', params: {
+      'mbti': mbti,
+      'startDate': startDate,
+      'endDate': endDate,
+      'location': location,
+      'companion': companion,
+    });
+
+    if (response.statusCode == 200) {
+      try {
+        final data = json.decode(response.body);
+
+        final course = data['result'];
+        final region = course['region'];
+        final courseName = course['courseName'];
+        final duration = course['duration'];
+        final day1 = course['day1'];
+        final day2 = course['day2'];
+        final day3 = course['day3'];
+
+        List<int> contentIds = [];
+        for (var item in day1) {
+          contentIds.add(item['contentId']);
+        }
+        for (var item in day2) {
+          contentIds.add(item['contentId']);
+        }
+        for (var item in day3) {
+          contentIds.add(item['contentId']);
+        }
+
+        print('추출된 contentId 값들: $contentIds');
+        print('지역: $region, 코스 이름: $courseName, 기간: $duration');
+
+        // POST 요청으로 모든 정보를 서버에 저장하기
+        await saveCourseToServer(region, courseName, duration, contentIds);
+
+        return data;
+      } catch (e) {
+        throw Exception('실패: $e');
+      }
+    } else {
+      throw Exception('실패: ${response.statusCode}, Reason: ${response.reasonPhrase}');
     }
   }
 
+  // POST 요청으로 course 정보와 contentId 값 저장하는 함수
+  static Future<void> saveCourseToServer(
+    String region,
+    String courseName,
+    String duration,
+    List<int> contentIds,
+  ) async {
+    final url = Uri.parse('$baseUrl/course/p');
+    try {
+      // POST 요청 보내기
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer $_accessToken'},
+        body: jsonEncode({
+          'region': region,             
+          'courseName': courseName,      
+          'duration': duration,          
+          'day1': contentIds.map((id) => {'contentId': id}).toList(),
+          'day2': contentIds.map((id) => {'contentId': id}).toList(),
+          'day3': contentIds.map((id) => {'contentId': id}).toList(),
+        }),
+      );
+
+      // 응답 상태 확인
+      if (response.statusCode == 201) {
+        print('코스 정보와 contentId 값들이 성공적으로 저장되었습니다!');
+      } else {
+        print('코스 정보 저장 실패. 상태 코드: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('코스 정보 저장 중 오류 발생: $e');
+    }
+  }
 
   // J형 여행 일정 API 호출 (static)
   static Future<Map<String, dynamic>> fetchCourseForJ({
@@ -335,5 +326,3 @@ static Future<void> saveCourseToServer(
     }
   }
 }
-
-

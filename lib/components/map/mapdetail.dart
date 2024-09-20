@@ -1,14 +1,12 @@
+// MapdetailPage.dart
 import 'package:flutter/material.dart';
 import '../map/mapresult.dart';
 import 'dart:async';
 import 'dart:convert';
-import '../map/api.dart'; 
-import 'package:http/http.dart' as http;
 import '../map/api.dart';
 
-
 class MapdetailPage extends StatefulWidget {
-  final Map<int, List<Map<String, dynamic>>> tripDetails; 
+  final Map<int, List<Map<String, String>>> tripDetails;
 
   MapdetailPage({required this.tripDetails});
 
@@ -18,7 +16,7 @@ class MapdetailPage extends StatefulWidget {
 
 class _MapdetailPageState extends State<MapdetailPage> {
   int selectedDayIndex = 0;
-  List<String> travelDurations = [];
+  List<Map<String, String>> travelDurations = [];
 
   @override
   void initState() {
@@ -27,48 +25,55 @@ class _MapdetailPageState extends State<MapdetailPage> {
   }
 
   Future<void> _calculateTravelDurations() async {
-  List<Map<String, dynamic>> currentTripDetails = widget.tripDetails[selectedDayIndex] ?? [];
+    List<Map<String, String>> currentTripDetails = widget.tripDetails[selectedDayIndex] ?? [];
 
-  travelDurations.clear(); // Clear previous data
+    print('Calculating travel durations for day ${selectedDayIndex + 1}');
+    print('Current Trip Details: $currentTripDetails');
 
-  for (int i = 0; i < currentTripDetails.length - 1; i++) {
-    final startCoordinates = currentTripDetails[i]['location'] != null ? currentTripDetails[i]['location']['coordinates'] : null;
-    final endCoordinates = currentTripDetails[i + 1]['location'] != null ? currentTripDetails[i + 1]['location']['coordinates'] : null;
+    travelDurations.clear(); 
 
-    // Check if coordinates are available
-    if (startCoordinates != null && endCoordinates != null) {
-      final startX = startCoordinates[0].toString();
-      final startY = startCoordinates[1].toString();
-      final endX = endCoordinates[0].toString();
-      final endY = endCoordinates[1].toString();
+    for (int i = 0; i < currentTripDetails.length - 1; i++) {
+      final startX = currentTripDetails[i]['x'];
+      final startY = currentTripDetails[i]['y'];
+      final endX = currentTripDetails[i + 1]['x'];
+      final endY = currentTripDetails[i + 1]['y'];
+
+    
+      print('Trip Segment ${i + 1}: From ($startX, $startY) to ($endX, $endY)');
+
+      if (startX == null || startY == null || endX == null || endY == null) {
+        print('One or more coordinates are null. Skipping this segment.');
+        travelDurations.add({'carTime': '정보 없음', 'walkTime': '정보 없음'});
+        continue;
+      }
 
       try {
-        // 파라미터 이름을 스크린샷에 나온 이름으로 수정
         final response = await ApiService.get('/spot/distance', params: {
-          'startMapX': startX,
-          'startMapY': startY,
-          'endMapX': endX,
-          'endMapY': endY,
+          'startMapX': startX, 
+          'startMapY': startY, 
+          'endtMapX': endX,     
+          'endMapY': endY,      
         });
 
         if (response.statusCode == 200) {
           final jsonResponse = json.decode(response.body);
-          final travelTime = jsonResponse['carTime'] ?? '정보 없음'; // 자동차 이동 시간
-          travelDurations.add(travelTime);
+          final result = jsonResponse['result'];
+          final carTime = result['carTime'] ?? '정보 없음';
+          final walkTime = result['walkTime'] ?? '정보 없음';
+          travelDurations.add({'carTime': carTime, 'walkTime': walkTime});
+          print('Travel Time: $carTime, Walk Time: $walkTime');
         } else {
-          travelDurations.add('정보 없음'); // 요청 실패 시
+          print('Failed to fetch travel duration. Status Code: ${response.statusCode}');
+          travelDurations.add({'carTime': '정보 없음', 'walkTime': '정보 없음'});
         }
       } catch (e) {
         print('Failed to fetch travel duration: $e');
-        travelDurations.add('정보 없음'); // 예외 발생 시
+        travelDurations.add({'carTime': '정보 없음', 'walkTime': '정보 없음'});
       }
-    } else {
-      travelDurations.add('좌표 정보 없음'); // 좌표가 없을 경우
     }
-  }
 
-  setState(() {}); // UI 업데이트
-}
+    setState(() {}); 
+  }
 
   void _showConfirmationDialog() {
     showDialog(
@@ -79,6 +84,7 @@ class _MapdetailPageState extends State<MapdetailPage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
+          contentPadding: EdgeInsets.zero,
           content: Container(
             height: 200,
             child: Column(
@@ -98,7 +104,7 @@ class _MapdetailPageState extends State<MapdetailPage> {
                   children: [
                     ElevatedButton(
                       onPressed: () async {
-                        bool success = await _postTripDetails(); // Call the API method
+                        bool success = await _postTripDetails(); 
 
                         if (success) {
                           Navigator.of(context).pop();
@@ -184,6 +190,8 @@ class _MapdetailPageState extends State<MapdetailPage> {
         }
       }
 
+      print('Request Body: ${json.encode(requestBody)}'); 
+
       final response = await ApiService.post('/course/j', requestBody);
 
       if (response.statusCode == 200) {
@@ -191,6 +199,7 @@ class _MapdetailPageState extends State<MapdetailPage> {
         return true;
       } else {
         print('Failed to post trip details. Status Code: ${response.statusCode}');
+        print('Response Body: ${response.body}'); 
         return false;
       }
     } catch (e) {
@@ -199,10 +208,9 @@ class _MapdetailPageState extends State<MapdetailPage> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
-    List<Map<String, dynamic>> currentTripDetails = widget.tripDetails[selectedDayIndex] ?? [];
+    List<Map<String, String>> currentTripDetails = widget.tripDetails[selectedDayIndex] ?? [];
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -223,42 +231,46 @@ class _MapdetailPageState extends State<MapdetailPage> {
       ),
       body: Column(
         children: [
-          // 날짜 선택 부분
           Container(
             height: 50,
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: List.generate(3, (index) {
+                bool isSelected = selectedDayIndex == index;
                 return GestureDetector(
                   onTap: () {
                     setState(() {
                       selectedDayIndex = index;
                     });
-                    _calculateTravelDurations(); // 날짜 선택 시 이동 거리 재계산
+                    _calculateTravelDurations(); 
                   },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: Chip(
                       label: Text('${index + 1}일차'),
-                      backgroundColor: selectedDayIndex == index ? Colors.grey[300] : Colors.white,
+                      backgroundColor: isSelected ? Colors.grey[300] : Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        side: BorderSide(
+                          color: isSelected ? Colors.grey : Colors.grey[400]!,
+                          width: 1,
+                        ),
+                      ),
                     ),
                   ),
                 );
               }),
             ),
           ),
-          // 여행지 리스트
           Expanded(
             child: ListView.builder(
               itemCount: currentTripDetails.length,
               itemBuilder: (context, index) {
                 return Column(
                   children: [
-                    // 여행지 카드
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        // 아이콘 및 세로선
                         SizedBox(
                           width: 40,
                           child: Column(
@@ -274,7 +286,6 @@ class _MapdetailPageState extends State<MapdetailPage> {
                             ],
                           ),
                         ),
-                        // 여행지 정보 카드
                         Expanded(
                           child: Padding(
                             padding: const EdgeInsets.only(right: 16.0),
@@ -289,13 +300,12 @@ class _MapdetailPageState extends State<MapdetailPage> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    // 여행지 이름과 메뉴 버튼
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Expanded(
                                           child: Text(
-                                            currentTripDetails[index]['title'] ?? '제목 없음',
+                                            currentTripDetails[index]['title']!,
                                             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                                           ),
                                         ),
@@ -311,6 +321,7 @@ class _MapdetailPageState extends State<MapdetailPage> {
                                               setState(() {
                                                 currentTripDetails.removeAt(index);
                                                 widget.tripDetails[selectedDayIndex] = currentTripDetails;
+                                                _calculateTravelDurations(); 
                                               });
                                             }
                                           },
@@ -339,7 +350,7 @@ class _MapdetailPageState extends State<MapdetailPage> {
                                     SizedBox(height: 8),
                                     // 주소
                                     Text(
-                                      currentTripDetails[index]['address'] ?? '주소 없음',
+                                      currentTripDetails[index]['address']!,
                                       style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                                     ),
                                   ],
@@ -354,13 +365,29 @@ class _MapdetailPageState extends State<MapdetailPage> {
                     if (index < currentTripDetails.length - 1)
                       Padding(
                         padding: const EdgeInsets.only(left: 40.0, top: 8.0),
-                        child: Row(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Icon(Icons.directions_car, size: 20), // 자동차 아이콘
-                            SizedBox(width: 8),
-                            Text(
-                              travelDurations.length > index ? travelDurations[index] : '정보 없음', // 백엔드에서 받아온 데이터 사용
-                              style: TextStyle(fontSize: 14),
+                            Row(
+                              children: [
+                                Icon(Icons.directions_car, size: 20, color: Colors.black),
+                                SizedBox(width: 8),
+                                Text(
+                                  travelDurations.length > index ? travelDurations[index]['carTime']! : '정보 없음',
+                                  style: TextStyle(fontSize: 14),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 4),
+                            Row(
+                              children: [
+                                Icon(Icons.directions_walk, size: 20, color: Colors.black),
+                                SizedBox(width: 8),
+                                Text(
+                                  travelDurations.length > index ? travelDurations[index]['walkTime']! : '정보 없음',
+                                  style: TextStyle(fontSize: 14),
+                                ),
+                              ],
                             ),
                           ],
                         ),

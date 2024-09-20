@@ -1,3 +1,4 @@
+// TripDetailModal.dart
 import 'package:flutter/material.dart';
 
 class TripDetailModal extends StatelessWidget {
@@ -6,8 +7,18 @@ class TripDetailModal extends StatelessWidget {
   final String address;
   final int code;
   final int contentId;
-
-  TripDetailModal({this.imageUrl, required this.title, required this.address, required this.code, required this.contentId});
+  final double x; 
+  final double y; 
+  
+  TripDetailModal({
+    this.imageUrl,
+    required this.title,
+    required this.address,
+    required this.code,
+    required this.contentId,
+    required this.x, 
+    required this.y, 
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -74,6 +85,8 @@ class TripDetailModal extends StatelessWidget {
                             'address': address,
                             'code': code.toString(),
                             'contentId': contentId.toString(),
+                            'x': x.toString(), 
+                            'y': y.toString(),
                           });
                         },
                         child: Text('추가하기'),
