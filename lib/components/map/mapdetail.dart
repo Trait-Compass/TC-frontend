@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import '../map/mapresult.dart';
 import 'dart:async';
 import 'dart:convert';
-import '../map/api.dart'; // ApiService import
+import '../map/api.dart'; 
 
 class MapdetailPage extends StatefulWidget {
-  final Map<int, List<Map<String, String>>> tripDetails;
+  final Map<int, List<Map<String, dynamic>>> tripDetails; 
 
   MapdetailPage({required this.tripDetails});
 
@@ -24,22 +24,28 @@ class _MapdetailPageState extends State<MapdetailPage> {
   }
 
   Future<void> _calculateTravelDurations() async {
-    List<Map<String, String>> currentTripDetails = widget.tripDetails[selectedDayIndex] ?? [];
+  List<Map<String, dynamic>> currentTripDetails = widget.tripDetails[selectedDayIndex] ?? [];
 
-    travelDurations.clear(); // Clear previous data
+  travelDurations.clear(); // Clear previous data
 
-    for (int i = 0; i < currentTripDetails.length - 1; i++) {
-      final startX = currentTripDetails[i]['x'];
-      final startY = currentTripDetails[i]['y'];
-      final endX = currentTripDetails[i + 1]['x'];
-      final endY = currentTripDetails[i + 1]['y'];
+  for (int i = 0; i < currentTripDetails.length - 1; i++) {
+    final startCoordinates = currentTripDetails[i]['location'] != null ? currentTripDetails[i]['location']['coordinates'] : null;
+    final endCoordinates = currentTripDetails[i + 1]['location'] != null ? currentTripDetails[i + 1]['location']['coordinates'] : null;
+
+    // Check if coordinates are available
+    if (startCoordinates != null && endCoordinates != null) {
+      final startX = startCoordinates[0].toString();
+      final startY = startCoordinates[1].toString();
+      final endX = endCoordinates[0].toString();
+      final endY = endCoordinates[1].toString();
 
       try {
+        // 파라미터 이름을 스크린샷에 나온 이름으로 수정
         final response = await ApiService.get('/spot/distance', params: {
-          'startX': startX,
-          'startY': startY,
-          'endX': endX,
-          'endY': endY,
+          'startMapX': startX,
+          'startMapY': startY,
+          'endMapX': endX,
+          'endMapY': endY,
         });
 
         if (response.statusCode == 200) {
@@ -53,10 +59,13 @@ class _MapdetailPageState extends State<MapdetailPage> {
         print('Failed to fetch travel duration: $e');
         travelDurations.add('정보 없음'); // 예외 발생 시
       }
+    } else {
+      travelDurations.add('좌표 정보 없음'); // 좌표가 없을 경우
     }
-
-    setState(() {}); // UI 업데이트
   }
+
+  setState(() {}); // UI 업데이트
+}
 
   void _showConfirmationDialog() {
     showDialog(
@@ -135,7 +144,7 @@ class _MapdetailPageState extends State<MapdetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    List<Map<String, String>> currentTripDetails = widget.tripDetails[selectedDayIndex] ?? [];
+    List<Map<String, dynamic>> currentTripDetails = widget.tripDetails[selectedDayIndex] ?? [];
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -228,7 +237,7 @@ class _MapdetailPageState extends State<MapdetailPage> {
                                       children: [
                                         Expanded(
                                           child: Text(
-                                            currentTripDetails[index]['title']!,
+                                            currentTripDetails[index]['title'] ?? '제목 없음',
                                             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                                           ),
                                         ),
@@ -272,7 +281,7 @@ class _MapdetailPageState extends State<MapdetailPage> {
                                     SizedBox(height: 8),
                                     // 주소
                                     Text(
-                                      currentTripDetails[index]['address']!,
+                                      currentTripDetails[index]['address'] ?? '주소 없음',
                                       style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                                     ),
                                   ],
