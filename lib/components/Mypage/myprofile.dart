@@ -42,7 +42,7 @@ class ProfileSection extends StatelessWidget {
                     foregroundColor: Colors.black, // 텍스트 색상
                   ),
                   child: Text(
-                    'MBTI 검사 시작하기',
+                    '회원가입 하러 가기',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
