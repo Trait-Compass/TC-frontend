@@ -65,7 +65,6 @@ class _CoursemakeState extends State<Coursemake> {
             String courseName = course.courseName;
             String duration = course.duration;
 
-            // Day 객체 리스트를 Map으로 변환
             List<Map<String, dynamic>> day1Maps = course.day1.map((day) => day.toMap()).toList();
             List<Map<String, dynamic>> day2Maps = course.day2.map((day) => day.toMap()).toList();
             List<Map<String, dynamic>> day3Maps = course.day3.map((day) => day.toMap()).toList();
