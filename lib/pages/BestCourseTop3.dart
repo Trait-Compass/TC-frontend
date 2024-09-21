@@ -2,7 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class BestCourseTop3 extends StatelessWidget {
+class BestCourseTop3 extends StatefulWidget {
+  @override
+  _BestCourseTop3State createState() => _BestCourseTop3State();
+}
+
+class _BestCourseTop3State extends State<BestCourseTop3> {
+  late Future<List<Course>> _bestCoursesFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _bestCoursesFuture = fetchBestCourses();
+  }
+
   Future<List<Course>> fetchBestCourses() async {
     final response =
         await http.get(Uri.parse('https://www.traitcompass.store/course/best'));
@@ -22,10 +35,12 @@ class BestCourseTop3 extends StatelessWidget {
     final PageController controller = PageController(viewportFraction: 0.95);
 
     return FutureBuilder<List<Course>>(
-      future: fetchBestCourses(),
+      future: _bestCoursesFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return Center(
+              child: CircularProgressIndicator()
+          );
         } else if (snapshot.hasError) {
           return Center(child: Text('코스 생성중입니다! 잠시만 기다려주세요!'));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -35,7 +50,7 @@ class BestCourseTop3 extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Padding(
-                 padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
                 child: Text(
                   '인기 추천코스\nBEST 3',
                   style: TextStyle(
@@ -52,7 +67,7 @@ class BestCourseTop3 extends StatelessWidget {
                   itemBuilder: (context, index) {
                     return Padding(
                       padding: EdgeInsets.symmetric(
-                          horizontal: 5), // 사진 사이의 여백 10px 설정 (양쪽에 5px씩)
+                          horizontal: 5), 
                       child: RecommendedCourseCard(
                         imagePath: snapshot.data![index].imagePath,
                         title: snapshot.data![index].title,
@@ -126,7 +141,7 @@ class RecommendedCourseCard extends StatelessWidget {
   }
 }
 
-// Course 클래스 정의
+// Course 클래스 정의 (변경 없음)
 class Course {
   final String imagePath;
   final String title;
