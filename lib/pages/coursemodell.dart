@@ -1,3 +1,4 @@
+// coursemodell.dart
 class Course {
   final String id;
   final String region;
@@ -6,6 +7,8 @@ class Course {
   final List<Day> day1;
   final List<Day> day2;
   final List<Day> day3;
+  final List<Day> day4; 
+  final List<Day> day5; 
 
   Course({
     required this.id,
@@ -15,6 +18,8 @@ class Course {
     required this.day1,
     required this.day2,
     required this.day3,
+    required this.day4, 
+    required this.day5, 
   });
 
   factory Course.fromJson(Map<String, dynamic> json) {
@@ -32,6 +37,12 @@ class Course {
       day3: json['day3'] != null && json['day3'] is List
           ? (json['day3'] as List).map((item) => Day.fromJson(item)).toList()
           : [],
+      day4: json['day4'] != null && json['day4'] is List
+          ? (json['day4'] as List).map((item) => Day.fromJson(item)).toList()
+          : [],
+      day5: json['day5'] != null && json['day5'] is List
+          ? (json['day5'] as List).map((item) => Day.fromJson(item)).toList()
+          : [],
     );
   }
 }
@@ -41,7 +52,7 @@ class Day {
   final String name;
   final int id;
   final String imageUrl;
-  final TravelInfo? travelInfoToNext; // 수정된 부분: travelInfoToNext 객체
+  final TravelInfo? travelInfoToNext;
 
   Day({
     required this.keywords,
@@ -51,7 +62,6 @@ class Day {
     this.travelInfoToNext,
   });
 
-  // JSON 데이터를 받아서 Day 객체로 변환하는 팩토리 생성자
   factory Day.fromJson(Map<String, dynamic> json) {
     return Day(
       keywords: json['keywords'] != null && json['keywords'] is List
@@ -66,28 +76,26 @@ class Day {
     );
   }
 
-  // Day 객체를 Map<String, dynamic> 형식으로 변환하는 메서드 추가
   Map<String, dynamic> toMap() {
     return {
       'keywords': keywords,
       'name': name,
       'id': id,
       'imageUrl': imageUrl,
-      'travelInfoToNext': travelInfoToNext?.toMap(), // 수정된 부분
+      'travelInfoToNext': travelInfoToNext?.toMap(),
     };
   }
 }
 
 class TravelInfo {
-  final String carTime; // 자동차 이동 시간
-  final String walkingTime; // 도보 이동 시간
+  final String carTime;
+  final String walkingTime;
 
   TravelInfo({
     required this.carTime,
     required this.walkingTime,
   });
 
-  // JSON 데이터를 받아서 TravelInfo 객체로 변환하는 팩토리 생성자
   factory TravelInfo.fromJson(Map<String, dynamic> json) {
     return TravelInfo(
       carTime: json['carTime'] as String,
@@ -95,7 +103,6 @@ class TravelInfo {
     );
   }
 
-  // TravelInfo 객체를 Map<String, dynamic> 형식으로 변환하는 메서드 추가
   Map<String, dynamic> toMap() {
     return {
       'carTime': carTime,
