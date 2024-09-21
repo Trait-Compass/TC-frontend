@@ -99,7 +99,7 @@ class _KeywordSelectionPageState extends State<KeywordSelectionPage> {
                       ),
                     ),
                     SizedBox(height: 10),
-                    // 키워드 그룹별로 드롭다운 생성
+
                     ...keywordGroups.entries.map((entry) {
                       String groupTitle = entry.key;
                       List<String> groupKeywords = entry.value;
@@ -149,18 +149,33 @@ class _KeywordSelectionPageState extends State<KeywordSelectionPage> {
                     }).toList(),
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Coursemakej(
-                              selectedDates: widget.selectedDates,
-                              selectedLocation: widget.selectedLocation,
-                              selectedGroup: widget.selectedGroup,
-                              selectedKeywords: selectedKeywords,
+                        bool allKeywordsSelected = true;
+                        selectedKeywordsByGroup.forEach((group, keyword) {
+                          if (keyword == null) {
+                            allKeywordsSelected = false;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('$group 키워드를 선택해주세요.'),
+                                backgroundColor: Colors.black.withOpacity(0.8),
+                              ),
+                            );
+                          }
+                        });
+
+                        if (allKeywordsSelected) {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Coursemakej(
+                                selectedDates: widget.selectedDates,
+                                selectedLocation: widget.selectedLocation,
+                                selectedGroup: widget.selectedGroup,
+                                selectedKeywords: selectedKeywords,
+                              ),
                             ),
-                          ),
-                        );
-                      }, // 버튼 활성화 조건을 추가하려면 여기에 로직 추가
+                          );
+                        }
+                      },
                       child: Text('AI에게 추천코스 받기'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.grey[800],
@@ -174,16 +189,15 @@ class _KeywordSelectionPageState extends State<KeywordSelectionPage> {
                       onPressed: () {
                         Navigator.pushReplacement(
                           context,
-                            MaterialPageRoute(
+                          MaterialPageRoute(
                             builder: (context) => MapPage(
-                              // selectedDates: widget.selectedDates,
-                              // selectedLocation: widget.selectedLocation,
-                              // selectedGroup: widget.selectedGroup,
-                            ),
+                                // selectedDates: widget.selectedDates,
+                                // selectedLocation: widget.selectedLocation,
+                                // selectedGroup: widget.selectedGroup,
+                                ),
                           ),
                         );
-                        // 선택된 키워드를 이용해 코스를 만들어야 함
-                      }, // 버튼 활성화 조건을 추가하려면 여기에 로직 추가
+                      }, 
                       child: Text('직접 코스 만들기'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.grey[800],
@@ -198,7 +212,7 @@ class _KeywordSelectionPageState extends State<KeywordSelectionPage> {
               ),
             ),
             SizedBox(height: 20),
-            Top3Courses(), // Top3Courses 위젯 사용
+            Top3Courses(),
           ],
         ),
       ),
