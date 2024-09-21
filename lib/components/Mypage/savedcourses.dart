@@ -20,6 +20,7 @@ class _SavedTravelCoursesState extends State<SavedTravelCourses> {
   @override
   Widget build(BuildContext context) {
     return Padding(
+      // 기존 코드 유지
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -89,28 +90,7 @@ class _SavedTravelCoursesState extends State<SavedTravelCourses> {
                               ),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(10),
-                                child: Image.network(
-                                  _getImageUrl(course),
-                                  fit: BoxFit.cover,
-                                  width: double.infinity,
-                                  height: double.infinity,
-                                  loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-                                    if (loadingProgress == null) return child;
-                                    return Center(
-                                      child: CircularProgressIndicator(
-                                        value: loadingProgress.expectedTotalBytes != null
-                                            ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
-                                            : null,
-                                      ),
-                                    );
-                                  },
-                                  errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
-                                    return Container(
-                                      color: Colors.grey[300],
-                                      child: Icon(Icons.broken_image, size: 50, color: Colors.grey[700]),
-                                    );
-                                  },
-                                ),
+                                child: _buildImage(course),
                               ),
                             ),
                             Positioned(
@@ -209,18 +189,56 @@ class _SavedTravelCoursesState extends State<SavedTravelCourses> {
     );
   }
 
-  // 이미지 URL을 가져오는 헬퍼 함수 추가
-  String _getImageUrl(Map<String, dynamic> course) {
+  // 이미지 위젯을 빌드하는 함수 추가
+  Widget _buildImage(Map<String, dynamic> course) {
+    String? imageUrl = _getImageUrl(course);
+    if (imageUrl != null && imageUrl.isNotEmpty) {
+      return Image.network(
+        imageUrl,
+        fit: BoxFit.cover,
+        width: double.infinity,
+        height: double.infinity,
+        loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Center(
+            child: CircularProgressIndicator(
+              value: loadingProgress.expectedTotalBytes != null
+                  ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                  : null,
+            ),
+          );
+        },
+        errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+          return Image.asset(
+            'assets/city2.png',
+            fit: BoxFit.cover,
+            width: double.infinity,
+            height: double.infinity,
+          );
+        },
+      );
+    } else {
+      return Image.asset(
+        'assets/city2.png',
+        fit: BoxFit.cover,
+        width: double.infinity,
+        height: double.infinity,
+      );
+    }
+  }
+
+  // 이미지 URL을 가져오는 헬퍼 함수 수정
+  String? _getImageUrl(Map<String, dynamic> course) {
     try {
       if (course['day1'] != null && course['day1'] is List && course['day1'].isNotEmpty) {
         var day1FirstItem = course['day1'][0];
-        if (day1FirstItem['imageUrl'] != null) {
+        if (day1FirstItem['imageUrl'] != null && day1FirstItem['imageUrl'].isNotEmpty) {
           return day1FirstItem['imageUrl'];
         }
       }
     } catch (e) {
       print('Error fetching image URL: $e');
     }
-    return ''; // 기본값으로 빈 문자열 반환
+    return null; // 이미지 URL이 없을 경우 null 반환
   }
 }
