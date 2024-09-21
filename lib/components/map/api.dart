@@ -112,27 +112,29 @@ class ApiService {
           'MBTI 저장 실패: 상태 코드 ${response.statusCode}, 이유: ${response.reasonPhrase}');
     } 
   } 
-  // P형 여행 일정 API 호출 (static)
-  static Future<Map<String, dynamic>> fetchCourseForP({
-    required String mbti,
-    required String startDate,
-    required String endDate,
-    required String location,
-    required String companion,
-  }) async {
-    final response = await get('/course/p', params: {
-      'mbti': mbti,
-      'startDate': startDate,
-      'endDate': endDate,
-      'location': location,
-      'companion': companion,
-    });
+ // P형 여행 일정 API 호출 (static)
+static Future<Map<String, dynamic>> fetchCourseForP({
+  required String mbti,
+  required String startDate,
+  required String endDate,
+  required String location,
+  required String companion,
+}) async {
+  final response = await get('/course/p', params: {
+    'mbti': mbti,
+    'startDate': startDate,
+    'endDate': endDate,
+    'location': location,
+    'companion': companion,
+  });
 
-    if (response.statusCode == 200) {
-      try {
-        final data = json.decode(response.body);
+  if (response.statusCode == 200) {
+    try {
+      final data = json.decode(response.body);
+      final List<dynamic> courses = data['result'];
+      print('Number of courses received: ${courses.length}');
 
-        final course = data['result'];
+      for (var course in courses) {
         final region = course['region'];
         final courseName = course['courseName'];
         final duration = course['duration'];
@@ -142,29 +144,35 @@ class ApiService {
 
         List<int> contentIds = [];
         for (var item in day1) {
-          contentIds.add(item['contentId']);
+          if (item.containsKey('id')) {
+            contentIds.add(item['id']);
+          }
         }
         for (var item in day2) {
-          contentIds.add(item['contentId']);
+          if (item.containsKey('id')) {
+            contentIds.add(item['id']);
+          }
         }
         for (var item in day3) {
-          contentIds.add(item['contentId']);
+          if (item.containsKey('id')) {
+            contentIds.add(item['id']);
+          }
         }
 
         print('추출된 contentId 값들: $contentIds');
         print('지역: $region, 코스 이름: $courseName, 기간: $duration');
 
-        // POST 요청으로 모든 정보를 서버에 저장하기
         await saveCourseToServer(region, courseName, duration, contentIds);
-
-        return data;
-      } catch (e) {
-        throw Exception('실패: $e');
       }
-    } else {
-      throw Exception('실패: ${response.statusCode}, Reason: ${response.reasonPhrase}');
+
+      return data;
+    } catch (e) {
+      throw Exception('실패: $e');
     }
+  } else {
+    throw Exception('실패: ${response.statusCode}, Reason: ${response.reasonPhrase}');
   }
+}
 
   // POST 요청으로 course 정보와 contentId 값 저장하는 함수
   static Future<void> saveCourseToServer(

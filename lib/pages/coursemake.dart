@@ -8,9 +8,9 @@ import '../pages/coursemodell.dart';
 import '../pages/Tripdetail.dart'; 
 
 class Coursemake extends StatefulWidget {
-  final List<DateTime> selectedDates; // 날짜 받기
-  final String selectedLocation; // 위치 받기
-  final String selectedGroup; // 그룹 받기
+  final List<DateTime> selectedDates; 
+  final String selectedLocation; 
+  final String selectedGroup; 
 
   Coursemake({
     required this.selectedDates,
@@ -36,19 +36,20 @@ class _CoursemakeState extends State<Coursemake> {
 
       print('Fetching course data from API...');
       final result = await ApiService.fetchCourseForP(
-        mbti: userMbti, // 사용자 MBTI 값 사용
+        mbti: userMbti, 
         startDate: widget.selectedDates[0].toIso8601String(),
         endDate: widget.selectedDates[widget.selectedDates.length - 1].toIso8601String(),
         location: widget.selectedLocation,
         companion: widget.selectedGroup,
       );
 
-      print('API Response: $result'); 
+      print('Decoded API Response: $result');
 
       List<Map<String, dynamic>> fetchedData = [];
 
       if (result['result'] != null && result['result'] is List) {
         List<dynamic> coursesJson = result['result'];
+        print('Number of courses received: ${coursesJson.length}');
         List<Course> courses = coursesJson.map((json) {
           try {
             return Course.fromJson(json);
@@ -58,6 +59,8 @@ class _CoursemakeState extends State<Coursemake> {
           }
         }).where((course) => course != null).cast<Course>().toList(); 
 
+        print('Number of courses after parsing: ${courses.length}');
+
         for (var course in courses) {
           if (course.day1.isNotEmpty) {
             String imageUrl = course.day1[0].imageUrl;
@@ -65,6 +68,7 @@ class _CoursemakeState extends State<Coursemake> {
             String courseName = course.courseName;
             String duration = course.duration;
 
+       
             List<Map<String, dynamic>> day1Maps = course.day1.map((day) => day.toMap()).toList();
             List<Map<String, dynamic>> day2Maps = course.day2.map((day) => day.toMap()).toList();
             List<Map<String, dynamic>> day3Maps = course.day3.map((day) => day.toMap()).toList();
@@ -89,6 +93,8 @@ class _CoursemakeState extends State<Coursemake> {
       } else {
         print('Result is null or not a list');
       }
+
+      print('Fetched data length: ${fetchedData.length}');
 
       return fetchedData;
     } catch (e) {
@@ -151,7 +157,7 @@ class _CoursemakeState extends State<Coursemake> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: FutureBuilder<List<Map<String, dynamic>>>(
-                  future: _fetchCourseImages(), // 데이터 가져오기
+                  future: _fetchCourseImages(), 
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Center(child: CircularProgressIndicator());
@@ -161,6 +167,7 @@ class _CoursemakeState extends State<Coursemake> {
                       return Center(child: Text('코스 이미지가 없습니다.'));
                     } else if (snapshot.hasData) {
                       List<Map<String, dynamic>> courseData = snapshot.data!;
+                      print('Displaying ${courseData.length} courses');
                       return GridView.builder(
                         physics: NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
@@ -168,15 +175,15 @@ class _CoursemakeState extends State<Coursemake> {
                           crossAxisCount: 2, 
                           crossAxisSpacing: 10, 
                           mainAxisSpacing: 10, 
-                          childAspectRatio: 1,
+                          childAspectRatio: 1, 
                         ),
                         itemCount: courseData.length,
                         itemBuilder: (context, index) {
                           final course = courseData[index];
                           
-                        
+                      
                           Map<int, List<Map<String, dynamic>>> tripDetails = {};
-                          int totalDays = 1; 
+                          int totalDays = 1;
 
                        
                           DateTime startDate = widget.selectedDates.first;
@@ -184,16 +191,16 @@ class _CoursemakeState extends State<Coursemake> {
                           int daysDifference = endDate.difference(startDate).inDays + 1;
                           totalDays = daysDifference;
 
-                        
+                       
                           totalDays = totalDays > 5 ? 5 : totalDays;
 
-                       
+                      
                           for (int i = 0; i < totalDays; i++) {
                             var dayData = course['day${i + 1}'];
-                            if (dayData != null && dayData.isNotEmpty) {
-                              tripDetails[i] = dayData;
+                            if (dayData != null && dayData is List && dayData.isNotEmpty) {
+                              tripDetails[i] = List<Map<String, dynamic>>.from(dayData);
                             } else {
-
+                              // 데이터가 없을 경우 처리 (빈 리스트로 초기화)
                               tripDetails[i] = [];
                             }
                           }
@@ -205,7 +212,7 @@ class _CoursemakeState extends State<Coursemake> {
                                 MaterialPageRoute(
                                   builder: (context) => PdetailPage(
                                     tripDetails: tripDetails,
-                                    totalDays: totalDays > 5 ? 5 : totalDays,
+                                    totalDays: totalDays > 5 ? 5 : totalDays, 
                                   ),
                                 ),
                               );
@@ -264,7 +271,6 @@ class _CoursemakeState extends State<Coursemake> {
                                       },
                                     ),
                                   ),
-                                  // 텍스트 오버레이
                                   Positioned(
                                     bottom: 10,
                                     left: 10,
@@ -341,122 +347,5 @@ class _CoursemakeState extends State<Coursemake> {
         ),
       ),
     );
-  }
-}
-
-// coursemodell.dart
-class Course {
-  final String id;
-  final String region;
-  final String courseName;
-  final String duration;
-  final List<Day> day1;
-  final List<Day> day2;
-  final List<Day> day3;
-  final List<Day> day4; 
-  final List<Day> day5; 
-
-  Course({
-    required this.id,
-    required this.region,
-    required this.courseName,
-    required this.duration,
-    required this.day1,
-    required this.day2,
-    required this.day3,
-    required this.day4, 
-    required this.day5, 
-  });
-
-  factory Course.fromJson(Map<String, dynamic> json) {
-    return Course(
-      id: json['_id'] as String,
-      region: json['region'] as String,
-      courseName: json['courseName'] as String,
-      duration: json['duration'] as String,
-      day1: json['day1'] != null && json['day1'] is List
-          ? (json['day1'] as List).map((item) => Day.fromJson(item)).toList()
-          : [],
-      day2: json['day2'] != null && json['day2'] is List
-          ? (json['day2'] as List).map((item) => Day.fromJson(item)).toList()
-          : [],
-      day3: json['day3'] != null && json['day3'] is List
-          ? (json['day3'] as List).map((item) => Day.fromJson(item)).toList()
-          : [],
-      day4: json['day4'] != null && json['day4'] is List
-          ? (json['day4'] as List).map((item) => Day.fromJson(item)).toList()
-          : [],
-      day5: json['day5'] != null && json['day5'] is List
-          ? (json['day5'] as List).map((item) => Day.fromJson(item)).toList()
-          : [],
-    );
-  }
-}
-
-class Day {
-  final List<String> keywords;
-  final String name;
-  final int id;
-  final String imageUrl;
-  final TravelInfo? travelInfoToNext;
-
-  Day({
-    required this.keywords,
-    required this.name,
-    required this.id,
-    required this.imageUrl,
-    this.travelInfoToNext,
-  });
-
-  factory Day.fromJson(Map<String, dynamic> json) {
-    return Day(
-      keywords: json['keywords'] != null && json['keywords'] is List
-          ? List<String>.from(json['keywords'])
-          : [],
-      name: json['name'] as String,
-      id: json['id'] as int,
-      imageUrl: json['imageUrl'] as String,
-      travelInfoToNext: json['travelInfoToNext'] != null
-          ? TravelInfo.fromJson(json['travelInfoToNext'])
-          : null,
-    );
-  }
-
-  Map<String, dynamic> toMap() {
-    return {
-      'keywords': keywords,
-      'name': name,
-      'id': id,
-      'imageUrl': imageUrl,
-      'travelInfoToNext': travelInfoToNext?.toMap(),
-    };
-  }
-}
-
-class TravelInfo {
-  final String distance;
-  final String carTime;
-  final String walkingTime;
-
-  TravelInfo({
-    required this.distance,
-    required this.carTime,
-    required this.walkingTime,
-  });
-
-  factory TravelInfo.fromJson(Map<String, dynamic> json) {
-    return TravelInfo(
-      distance: json['distance'] as String,
-      carTime: json['carTime'] as String,
-      walkingTime: json['walkingTime'] as String,
-    );
-  }
-
-  Map<String, dynamic> toMap() {
-    return {
-      'distance': distance,
-      'carTime': carTime,
-      'walkingTime': walkingTime,
-    };
   }
 }
