@@ -7,13 +7,13 @@ import 'package:dotted_border/dotted_border.dart';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:permission_handler/permission_handler.dart';
-import '../Mypage/mypagemodelforT.dart';
+import '../Mypage/mypagemodelforF.dart';
 import 'selectdate.dart';
 
 class TravelDetailPage extends StatefulWidget {
-  final TravelDiary diary; // 모델 인스턴스 전달
+  final TravelDiaryEmotion diaryEmotion; // 모델 인스턴스 전달
 
-  TravelDetailPage({required this.diary});
+  TravelDetailPage({required this.diaryEmotion});
 
   @override
   _TravelDetailPageState createState() => _TravelDetailPageState();
@@ -34,17 +34,16 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
   @override
   void initState() {
     super.initState();
-    _courseNameController.text = widget.diary.courseName;
-    _selectedDateRange = [widget.diary.travelDate, widget.diary.travelDate];
-    if (widget.diary.travelPhotos != null) {
-      for (int i = 0; i < widget.diary.travelPhotos!.length && i < 10; i++) {
-        _selectedImages[i] = File(widget.diary.travelPhotos![i]);
-        _nextBoxToShow = i + 1;
-      }
-    }
-    if (widget.diary.webImages != null) {
-      for (int i = 0; i < widget.diary.webImages!.length && i < 10; i++) {
-        _webImages[i] = widget.diary.webImages![i];
+    _courseNameController.text = widget.diaryEmotion.courseName;
+    _selectedDateRange = [
+      widget.diaryEmotion.travelDate,
+      widget.diaryEmotion.travelDate
+    ];
+    if (widget.diaryEmotion.travelPhotos != null) {
+      for (int i = 0;
+          i < widget.diaryEmotion.travelPhotos!.length && i < 10;
+          i++) {
+        _selectedImages[i] = File(widget.diaryEmotion.travelPhotos![i]);
         _nextBoxToShow = i + 1;
       }
     }
@@ -136,7 +135,7 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
                 setState(() {
                   _selectedDateRange = selectedDates;
                   if (selectedDates != null && selectedDates.length == 2) {
-                    widget.diary.travelDate = selectedDates[0];
+                    widget.diaryEmotion.travelDate = selectedDates[0];
                   }
                 });
                 _saveToModel();
@@ -155,16 +154,14 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
   }
 
   void _saveToModel() {
-    widget.diary.courseName = _courseNameController.text;
+    widget.diaryEmotion.courseName = _courseNameController.text;
     if (_selectedDateRange != null && _selectedDateRange!.length == 2) {
-      widget.diary.travelDate = _selectedDateRange![0]; // 시작 날짜로 설정
+      widget.diaryEmotion.travelDate = _selectedDateRange![0]; // 시작 날짜로 설정
     }
-    widget.diary.travelPhotos = _selectedImages
+    widget.diaryEmotion.travelPhotos = _selectedImages
         .where((file) => file != null)
         .map((file) => file!.path)
         .toList();
-    widget.diary.webImages =
-        _webImages.where((data) => data != null).map((data) => data!).toList();
     // 추가 필드도 동일하게 저장
   }
 

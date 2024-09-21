@@ -1,22 +1,29 @@
+// lib/pages/hexagonalchart.dart
+
 import 'dart:math';
 import 'package:flutter/material.dart';
+import '../Mypage/mypagemodelforT.dart';
 
 class RadarChartWidget extends StatefulWidget {
+  final TravelDiary diary; // 모델 인스턴스 전달
+
+  RadarChartWidget({required this.diary});
+
   @override
   _RadarChartWidgetState createState() => _RadarChartWidgetState();
 }
 
 class _RadarChartWidgetState extends State<RadarChartWidget> {
-  List<double> values = [0.8, 0.6, 0.7, 0.5, 0.9, 0.4];
+  late List<double> values;
   final List<String> labels = [
-    '교통\n편의성:\n',
-    '관광 명소\n만족도:\n',
-    '음식\n만족도:\n',
-    '환경 및\n위생:\n',
-    '가격대비\n만족도:\n',
-    '숙소\n만족도:\n'
+    '교통\n편의성',
+    '관광 명소\n만족도',
+    '음식\n만족도',
+    '환경 및\n위생',
+    '가격대비\n만족도',
+    '숙소\n만족도'
   ];
-  final double maxValue = 1.0;
+  final double maxValue = 10.0;
   double sideLength = 250;
   late double radius;
 
@@ -37,6 +44,41 @@ class _RadarChartWidgetState extends State<RadarChartWidget> {
   void initState() {
     super.initState();
     radius = sideLength / sqrt(3); // 중심에서 꼭짓점까지의 거리
+    values = [
+      (widget.diary.transportationSatisfaction ?? 0) / maxValue,
+      (widget.diary.sightseeingSatisfaction ?? 0) / maxValue,
+      (widget.diary.foodSatisfaction ?? 0) / maxValue,
+      (widget.diary.environmentSatisfaction ?? 0) / maxValue,
+      (widget.diary.priceSatisfaction ?? 0) / maxValue,
+      (widget.diary.accommodationSatisfaction ?? 0) / maxValue,
+    ];
+  }
+
+  void _updateData(int index, double newValue) {
+    setState(() {
+      values[index] = newValue / maxValue;
+      // 모델 업데이트
+      switch (index) {
+        case 0:
+          widget.diary.transportationSatisfaction = newValue.toInt();
+          break;
+        case 1:
+          widget.diary.sightseeingSatisfaction = newValue.toInt();
+          break;
+        case 2:
+          widget.diary.foodSatisfaction = newValue.toInt();
+          break;
+        case 3:
+          widget.diary.environmentSatisfaction = newValue.toInt();
+          break;
+        case 4:
+          widget.diary.priceSatisfaction = newValue.toInt();
+          break;
+        case 5:
+          widget.diary.accommodationSatisfaction = newValue.toInt();
+          break;
+      }
+    });
   }
 
   @override
@@ -58,7 +100,7 @@ class _RadarChartWidgetState extends State<RadarChartWidget> {
         Center(
           child: GestureDetector(
             onPanUpdate: (details) {
-              _updateData(details.localPosition);
+              _updateDataFromPan(details.localPosition);
             },
             child: Container(
               color: Colors.transparent,
@@ -80,12 +122,12 @@ class _RadarChartWidgetState extends State<RadarChartWidget> {
     );
   }
 
-  void _updateData(Offset position) {
+  void _updateDataFromPan(Offset position) {
     Offset center = Offset(radius, radius);
     double anglePerSide = (2 * pi) / values.length;
 
     for (int i = 0; i < values.length; i++) {
-      double angle = i * anglePerSide;
+      double angle = i * anglePerSide - pi / 2; // 시작 각도 조정
       Offset point = Offset(
         center.dx + radius * values[i] * cos(angle),
         center.dy + radius * values[i] * sin(angle),
@@ -98,9 +140,7 @@ class _RadarChartWidgetState extends State<RadarChartWidget> {
                 ? a
                 : b);
 
-        setState(() {
-          values[i] = closestScore; // 값 설정
-        });
+        _updateData(i, closestScore * maxValue);
         break;
       }
     }
@@ -128,11 +168,11 @@ class _RadarChartPainter extends CustomPainter {
       ..style = PaintingStyle.stroke;
 
     Paint dataPaint = Paint()
-      ..color = Color(0x7F7D9C).withOpacity(0.5)
+      ..color = Colors.blue.withOpacity(0.5)
       ..style = PaintingStyle.fill;
 
     Paint handlePaint = Paint()
-      ..color = Color(0x4D4C5C).withOpacity(1)
+      ..color = Colors.red
       ..style = PaintingStyle.fill;
 
     int sides = labels.length;
@@ -140,19 +180,19 @@ class _RadarChartPainter extends CustomPainter {
 
     double labelOffset = 30; // 텍스트 박스와 차트 사이의 간격 설정
     for (int i = 0; i < sides; i++) {
-      double angle = (2 * pi * i) / sides;
+      double angle = (2 * pi * i) / sides - pi / 2;
       double x = center.dx + (radius + labelOffset) * cos(angle);
       double y = center.dy + (radius + labelOffset) * sin(angle);
-      double scoreValue = (values[i] * 10).roundToDouble();
+      double scoreValue = (values[i] * maxValue).roundToDouble();
 
       Rect textBox =
-          Rect.fromCenter(center: Offset(x, y), width: 50, height: 50);
+          Rect.fromCenter(center: Offset(x, y), width: 80, height: 30);
 
       Paint textBoxPaint = Paint()
         ..color = Colors.white
         ..style = PaintingStyle.fill;
       Paint borderPaint = Paint()
-        ..color = Colors.white
+        ..color = Colors.black
         ..style = PaintingStyle.stroke;
 
       canvas.drawRect(textBox, textBoxPaint);
@@ -176,10 +216,10 @@ class _RadarChartPainter extends CustomPainter {
     }
 
     for (int i = 0; i < scores.length; i++) {
-      double scale = scores[i] / 10;
+      double scale = scores[i] / maxValue;
       Path path = Path();
       for (int j = 0; j < sides; j++) {
-        double angle = (2 * pi * j) / sides;
+        double angle = (2 * pi * j) / sides - pi / 2;
         double x = center.dx + radius * scale * cos(angle);
         double y = center.dy + radius * scale * sin(angle);
         if (j == 0) {
@@ -194,7 +234,7 @@ class _RadarChartPainter extends CustomPainter {
 
     Path dataPath = Path();
     for (int i = 0; i < sides; i++) {
-      double angle = (2 * pi * i) / sides;
+      double angle = (2 * pi * i) / sides - pi / 2;
       double x = center.dx + radius * (values[i] / maxValue) * cos(angle);
       double y = center.dy + radius * (values[i] / maxValue) * sin(angle);
       if (i == 0) {
@@ -207,7 +247,7 @@ class _RadarChartPainter extends CustomPainter {
     canvas.drawPath(dataPath, dataPaint);
 
     for (int i = 0; i < sides; i++) {
-      double angle = (2 * pi * i) / sides;
+      double angle = (2 * pi * i) / sides - pi / 2;
       double x = center.dx + radius * (values[i] / maxValue) * cos(angle);
       double y = center.dy + radius * (values[i] / maxValue) * sin(angle);
       canvas.drawCircle(Offset(x, y), 5, handlePaint); // 핸들

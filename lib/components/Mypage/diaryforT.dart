@@ -1,8 +1,11 @@
+// lib/pages/diaryforT.dart
+
 import 'package:flutter/material.dart';
-import '../start/basicframe3.dart'; // 정확한 경로로 수정 필요
-import '../Mypage/uploadmypictures.dart'; // 정확한 경로로 수정 필요
-import '../Mypage/hexagonalchart.dart'; // RadarChartWidget을 포함하고 있는 파일
-import '../Mypage/coursefeedback.dart'; // 여행 상세분석 파일 임포트
+import '../start/basicframe3.dart';
+import 'uploadmypictures.dart';
+import 'hexagonalchart.dart';
+import 'coursefeedback.dart';
+import '../Mypage/mypagemodelforT.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -10,10 +13,21 @@ void main() {
   ));
 }
 
-class DiaryforT extends StatelessWidget {
+class DiaryforT extends StatefulWidget {
+  @override
+  _DiaryforTState createState() => _DiaryforTState();
+}
+
+class _DiaryforTState extends State<DiaryforT> {
+  // TravelDiary 모델 인스턴스 생성
+  TravelDiary diary = TravelDiary(
+    courseName: '',
+    travelDate: DateTime.now(),
+    nature: '일기 종류 예시',
+  );
+
   @override
   Widget build(BuildContext context) {
-    // final double screenHeight = MediaQuery.of(context).size.height;
     return BasicFramePage(
       body: SingleChildScrollView(
         child: Column(
@@ -21,33 +35,33 @@ class DiaryforT extends StatelessWidget {
           children: <Widget>[
             Divider(color: Color(0xFFE4E4E4), thickness: 1, height: 1),
             SizedBox(height: 5),
-            TravelDetailPage(),
+            TravelDetailPage(diary: diary), // 모델 전달
             SizedBox(height: 10),
-            RadarChartWidget(), // RadarChart 추가
+            RadarChartWidget(diary: diary), // 모델 전달
             SizedBox(height: 40),
-            SizedBox(height: 5),
-            TravelDetailAnalysisSection(),
+            TravelDetailAnalysisSection(diary: diary), // 모델 전달
             SizedBox(height: 10),
             Center(
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  // 저장 로직 구현
+                  // 예: diary.toJson()을 사용하여 서버에 전송하거나 로컬 저장소에 저장
+                  print('저장된 데이터: ${diary.toJson()}');
+                },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xEAEAEA), // 버튼 색상 설정
-                  padding: EdgeInsets.symmetric(
-                      horizontal: 24, vertical: 12), // 버튼 패딩 설정
+                  backgroundColor: Color(0xFFEAEAEA),
+                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8), // 버튼 모서리 둥글게 설정
+                    borderRadius: BorderRadius.circular(8),
                   ),
                 ),
                 child: Text(
                   '저장하기',
-                  style: TextStyle(
-                      fontSize: 16, color: Colors.black), // 텍스트 스타일 설정
+                  style: TextStyle(fontSize: 16, color: Colors.black),
                 ),
               ),
             ),
-
-            SizedBox(height: 20), // 버튼 아래 여백 추가// 여행 상세분석 추가
+            SizedBox(height: 20),
           ],
         ),
       ),

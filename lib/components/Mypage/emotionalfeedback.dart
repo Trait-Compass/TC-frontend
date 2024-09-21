@@ -1,6 +1,13 @@
+// lib/pages/emotionalfeedback.dart
+
 import 'package:flutter/material.dart';
+import '../Mypage/mypagemodelforF.dart';
 
 class TravelFeelingAnalysisSection extends StatefulWidget {
+  final TravelDiaryEmotion diaryEmotion; // 모델 인스턴스 전달
+
+  TravelFeelingAnalysisSection({required this.diaryEmotion});
+
   @override
   _TravelFeelingAnalysisSectionState createState() =>
       _TravelFeelingAnalysisSectionState();
@@ -19,6 +26,13 @@ class _TravelFeelingAnalysisSectionState
   String? satisfiedText;
   String? maintainText;
   String? commentText;
+
+  // 모델에 데이터 저장
+  void _saveToModel() {
+    widget.diaryEmotion.positiveFeedback = satisfiedText;
+    widget.diaryEmotion.negativeFeedback = maintainText;
+    widget.diaryEmotion.finalThoughts = commentText;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -110,6 +124,7 @@ class _TravelFeelingAnalysisSectionState
                                       satisfiedText ?? '';
                                   isEditingSatisfied = true;
                                 }
+                                _saveToModel(); // 모델 업데이트
                               });
                             },
                             style: ElevatedButton.styleFrom(
@@ -208,6 +223,7 @@ class _TravelFeelingAnalysisSectionState
                                   maintainController.text = maintainText ?? '';
                                   isEditingMaintain = true;
                                 }
+                                _saveToModel(); // 모델 업데이트
                               });
                             },
                             style: ElevatedButton.styleFrom(
@@ -292,6 +308,7 @@ class _TravelFeelingAnalysisSectionState
                       commentController.text = commentText ?? '';
                       isEditingComment = true;
                     }
+                    _saveToModel(); // 모델 업데이트
                   });
                 },
                 style: ElevatedButton.styleFrom(

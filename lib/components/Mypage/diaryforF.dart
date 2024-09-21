@@ -1,8 +1,11 @@
+// lib/pages/diaryforF.dart
+
 import 'package:flutter/material.dart';
-import '../Mypage/emotionalchart.dart';
-import '../Mypage/uploadmypictures.dart'; // 정확한 경로로 수정 필요
-import '../Mypage/emotionalfeedback.dart';
-import '../start/basicframe3.dart'; // 정확한 경로로 수정 필요
+import 'emotionalchart.dart';
+import 'uploadmypicturesforF.dart';
+import 'emotionalfeedback.dart';
+import '../start/basicframe3.dart';
+import '../Mypage/mypagemodelforF.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -10,44 +13,50 @@ void main() {
   ));
 }
 
-class DiaryforF extends StatelessWidget {
+class DiaryforF extends StatefulWidget {
+  @override
+  _DiaryforFState createState() => _DiaryforFState();
+}
+
+class _DiaryforFState extends State<DiaryforF> {
+  TravelDiaryEmotion diaryEmotion = TravelDiaryEmotion(
+    courseName: '',
+    travelDate: DateTime.now(),
+  );
+
   @override
   Widget build(BuildContext context) {
-    // final double screenHeight = MediaQuery.of(context).size.height;
- return BasicFramePage(
+    return BasicFramePage(
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Divider(color: Color(0xFFE4E4E4), thickness: 1, height: 1),
             SizedBox(height: 5),
-            TravelDetailPage(),
-
-            EmotionChart(),
-            TravelFeelingAnalysisSection(),
+            TravelDetailPage(diaryEmotion: diaryEmotion), // 모델 전달
+            EmotionChart(diaryEmotion: diaryEmotion), // 모델 전달
+            TravelFeelingAnalysisSection(diaryEmotion: diaryEmotion), // 모델 전달
             SizedBox(height: 10),
             Center(
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  // 저장 로직 구현
+                  print('저장된 데이터: ${diaryEmotion.toJson()}');
+                },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xEAEAEA),
-                  // 버튼 색상 설정
-                  padding: EdgeInsets.symmetric(
-                      horizontal: 24, vertical: 12), // 버튼 패딩 설정
+                  backgroundColor: Color(0xFFEAEAEA),
+                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5),
-                    // 버튼 모서리 둥글게 설정
                   ),
                 ),
                 child: Text(
                   '저장하기',
-                  style: TextStyle(
-                      fontSize: 16, color: Colors.black), // 텍스트 스타일 설정
+                  style: TextStyle(fontSize: 16, color: Colors.black),
                 ),
               ),
             ),
-
-            SizedBox(height: 20), // 버튼 아래 여백 추가// 여행 상세분석 추가
+            SizedBox(height: 20),
           ],
         ),
       ),
