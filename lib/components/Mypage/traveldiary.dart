@@ -1,6 +1,8 @@
-// TravelDiary.dart
 import 'package:flutter/material.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'dart:convert';
+
+import 'package:untitled/components/map/api.dart';
 
 class TravelDiary extends StatefulWidget {
   @override
@@ -8,20 +10,28 @@ class TravelDiary extends StatefulWidget {
 }
 
 class _TravelDiaryState extends State<TravelDiary> {
-  Future<List<Map<String, dynamic>>> _travelDiaryFuture = Future.value([
-    {
-      'coursename': '제주도 여행',
-      'region': '제주도',
-      'nature': 'T',
-      'imageUrl': 'https://example.com/jeju.jpg',
-    },
-    {
-      'coursename': '부산 여행',
-      'region': '부산',
-      'nature': 'F',
-      'imageUrl': 'https://example.com/busan.jpg',  
-    },
-  ]);
+  late Future<List<Map<String, dynamic>>> _travelDiaryFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _travelDiaryFuture = fetchTravelDiaries();
+  }
+
+  Future<List<Map<String, dynamic>>> fetchTravelDiaries() async {
+    final response = await ApiService.get('/diary/list');
+
+    if (response.statusCode == 200) {
+
+      Map<String, dynamic> responseData = json.decode(response.body);
+
+      List<dynamic> diaryList = responseData['result'];
+
+      return diaryList.cast<Map<String, dynamic>>();
+    } else {
+      throw Exception('Failed to load travel diaries');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -127,25 +137,11 @@ class _TravelDiaryState extends State<TravelDiary> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    diary['coursename'] ?? '코스 이름 없음',
+                                    diary['courseName'] ?? '코스 이름 없음',
                                     style: TextStyle(
                                       fontSize: 14,
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
-                                      shadows: [
-                                        Shadow(
-                                          offset: Offset(1.0, 1.0),
-                                          blurRadius: 3.0,
-                                          color: Colors.black,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Text(
-                                    '지역: ${diary['region'] ?? '정보 없음'}',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.white,
                                       shadows: [
                                         Shadow(
                                           offset: Offset(1.0, 1.0),
