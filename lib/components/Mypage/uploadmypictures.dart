@@ -6,7 +6,6 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:permission_handler/permission_handler.dart';
 import 'selectdate.dart';
-import 'api_Mypage.dart'; // API 호출 파일 임포트
 
 class TravelDetailPage extends StatefulWidget {
   @override
@@ -119,48 +118,6 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
     String format(DateTime date) =>
         '${date.year.toString().padLeft(4, '0')}/${date.month.toString().padLeft(2, '0')}/${date.day.toString().padLeft(2, '0')}';
     return '${format(dateRange[0])} ~ ${format(dateRange[1])}';
-  }
-
-  // ** API 호출 함수 **
-  Future<void> _submitDataToServer() async {
-    String courseName = _courseNameController.text;
-    String travelDate = _selectedDateRange != null
-        ? _selectedDateRange![0].toIso8601String()
-        : DateTime.now().toIso8601String();
-
-    // 이미지를 서버로 보낼 준비
-    List<File?> selectedFiles =
-        _selectedImages.where((image) => image != null).toList();
-    List<Uint8List?> webImages =
-        _webImages.where((image) => image != null).toList();
-
-    // ** 서버로 데이터 전송 (courseName, travelDate, 이미지 등) **
-    await ApiService.sendTravelDiary(
-      courseName: courseName,
-      nature: 'T', // 예시 값, 필요에 맞게 수정 가능
-      travelDate: travelDate,
-      foodSatisfaction: 9, // 고정값 예시
-      satisfiedEmotions: '성취감,감동적임',
-      keepFeedback: '숙소 서비스가 조금 부족했어요.',
-      disappointedEmotions: '아쉬움,후회',
-      sadEmotions: '우울함,절망감',
-      finalThoughts: '이번 여행은 정말 잊을 수 없을 것 같아요.',
-      satisfactionFeedback: '여행이 정말 즐거웠어요.',
-      surprisedEmotions: '감탄,새로운 발견',
-      priceSatisfaction: 6,
-      transportationSatisfaction: 8,
-      sightseeingSatisfaction: 9,
-      happyEmotions: '기쁨,즐거움',
-      angryEmotions: '짜증,분노',
-      travelPhotos: selectedFiles.isNotEmpty
-          ? selectedFiles[0]!.path
-          : '', // 첫 번째 이미지만 예시로 보냄
-      improvementFeedback: '숙소 서비스가 조금 부족했어요.',
-      positiveFeedback: '여행이 정말 즐거웠어요.',
-      accommodationSatisfaction: 7,
-      comfortableEmotions: '안락함,평화로움',
-      environmentSatisfaction: 8,
-    );
   }
 
   @override

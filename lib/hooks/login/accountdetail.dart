@@ -21,8 +21,22 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   bool isnicknameUnique = false;
 
   final List<String> _mbtiList = [
-    'INTJ', 'INTP', 'ENTJ', 'ENTP', 'INFJ', 'INFP', 'ENFJ', 'ENFP',
-    'ISTJ', 'ISFJ', 'ESTJ', 'ESFJ', 'ISTP', 'ISFP', 'ESTP', 'ESFP'
+    'INTJ',
+    'INTP',
+    'ENTJ',
+    'ENTP',
+    'INFJ',
+    'INFP',
+    'ENFJ',
+    'ENFP',
+    'ISTJ',
+    'ISFJ',
+    'ESTJ',
+    'ESFJ',
+    'ISTP',
+    'ISFP',
+    'ESTP',
+    'ESFP'
   ];
 
   void _updateButtonState() {
@@ -80,7 +94,8 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('회원정보 제출에 실패했습니다. 상태 코드: ${response.statusCode}')),
+        SnackBar(
+            content: Text('회원정보 제출에 실패했습니다. 상태 코드: ${response.statusCode}')),
       );
     }
   }
@@ -122,8 +137,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   void _navigateToMBTITest() {
     Navigator.push(
       context,
-      MaterialPageRoute(
-          builder: (context) => MBTItestselection()),
+      MaterialPageRoute(builder: (context) => MBTItestselection()),
     );
   }
 
@@ -138,7 +152,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
         child: Container(
           width: screenWidth * 0.9,
           height: screenHeight * 0.8,
-          padding: const EdgeInsets.all(16.0), 
+          padding: const EdgeInsets.all(16.0),
           child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -175,7 +189,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                               decoration: InputDecoration(
                                 hintText: '닉네임을 입력해주세요',
                                 hintStyle: TextStyle(
-                                  fontSize: screenHeight * 0.018, 
+                                  fontSize: screenHeight * 0.018,
                                   color: Color(0xFF676767),
                                 ),
                                 filled: true,
@@ -196,7 +210,8 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                   ),
                                 ),
                                 contentPadding: EdgeInsets.symmetric(
-                                    horizontal: screenWidth * 0.04, vertical: screenHeight * 0.015), 
+                                    horizontal: screenWidth * 0.04,
+                                    vertical: screenHeight * 0.015),
                               ),
                             ),
                           ),
@@ -210,7 +225,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                             child: Text(
                               '중복 확인',
                               style: TextStyle(
-                                fontSize: screenHeight * 0.017, 
+                                fontSize: screenHeight * 0.017,
                                 color: Colors.black,
                               ),
                             ),
@@ -257,7 +272,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                   hint: Text(
                                     'MBTI를 설정해주세요',
                                     style: TextStyle(
-                                        fontSize: screenHeight * 0.018, 
+                                        fontSize: screenHeight * 0.018,
                                         color: Color(0xFF676767)),
                                   ),
                                   icon: Icon(Icons.arrow_drop_down),
@@ -295,9 +310,9 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                           color: Colors.grey[600]),
                                     ),
                                   ),
-                                  SizedBox(width: screenWidth * 0.02), 
+                                  SizedBox(width: screenWidth * 0.02),
                                   Expanded(
-                                    flex: 2, 
+                                    flex: 2,
                                     child: TextButton(
                                       onPressed: _navigateToMBTITest,
                                       child: Text(
@@ -307,7 +322,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                           color: Colors.black,
                                         ),
                                         softWrap: true,
-                                        overflow: TextOverflow.visible, 
+                                        overflow: TextOverflow.visible,
                                       ),
                                     ),
                                   ),
