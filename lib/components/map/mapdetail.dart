@@ -1,6 +1,5 @@
 // MapdetailPage.dart
 import 'package:flutter/material.dart';
-import '../map/mapresult.dart';
 import 'dart:async';
 import 'dart:convert';
 import '../map/api.dart';
