@@ -41,7 +41,6 @@ class _MBTISelectionPageState extends State<MBTISelectionPage> {
 
   @override
   Widget build(BuildContext context) {
-    // final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
 
     return SingleChildScrollView(
@@ -77,7 +76,6 @@ class _MBTISelectionPageState extends State<MBTISelectionPage> {
               SizedBox(width: 20),
             ],
           ),
-
           SizedBox(height: screenHeight * 0.02),
           Text(
             'MBTI 맞춤형 간단 추천 코스',
@@ -91,16 +89,15 @@ class _MBTISelectionPageState extends State<MBTISelectionPage> {
             onNextPressed: navigateToCalendarPage,
           ),
           SizedBox(height: screenHeight * 0.02),
-          BestCourseTop3(), // BestCourseTop3 위젯 추가
+          BestCourseTop3(),
           SizedBox(height: screenHeight * 0.02),
-          GyeongNamRecommend(), // GyeongNamRecommend 위젯 추가
+          GyeongNamRecommend(),
         ],
       ),
     );
   }
 }
 
-// 아래 StepOneWidget 정의를 추가합니다.
 class StepOneWidget extends StatelessWidget {
   final Map<String, String?> selectedMBTI;
   final Function(String, String) toggleSelection;
@@ -132,7 +129,7 @@ class StepOneWidget extends StatelessWidget {
               style: TextStyle(fontSize: screenHeight * 0.02),
               textAlign: TextAlign.left,
             ),
-            SizedBox(height:20),
+            SizedBox(height: 20),
             Wrap(
               alignment: WrapAlignment.center,
               spacing: 10,
@@ -166,11 +163,26 @@ class StepOneWidget extends StatelessWidget {
             SizedBox(height: screenHeight * 0.03),
             ElevatedButton(
               onPressed: allGroupsSelected() ? onNextPressed : null,
-              child: Text('다음'),
+              child: Text(
+                '다음',
+                style: TextStyle(
+                  fontSize: screenHeight * 0.025,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey[800],
-                foregroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(vertical: 5),
+                backgroundColor: allGroupsSelected()
+                    ? Colors.black.withOpacity(0.28)
+                    : Color(0xFFD9D9D9),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4),
+                  side: BorderSide(
+                    color: allGroupsSelected()
+                        ? Colors.black.withOpacity(0.28)
+                        : Color(0xFFD9D9D9),
+                  ),
+                ),
               ),
             ),
           ],
