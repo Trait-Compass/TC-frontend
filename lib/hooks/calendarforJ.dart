@@ -1,6 +1,6 @@
 // calendarforJ.dart
 import 'package:flutter/material.dart';
-import '../pages/LocationAndPersonSelectionJ.dart'; 
+import '../pages/LocationAndPersonSelectionJ.dart';
 
 class CalendarForJ extends StatefulWidget {
   final Function(List<DateTime>) onDatesSelected;
@@ -26,23 +26,20 @@ class _CalendarForJState extends State<CalendarForJ> {
         selectedDates.sort();
       }
 
-     
       int daysSelected = selectedDates.length > 1
           ? selectedDates.last.difference(selectedDates.first).inDays + 1
           : 0;
 
       if (daysSelected > 5) {
-    
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('4박 5일까지 선택 가능합니다!'),
           ),
         );
 
-    
         selectedDates.remove(date);
       } else {
-        widget.onDatesSelected(selectedDates); 
+        widget.onDatesSelected(selectedDates);
       }
     });
   }
@@ -66,14 +63,14 @@ class _CalendarForJState extends State<CalendarForJ> {
       if (isSelected(date)) {
         if (selectedDates.first == date) {
           return BoxDecoration(
-            color: Color(0xFF6699FF),
+            color: Colors.grey[800],
             borderRadius: BorderRadius.horizontal(
               left: Radius.circular(20.0),
             ),
           );
         } else if (selectedDates.last == date) {
           return BoxDecoration(
-            color: Color(0xFF6699FF),
+            color: Colors.grey[800],
             borderRadius: BorderRadius.horizontal(
               right: Radius.circular(20.0),
             ),
@@ -85,7 +82,7 @@ class _CalendarForJState extends State<CalendarForJ> {
         );
       } else if (isBetweenSelectedDates(date)) {
         return BoxDecoration(
-          color: Color(0xFFBBDDFF),
+          color: Colors.grey[200],
           shape: BoxShape.rectangle,
         );
       } else {
@@ -208,7 +205,6 @@ class _CalendarForJState extends State<CalendarForJ> {
       return Column(children: months);
     }
 
-  
     int daysSelected = selectedDates.length > 1
         ? selectedDates.last.difference(selectedDates.first).inDays + 1
         : 0;
@@ -238,7 +234,7 @@ class _CalendarForJState extends State<CalendarForJ> {
             style: ElevatedButton.styleFrom(
               backgroundColor: (selectedDates.length >= 1 && daysSelected <= 5)
                   ? Colors.grey[800]
-                  : Colors.grey[400], 
+                  : Colors.grey[400],
               foregroundColor: Colors.white,
               padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
             ),

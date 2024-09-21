@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:untitled/components/mbtitest/MBTItestpage.dart';
-import 'package:untitled/components/start/basicframe3.dart';
+
+import 'package:untitled/components/basicframe.dart';
 import 'dart:convert';
-import 'package:untitled/components/mbti_selection_page.dart';
+import '../../components/mbtitest/MBTItestpage.dart';
+import '../../components/mbti_selection_page.dart';
+
+import 'package:untitled/components/start/basicframe3.dart';
 
 class UserInfoScreen extends StatefulWidget {
   final String id;
@@ -410,33 +413,38 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                   ],
                 ),
                 SizedBox(height: screenHeight * 0.03),
-                Align(
-                  alignment: Alignment.center,
-                  child: Container(
-                    width: screenWidth * 0.5,
-                    height: screenHeight * 0.06,
-                    child: ElevatedButton(
-                      onPressed: isButtonEnabled ? _submitUserInfo : null,
-                      child: Text(
-                        '시작',
-                        style: TextStyle(
-                          fontSize: screenHeight * 0.025,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: isButtonEnabled
+                ElevatedButton(
+                  onPressed: isButtonEnabled
+                      ? () {
+                          _submitUserInfo(); // 회원정보 제출 후
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BasicFrame1Page(
+                                body: MBTISelectionPage(),
+                              ),
+                            ), // 페이지 이동
+                          );
+                        }
+                      : null,
+                  child: Text(
+                    '시작',
+                    style: TextStyle(
+                      fontSize: screenHeight * 0.025,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: isButtonEnabled
+                        ? Colors.black.withOpacity(0.28)
+                        : Color(0xFFD9D9D9),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                      side: BorderSide(
+                        color: isButtonEnabled
                             ? Colors.black.withOpacity(0.28)
                             : Color(0xFFD9D9D9),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
-                          side: BorderSide(
-                            color: isButtonEnabled
-                                ? Colors.black.withOpacity(0.28)
-                                : Color(0xFFD9D9D9),
-                          ),
-                        ),
                       ),
                     ),
                   ),

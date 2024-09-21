@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'accountdetail.dart';
+import '../login/termsofservice1.dart'; // 이용약관 페이지 임포트
 
 class SignupScreen extends StatefulWidget {
   @override
@@ -17,12 +18,13 @@ class _SignupScreenState extends State<SignupScreen> {
   bool isIdUnique = false;
   bool isPasswordValid = true;
   bool isPasswordMatch = true;
+  bool isAgreedToTerms = false; // 이용약관 동의 여부 추가
 
   void _signup() {
     final String id = _idController.text;
     final String password = _passwordController.text;
 
-    if (isButtonEnabled && isIdUnique) {
+    if (isButtonEnabled && isIdUnique && isAgreedToTerms) {
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -77,8 +79,8 @@ class _SignupScreenState extends State<SignupScreen> {
 
   bool _validatePassword(String password) {
     // 최소 한 개의 영문자 포함, 최소 한 개의 숫자 포함, 최소 한 개의 특수 문자 포함, 8자 이상
-    final passwordRegex =
-        RegExp(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$');
+    final passwordRegex = RegExp(
+        r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$');
     return passwordRegex.hasMatch(password);
   }
 
@@ -86,15 +88,18 @@ class _SignupScreenState extends State<SignupScreen> {
     final String password = _passwordController.text;
     final String confirmPassword = _passwordConfirmController.text;
     setState(() {
-      isPasswordValid = password.isEmpty || _validatePassword(password); // 비밀번호가 입력되지 않은 상태에서도 유효성 검사
-      isPasswordMatch = confirmPassword.isEmpty || password == confirmPassword; // 비밀번호와 확인 비밀번호가 일치하는지 검사
+      isPasswordValid = password.isEmpty ||
+          _validatePassword(password); // 비밀번호가 입력되지 않은 상태에서도 유효성 검사
+      isPasswordMatch = confirmPassword.isEmpty ||
+          password == confirmPassword; // 비밀번호와 확인 비밀번호가 일치하는지 검사
       isButtonEnabled = _idController.text.isNotEmpty &&
           _passwordController.text.isNotEmpty &&
           _passwordConfirmController.text.isNotEmpty &&
           _passwordController.text == _passwordConfirmController.text &&
           isPasswordValid &&
           isPasswordMatch &&
-          isIdUnique;
+          isIdUnique &&
+          isAgreedToTerms; // 약관 동의 여부 추가
     });
   }
 
@@ -143,6 +148,53 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                 ),
                 SizedBox(height: screenHeight * 0.03),
+                // 약관 동의 및 확인 버튼을 한 줄로 배치하고 아이디 위로 이동
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Checkbox(
+                      value: isAgreedToTerms,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          isAgreedToTerms = value ?? false;
+                          _updateButtonState(); // 체크박스 변경 시 버튼 활성화 상태 업데이트
+                        });
+                      },
+                      activeColor: Colors.black,
+                    ),
+                    Expanded(
+                      child: Text(
+                        "회원가입 및 이용약관에 동의하겠습니다",
+                        style: TextStyle(
+                            fontSize: screenHeight * 0.015,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => TermsAndConditionsPage1(),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey[200],
+                        elevation: 0,
+                        side: BorderSide(color: Colors.white),
+                      ),
+                      child: Text(
+                        '이용약관 확인하기',
+                        style: TextStyle(
+                          fontSize: screenHeight * 0.012,
+                          color: Colors.grey[800],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: screenHeight * 0.03), // 아이디 입력란과 간격 추가
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -191,7 +243,6 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                         SizedBox(width: screenWidth * 0.02),
                         Container(
-                          // width: screenWidth * 0.2,
                           height: screenHeight * 0.06,
                           alignment: Alignment.center,
                           child: ElevatedButton(
@@ -226,13 +277,12 @@ class _SignupScreenState extends State<SignupScreen> {
                       child: TextField(
                         controller: _passwordController,
                         decoration: InputDecoration(
-                          hintText:
-                              '영문자, 숫자, 특수문자를 포함해 8자 이상 비밀번호 입력 필수',
+                          hintText: '영문자, 숫자, 특수문자를 포함해 8자 이상 비밀번호 입력 필수',
                           hintStyle: TextStyle(
                             fontSize: 10,
                             color: Color(0xFF676767),
                           ),
-                          filled: true,   
+                          filled: true,
                           fillColor: Color(0xFFF1F2F3),
                           border: OutlineInputBorder(
                             borderSide: BorderSide(
@@ -264,8 +314,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                   child: Text(
                                     '비밀번호를 다시 입력해주세요.',
                                     style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 10),
+                                        color: Colors.black, fontSize: 10),
                                   ),
                                 ),
                         ),

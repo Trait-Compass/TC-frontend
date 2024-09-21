@@ -26,24 +26,20 @@ class _CustomCalendarSelectionState extends State<CustomCalendarSelection> {
         selectedDates.sort();
       }
 
- 
       int daysSelected = selectedDates.length > 1
           ? selectedDates.last.difference(selectedDates.first).inDays + 1
           : 0;
 
-   
       if (daysSelected > 5) {
-    
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('4박 5일까지 선택 가능합니다!'),
           ),
         );
 
-        
         selectedDates.remove(date);
       } else {
-        widget.onDatesSelected(selectedDates); 
+        widget.onDatesSelected(selectedDates);
       }
     });
   }
@@ -67,14 +63,14 @@ class _CustomCalendarSelectionState extends State<CustomCalendarSelection> {
       if (isSelected(date)) {
         if (selectedDates.first == date) {
           return BoxDecoration(
-            color: Color(0xFF6699FF),
+            color: Colors.grey[800],
             borderRadius: BorderRadius.horizontal(
               left: Radius.circular(20.0),
             ),
           );
         } else if (selectedDates.last == date) {
           return BoxDecoration(
-            color: Color(0xFF6699FF),
+            color: Colors.grey[800],
             borderRadius: BorderRadius.horizontal(
               right: Radius.circular(20.0),
             ),
@@ -86,7 +82,7 @@ class _CustomCalendarSelectionState extends State<CustomCalendarSelection> {
         );
       } else if (isBetweenSelectedDates(date)) {
         return BoxDecoration(
-          color: Color(0xFFBBDDFF),
+          color: Colors.grey[200],
           shape: BoxShape.rectangle,
         );
       } else {
@@ -104,7 +100,7 @@ class _CustomCalendarSelectionState extends State<CustomCalendarSelection> {
           fontSize: 16.0,
         );
       } else if (isBetweenSelectedDates(date)) {
-        return TextStyle(); 
+        return TextStyle();
       } else {
         return TextStyle(
           color: Colors.black,
@@ -208,7 +204,6 @@ class _CustomCalendarSelectionState extends State<CustomCalendarSelection> {
       }
       return Column(children: months);
     }
-
 
     int daysSelected = selectedDates.length > 1
         ? selectedDates.last.difference(selectedDates.first).inDays + 1
