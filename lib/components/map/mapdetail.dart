@@ -30,7 +30,7 @@ class _MapdetailPageState extends State<MapdetailPage> {
     print('Calculating travel durations for day ${selectedDayIndex + 1}');
     print('Current Trip Details: $currentTripDetails');
 
-    travelDurations.clear(); 
+    travelDurations.clear();
 
     for (int i = 0; i < currentTripDetails.length - 1; i++) {
       final startX = currentTripDetails[i]['x'];
@@ -38,7 +38,6 @@ class _MapdetailPageState extends State<MapdetailPage> {
       final endX = currentTripDetails[i + 1]['x'];
       final endY = currentTripDetails[i + 1]['y'];
 
-    
       print('Trip Segment ${i + 1}: From ($startX, $startY) to ($endX, $endY)');
 
       if (startX == null || startY == null || endX == null || endY == null) {
@@ -49,10 +48,10 @@ class _MapdetailPageState extends State<MapdetailPage> {
 
       try {
         final response = await ApiService.get('/spot/distance', params: {
-          'startMapX': startX, 
-          'startMapY': startY, 
-          'endtMapX': endX,     
-          'endMapY': endY,      
+          'startMapX': startX,
+          'startMapY': startY,
+          'endtMapX': endX,
+          'endMapY': endY,
         });
 
         if (response.statusCode == 200) {
@@ -72,7 +71,7 @@ class _MapdetailPageState extends State<MapdetailPage> {
       }
     }
 
-    setState(() {}); 
+    setState(() {});
   }
 
   void _showConfirmationDialog() {
@@ -84,7 +83,6 @@ class _MapdetailPageState extends State<MapdetailPage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
-          contentPadding: EdgeInsets.zero,
           content: Container(
             height: 200,
             child: Column(
@@ -104,7 +102,7 @@ class _MapdetailPageState extends State<MapdetailPage> {
                   children: [
                     ElevatedButton(
                       onPressed: () async {
-                        bool success = await _postTripDetails(); 
+                        bool success = await _postTripDetails();
 
                         if (success) {
                           Navigator.of(context).pop();
@@ -133,12 +131,6 @@ class _MapdetailPageState extends State<MapdetailPage> {
                     ElevatedButton(
                       onPressed: () {
                         Navigator.of(context).pop();
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Mapresult(),
-                          ),
-                        );
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.grey[200],
@@ -148,7 +140,7 @@ class _MapdetailPageState extends State<MapdetailPage> {
                         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 35),
                       ),
                       child: Text(
-                        '아니요! 코스 저장안할게요',
+                        '아니요! 코스 저장안할게요 ',
                         style: TextStyle(color: Colors.black, fontSize: 18),
                       ),
                     ),
@@ -190,7 +182,7 @@ class _MapdetailPageState extends State<MapdetailPage> {
         }
       }
 
-      print('Request Body: ${json.encode(requestBody)}'); 
+      print('Request Body: ${json.encode(requestBody)}');
 
       final response = await ApiService.post('/course/j', requestBody);
 
@@ -199,7 +191,7 @@ class _MapdetailPageState extends State<MapdetailPage> {
         return true;
       } else {
         print('Failed to post trip details. Status Code: ${response.statusCode}');
-        print('Response Body: ${response.body}'); 
+        print('Response Body: ${response.body}');
         return false;
       }
     } catch (e) {
@@ -231,6 +223,7 @@ class _MapdetailPageState extends State<MapdetailPage> {
       ),
       body: Column(
         children: [
+          // 날짜 선택 부분
           Container(
             height: 50,
             child: ListView(
@@ -242,7 +235,7 @@ class _MapdetailPageState extends State<MapdetailPage> {
                     setState(() {
                       selectedDayIndex = index;
                     });
-                    _calculateTravelDurations(); 
+                    _calculateTravelDurations();
                   },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -321,7 +314,7 @@ class _MapdetailPageState extends State<MapdetailPage> {
                                               setState(() {
                                                 currentTripDetails.removeAt(index);
                                                 widget.tripDetails[selectedDayIndex] = currentTripDetails;
-                                                _calculateTravelDurations(); 
+                                                _calculateTravelDurations();
                                               });
                                             }
                                           },
@@ -361,7 +354,6 @@ class _MapdetailPageState extends State<MapdetailPage> {
                         ),
                       ],
                     ),
-                    // 이동 시간 표시
                     if (index < currentTripDetails.length - 1)
                       Padding(
                         padding: const EdgeInsets.only(left: 40.0, top: 8.0),
@@ -397,7 +389,6 @@ class _MapdetailPageState extends State<MapdetailPage> {
               },
             ),
           ),
-          // 하단 공유하기 버튼
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
             child: Row(
@@ -408,7 +399,6 @@ class _MapdetailPageState extends State<MapdetailPage> {
                     IconButton(
                       icon: Icon(Icons.share),
                       onPressed: () {
-                        // 공유하기 기능 추가
                       },
                     ),
                     Text('공유하기', style: TextStyle(fontSize: 12)),
