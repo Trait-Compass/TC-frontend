@@ -5,8 +5,7 @@ import 'package:untitled/components/basicframe.dart';
 import 'dart:convert';
 import '../../components/mbtitest/MBTItestpage.dart';
 import '../../components/mbti_selection_page.dart';
-
-import 'package:untitled/components/start/basicframe3.dart';
+import 'package:untitled/components/basic_frame_page.dart';
 
 class UserInfoScreen extends StatefulWidget {
   final String id;
@@ -420,7 +419,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => BasicFrame1Page(
+                              builder: (context) => BasicFramePage(
                                 body: MBTISelectionPage(),
                               ),
                             ), // 페이지 이동
