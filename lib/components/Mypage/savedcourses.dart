@@ -2,6 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:untitled/components/map/api.dart';
+import 'package:untitled/components/mbti_selection_page.dart';
+import 'package:untitled/components/start/basicframe2.dart';
+import 'package:untitled/pages/travelplan.dart';
 
 class SavedTravelCourses extends StatefulWidget {
   @override
@@ -66,17 +69,17 @@ class _SavedTravelCoursesState extends State<SavedTravelCourses> {
               } else {
                 List<Map<String, dynamic>> courses = snapshot.data!;
                 return Container(
-                  height: 160, 
+                  height: 160,
                   width: double.infinity,
                   child: ListView.builder(
                     scrollDirection: Axis.vertical,
-                    itemCount: courses.length, 
-                    physics: AlwaysScrollableScrollPhysics(), 
+                    itemCount: courses.length,
+                    physics: AlwaysScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
                       Map<String, dynamic> course = courses[index];
 
                       return Container(
-                        height: 70, 
+                        height: 70,
                         margin: EdgeInsets.symmetric(
                           vertical: 5,
                           horizontal: 0,
@@ -147,7 +150,13 @@ class _SavedTravelCoursesState extends State<SavedTravelCourses> {
               Expanded(
                 child: ElevatedButton(
                   onPressed: () {
-                    // '코스 제작하기' 버튼 클릭 시의 동작 추가
+                    Navigator.push(
+                      context, 
+                      MaterialPageRoute(
+                        builder: (context) => BasicFramePage5(
+                            body: MyNewPage()), 
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFFEDEDED),
@@ -166,7 +175,13 @@ class _SavedTravelCoursesState extends State<SavedTravelCourses> {
               Expanded(
                 child: ElevatedButton(
                   onPressed: () {
-                    // '인기코스 보러가기' 버튼 클릭 시의 동작 추가
+                    Navigator.push(
+                      context, 
+                      MaterialPageRoute(
+                        builder: (context) => BasicFramePage5(
+                            body: MyNewPage()),
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFFEDEDED),
@@ -196,17 +211,20 @@ class _SavedTravelCoursesState extends State<SavedTravelCourses> {
         fit: BoxFit.cover,
         width: double.infinity,
         height: double.infinity,
-        loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+        loadingBuilder: (BuildContext context, Widget child,
+            ImageChunkEvent? loadingProgress) {
           if (loadingProgress == null) return child;
           return Center(
             child: CircularProgressIndicator(
               value: loadingProgress.expectedTotalBytes != null
-                  ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                  ? loadingProgress.cumulativeBytesLoaded /
+                      loadingProgress.expectedTotalBytes!
                   : null,
             ),
           );
         },
-        errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+        errorBuilder:
+            (BuildContext context, Object exception, StackTrace? stackTrace) {
           return Image.asset(
             'assets/city2.png',
             fit: BoxFit.cover,
@@ -225,18 +243,20 @@ class _SavedTravelCoursesState extends State<SavedTravelCourses> {
     }
   }
 
-
   String? _getImageUrl(Map<String, dynamic> course) {
     try {
-      if (course['day1'] != null && course['day1'] is List && course['day1'].isNotEmpty) {
+      if (course['day1'] != null &&
+          course['day1'] is List &&
+          course['day1'].isNotEmpty) {
         var day1FirstItem = course['day1'][0];
-        if (day1FirstItem['imageUrl'] != null && day1FirstItem['imageUrl'].isNotEmpty) {
+        if (day1FirstItem['imageUrl'] != null &&
+            day1FirstItem['imageUrl'].isNotEmpty) {
           return day1FirstItem['imageUrl'];
         }
       }
     } catch (e) {
       print('Error fetching image URL: $e');
     }
-    return null; 
+    return null;
   }
 }
