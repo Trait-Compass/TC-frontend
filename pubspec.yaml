@@ -25,7 +25,7 @@ dependencies:
   shared_preferences: ^2.3.2  # 최신 버전으로 업데이트
   flutter_secure_storage: ^4.2.0  # 최신 버전으로 업데이트  
   share_plus: ^7.0.0
-  
+  permission_handler: ^10.0.0
 
 flutter_localizations:
   sdk: flutter

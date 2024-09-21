@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:untitled/components/basicframe.dart';
-import '5question.dart';
+import '5question.dart'; // ResultPage가 정의된 파일을 임포트
 
 class Questions4 extends StatefulWidget {
   final Function(String) onOptionSelected;
@@ -29,6 +29,19 @@ class _Questions4State extends State<Questions4> {
       selectedOption = widget.selectedOption + option;
     });
     widget.onOptionSelected(selectedOption);
+  }
+
+  void _showPopupMessage() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          '문항을 선택해주세요',
+          style: TextStyle(color: Colors.black),
+        ),
+        duration: Duration(seconds: 2),
+        backgroundColor: Colors.white,
+      ),
+    );
   }
 
   @override
@@ -184,18 +197,20 @@ class _Questions4State extends State<Questions4> {
                     ),
                     SizedBox(height: 20),
                     ElevatedButton(
-                      onPressed: selectedOption.isNotEmpty
-                          ? () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ResultPage(
-                                    selectedOption: selectedOption,
-                                  ),
-                                ),
-                              );
-                            }
-                          : null,
+                      onPressed: () {
+                        if (selectedOption.isNotEmpty) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ResultPage(
+                                selectedOption: selectedOption,
+                              ),
+                            ),
+                          );
+                        } else {
+                          _showPopupMessage(); // 문항 선택 안 했을 시 팝업 띄움
+                        }
+                      },
                       child: Text(
                         '완료',
                         style: TextStyle(fontSize: 18, color: Colors.white),

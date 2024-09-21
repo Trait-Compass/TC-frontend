@@ -134,7 +134,7 @@ class ResultCard extends StatelessWidget {
                         mascotImage: mbtiData.bestMatchImage,
                         mascotName: mbtiData.bestMatchName,
                         mascotRegion: mbtiData.bestMatchRegion,
-                        traits: mbtiData.traits,
+                        traits: mbtiData.besttraits,
                         color: Colors.orange[100]!,
                       ),
                       SizedBox(height: 20),
@@ -146,7 +146,7 @@ class ResultCard extends StatelessWidget {
                         mascotImage: mbtiData.worstMatchImage,
                         mascotName: mbtiData.worstMatchName,
                         mascotRegion: mbtiData.worstMatchRegion,
-                        traits: mbtiData.traits,
+                        traits: mbtiData.worsttraits,
                         color: Colors.red[100]!,
                       ),
                       SizedBox(height: 20),
@@ -194,7 +194,113 @@ class ResultCard extends StatelessWidget {
     );
   }
 
-  // buildMBTICard 메서드 정의
+Widget buildMBTICard({
+  required String title,
+  required String mbtiType,
+  required String description,
+  required String mascotImage,
+  required String mascotName,
+  required String mascotRegion,
+  required List<String> traits,
+  required Color color,
+}) {
+  final Color textColor = title == '찰떡궁합 MBTI' ? Colors.orange : Colors.red;
+  final Color containerColor =
+      title == '찰떡궁합 MBTI' ? Colors.orange[100]! : Colors.red[100]!;
+
+  return Container(
+    margin: EdgeInsets.symmetric(vertical: 10),
+    padding: EdgeInsets.all(20),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(15),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        // 타이틀
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        ),
+        SizedBox(height: 10),
+
+        // MBTI 타입과 설명 같은 행에 배치
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              mbtiType,
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: textColor,
+              ),
+            ),
+            SizedBox(width: 10),
+            Text(
+              description,
+              style: TextStyle(fontSize: 16, color: textColor),
+            ),
+          ],
+        ),
+        SizedBox(height: 10),
+
+        // 이미지와 특징들 행으로 배치
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 이미지, 마스코트 이름, 지역 왼쪽 열
+            Column(
+              children: [
+                Image.asset(
+                  mascotImage,
+                  height: 80,
+                ),
+                SizedBox(height: 5),
+                Text(
+                  mascotName,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.black,
+                  ),
+                ),
+                Text(
+                  mascotRegion,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(width: 10),
+
+            // 특징 오른쪽 열, 양 옆으로 확장
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: traits.map((trait) {
+                  return Container(
+                    width: double.infinity, // 이 부분에서 최대 너비로 확장
+                    margin: EdgeInsets.symmetric(vertical: 5),
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: containerColor,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      trait,
+                      style: TextStyle(fontSize: 14, color: Colors.black),
+                      textAlign: TextAlign.left,
+                    ),
+                  );
+                }).toList(),
+                
   Widget buildMBTICard({
     required String title,
     required String mbtiType,

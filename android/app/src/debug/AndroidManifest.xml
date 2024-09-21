@@ -1,7 +1,27 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- The INTERNET permission is required for development. Specifically,
-         the Flutter tool needs it to communicate with the running application
-         to allow setting breakpoints, to provide hot reload, etc.
-    -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.your_app_name">
+
+    <!-- 인터넷 사용을 위한 권한 -->
     <uses-permission android:name="android.permission.INTERNET"/>
+
+    <!-- 외부 저장소 읽기 권한 (사진 선택 시 필요) -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
+    <!-- 외부 저장소 쓰기 권한 (Android 10 이하에서 필요) -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28"/>
+
+    <!-- 카메라 권한 (사진 촬영 시 필요) -->
+    <uses-permission android:name="android.permission.CAMERA"/>
+
+    <!-- Android 10 이상에서 외부 저장소 접근을 위한 설정 -->
+    <application
+        android:requestLegacyExternalStorage="true" <!-- Android 10 이상에서 필요 -->
+        android:allowBackup="true"
+        android:label="Your App Name"
+        android:icon="@mipmap/ic_launcher">
+
+        <!-- 기타 앱 설정들 여기에 추가 -->
+        
+    </application>
 </manifest>

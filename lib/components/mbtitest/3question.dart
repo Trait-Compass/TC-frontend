@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:untitled/components/basicframe.dart';
-import '4question.dart';
+import '4question.dart'; // Questions4 페이지를 임포트
 
 class Questions3 extends StatefulWidget {
   final Function(String) onOptionSelected;
@@ -26,9 +26,22 @@ class _Questions3State extends State<Questions3> {
 
   void handleOptionSelected(String option) {
     setState(() {
-      selectedOption = widget.selectedOption + option; // 누적된 옵션
+      // 선택된 옵션을 누적해서 저장
+      selectedOption = widget.selectedOption + option;
     });
-    widget.onOptionSelected(selectedOption); // 누적된 옵션 전달
+  }
+
+  void _showPopupMessage() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          '문항을 선택해주세요',
+          style: TextStyle(color: Colors.black),
+        ),
+        duration: Duration(seconds: 2),
+        backgroundColor: Colors.white,
+      ),
+    );
   }
 
   @override
@@ -184,19 +197,22 @@ class _Questions3State extends State<Questions3> {
                     ),
                     SizedBox(height: 20),
                     ElevatedButton(
-                      onPressed: selectedOption.isNotEmpty
-                          ? () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => Questions4(
-                                    onOptionSelected: widget.onOptionSelected,
-                                    selectedOption: selectedOption,
-                                  ),
-                                ),
-                              );
-                            }
-                          : null,
+                      onPressed: () {
+                        if (selectedOption.isNotEmpty) {
+                          // 선택된 옵션이 있을 때만 이동
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Questions4(
+                                onOptionSelected: widget.onOptionSelected,
+                                selectedOption: selectedOption,
+                              ),
+                            ),
+                          );
+                        } else {
+                          _showPopupMessage(); // 문항 선택 안 했을 시 팝업 띄움
+                        }
+                      },
                       child: Text(
                         '다음',
                         style: TextStyle(fontSize: 18, color: Colors.white),
