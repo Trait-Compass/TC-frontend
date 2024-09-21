@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:untitled/pages/result_page.dart'; // ResultPage import
+import 'package:untitled/pages/result_page.dart';
 
 class CustomCalendar extends StatefulWidget {
   final Function(List<DateTime>) onDatesSelected;
-  final String mbti; // 추가된 파라미터
+  final String mbti;
 
   CustomCalendar({required this.onDatesSelected, required this.mbti});
 
@@ -17,17 +17,15 @@ class _CustomCalendarState extends State<CustomCalendar> {
   void onDateSelected(DateTime date) {
     setState(() {
       if (selectedDates.contains(date)) {
-        // 이미 선택된 날짜를 다시 선택하면 제거
         selectedDates.remove(date);
       } else {
-        // 날짜 추가 (최대 2개만 유지)
         if (selectedDates.length == 2) {
           selectedDates.clear();
         }
         selectedDates.add(date);
         selectedDates.sort();
       }
-      widget.onDatesSelected(selectedDates); // 선택된 날짜 업데이트 콜백 호출
+      widget.onDatesSelected(selectedDates);
     });
   }
 
@@ -39,24 +37,21 @@ class _CustomCalendarState extends State<CustomCalendar> {
     final double boxWidth = screenWidth / 7.5;
     final double boxHeight = screenHeight * 0.06;
 
-    // 날짜가 선택되었는지 확인
     bool isSelected(DateTime date) {
       return selectedDates.contains(date);
     }
 
-    // 선택된 날짜 사이에 있는지 확인
     bool isBetweenSelectedDates(DateTime date) {
       if (selectedDates.length < 2) return false;
       return date.isAfter(selectedDates.first) &&
           date.isBefore(selectedDates.last);
     }
 
-    // 박스의 데코레이션 스타일 설정
     BoxDecoration buildBoxDecoration(DateTime date) {
       if (isSelected(date)) {
         if (selectedDates.first == date) {
           return BoxDecoration(
-            color: Color(0xFF6699FF),
+            color: Colors.grey[800],
             borderRadius: BorderRadius.horizontal(
               left: Radius.circular(20.0),
               right: Radius.zero,
@@ -64,7 +59,7 @@ class _CustomCalendarState extends State<CustomCalendar> {
           );
         } else if (selectedDates.last == date) {
           return BoxDecoration(
-            color: Color(0xFF6699FF),
+            color: Colors.grey[800],
             borderRadius: BorderRadius.horizontal(
               left: Radius.zero,
               right: Radius.circular(20.0),
@@ -77,7 +72,7 @@ class _CustomCalendarState extends State<CustomCalendar> {
         );
       } else if (isBetweenSelectedDates(date)) {
         return BoxDecoration(
-          color: Color(0xFFBBDDFF),
+          color: Colors.grey[200],
           shape: BoxShape.rectangle,
         );
       } else {
@@ -88,7 +83,6 @@ class _CustomCalendarState extends State<CustomCalendar> {
       }
     }
 
-    // 텍스트 스타일 설정
     TextStyle buildTextStyle(DateTime date) {
       if (isSelected(date)) {
         return TextStyle(
@@ -96,7 +90,7 @@ class _CustomCalendarState extends State<CustomCalendar> {
           fontSize: 16.0,
         );
       } else if (isBetweenSelectedDates(date)) {
-        return TextStyle(); // 범위 내의 날짜 글자 스타일
+        return TextStyle();
       } else {
         return TextStyle(
           color: Colors.black,
@@ -104,7 +98,6 @@ class _CustomCalendarState extends State<CustomCalendar> {
       }
     }
 
-    // 날짜 위젯 생성
     Widget buildDateWidget(DateTime date, double boxWidth) {
       return GestureDetector(
         onTap: () => onDateSelected(date),
@@ -122,7 +115,6 @@ class _CustomCalendarState extends State<CustomCalendar> {
       );
     }
 
-    // 월별 캘린더 생성
     Widget buildCalendarMonth(int year, int month, double boxWidth) {
       DateTime firstDate = DateTime(year, month, 1);
       DateTime lastDate = DateTime(year, month + 1, 0);
@@ -216,7 +208,6 @@ class _CustomCalendarState extends State<CustomCalendar> {
       );
     }
 
-    // 전체 캘린더 생성
     Widget buildCalendar(double boxWidth) {
       List<Widget> months = [];
       int year = 2024;

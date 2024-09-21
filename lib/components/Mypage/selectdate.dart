@@ -45,14 +45,14 @@ class _CustomDateRangeSelectorState extends State<CustomDateRangeSelector> {
       if (isDateChosen(date)) {
         if (chosenDates.first == date) {
           return BoxDecoration(
-            color: Color(0xFF6699FF),
+            color: Colors.grey[800],
             borderRadius: BorderRadius.horizontal(
               left: Radius.circular(20.0),
             ),
           );
         } else if (chosenDates.last == date) {
           return BoxDecoration(
-            color: Color(0xFF6699FF),
+            color: Colors.grey[800],
             borderRadius: BorderRadius.horizontal(
               right: Radius.circular(20.0),
             ),
@@ -64,7 +64,7 @@ class _CustomDateRangeSelectorState extends State<CustomDateRangeSelector> {
         );
       } else if (isDateWithinRange(date)) {
         return BoxDecoration(
-          color: Color(0xFFBBDDFF),
+          color: Colors.grey[200],
           shape: BoxShape.rectangle,
         );
       } else {

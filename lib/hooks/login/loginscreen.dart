@@ -52,8 +52,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
         // 서버 응답에서 accessToken 추출
         if (responseBody.containsKey('result')) {
-          final result = responseBody['result']; 
-         _accessToken = result['accessToken']; 
+          final result = responseBody['result'];
+          _accessToken = result['accessToken'];
 
           print('Access Token: $_accessToken');
 
@@ -93,10 +93,9 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-
   // 카카오 로그인 후 서버로 토큰 전송
   Future<void> _signInWithKakao() async {
-    final token = await _authService.signInWithKakao(); 
+    final token = await _authService.signInWithKakao();
 
     if (token != null) {
       // 서버로 전송하여 로그인/회원가입 요청
@@ -115,11 +114,11 @@ class _LoginScreenState extends State<LoginScreen> {
           final Map<String, dynamic> responseBody = jsonDecode(response.body);
 
           // 서버로부터 받은 accessToken 저장
-          if (responseBody.containsKey('result')){
+          if (responseBody.containsKey('result')) {
             _accessToken = responseBody['result'];
             await _storageService.write(
                 key: 'accessToken', value: _accessToken!); // Secure Storage에 저장
-            print('Access Token: $_accessToken'); 
+            print('Access Token: $_accessToken');
 
             // ApiService에 accessToken 설정
             ApiService.setAccessToken(_accessToken!); // 스태틱 메서드로 설정
@@ -228,7 +227,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       Text(
                         '로그인 유지',
                         style: TextStyle(
-                          color: _isRememberMeChecked ? Colors.black : Colors.grey,
+                          color:
+                              _isRememberMeChecked ? Colors.black : Colors.grey,
                         ),
                       ),
                     ],
@@ -245,36 +245,13 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(height: 24),
               // 아이디/비밀번호 찾기 및 회원가입 링크
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  TextButton(
-                    onPressed: () {
-                      // 아이디 찾기 로직 추가
-                    },
-                    child: Text('아이디 찾기'),
-                    style: TextButton.styleFrom(
-                      foregroundColor: Colors.grey,
-                      textStyle: TextStyle(fontSize: 12),
-                    ),
-                  ),
                   Text(
                     '|',
                     style: TextStyle(color: Colors.grey),
                   ),
-                  TextButton(
-                    onPressed: () {
-                      // 비밀번호 찾기 로직 추가
-                    },
-                    child: Text('비밀번호 찾기'),
-                    style: TextButton.styleFrom(
-                      foregroundColor: Colors.grey,
-                      textStyle: TextStyle(fontSize: 12),
-                    ),
-                  ),
-                  Text(
-                    '|',
-                    style: TextStyle(color: Colors.grey),
-                  ),
+                  Container(width: 30),
                   TextButton(
                     onPressed: () {
                       Navigator.push(
@@ -287,6 +264,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       foregroundColor: Colors.grey,
                       textStyle: TextStyle(fontSize: 12),
                     ),
+                  ),
+                  Container(width: 30),
+                  Text(
+                    '|',
+                    style: TextStyle(color: Colors.grey),
                   ),
                 ],
               ),
