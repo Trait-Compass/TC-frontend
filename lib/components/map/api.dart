@@ -161,8 +161,6 @@ static Future<Map<String, dynamic>> fetchCourseForP({
 
         print('추출된 contentId 값들: $contentIds');
         print('지역: $region, 코스 이름: $courseName, 기간: $duration');
-
-        await saveCourseToServer(region, courseName, duration, contentIds);
       }
 
       return data;
@@ -176,28 +174,21 @@ static Future<Map<String, dynamic>> fetchCourseForP({
 
   // POST 요청으로 course 정보와 contentId 값 저장하는 함수
   static Future<void> saveCourseToServer(
-    String region,
-    String courseName,
-    String duration,
-    List<int> contentIds,
-  ) async {
-    final url = Uri.parse('$baseUrl/course/p');
+      String courseId,
+      ) async {
+    print(courseId);
+    final url = Uri.parse('$baseUrl/course/ai').replace(queryParameters: {
+      'id': courseId,
+    });
     try {
-      // POST 요청 보내기
       final response = await http.post(
         url,
-        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer $_accessToken'},
-        body: jsonEncode({
-          'region': region,             
-          'courseName': courseName,      
-          'duration': duration,          
-          'day1': contentIds.map((id) => {'contentId': id}).toList(),
-          'day2': contentIds.map((id) => {'contentId': id}).toList(),
-          'day3': contentIds.map((id) => {'contentId': id}).toList(),
-        }),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $_accessToken',
+        }
       );
 
-      // 응답 상태 확인
       if (response.statusCode == 201) {
         print('코스 정보와 contentId 값들이 성공적으로 저장되었습니다!');
       } else {
