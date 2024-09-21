@@ -1,8 +1,12 @@
 // ResultCard.dart
 import 'package:flutter/material.dart';
+import 'package:untitled/components/mbti_selection_page.dart';
+import 'package:untitled/components/start/basicframe3.dart';
+import 'package:untitled/hooks/login/creataccount.dart';
 import 'mbtidata.dart';
 import '../basicframe.dart';
-import '../map/api.dart'; // ApiService가 정의된 파일 경로
+import '../map/api.dart';
+import '../map/apierror.dart';
 
 class ResultCard extends StatelessWidget {
   final String selectedOption;
@@ -61,21 +65,18 @@ class ResultCard extends StatelessWidget {
                                     Text(
                                       mbtiData.mascotName,
                                       style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.black),
+                                          fontSize: 14, color: Colors.black),
                                     ),
                                     Text(
                                       mbtiData.mascotRegion,
                                       style: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.black),
+                                          fontSize: 12, color: Colors.black),
                                     ),
                                   ],
                                 ),
                                 SizedBox(width: 20),
                                 Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     // MBTI 정보 표시
                                     Text(
@@ -151,18 +152,37 @@ class ResultCard extends StatelessWidget {
                         child: ElevatedButton(
                           onPressed: () async {
                             try {
-                              await ApiService.saveUserMBTI(
-                                  selectedOption); // MBTI 저장
+                              await ApiService.saveUserMBTI(selectedOption);
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                    content:
-                                        Text('MBTI가 성공적으로 저장되었습니다.')),
+                                SnackBar(content: Text('MBTI 저장에 성공했습니다')),
+                              );
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => BasicFramePage(
+                                        body: MBTISelectionPage())),
                               );
                             } catch (e) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('MBTI 저장에 실패했습니다.')),
-                              );
-                              print('Error: $e');
+                              if (e is ApiException && e.statusCode == 401) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text(
+                                          'MBTI테스트 결과에 나온 MBTI를 드롭다운에서 선택해주세요')),
+                                );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => SignupScreen(),
+                                  ),
+                                );
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content:
+                                          Text('MBTI 저장에 실패했습니다. 다시 시도해주세요')),
+                                );
+                                print('Error: $e');
+                              }
                             }
                           },
                           child: Text(
