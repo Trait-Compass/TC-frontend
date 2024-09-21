@@ -130,7 +130,7 @@ class ResultCard extends StatelessWidget {
                         mascotImage: mbtiData.bestMatchImage,
                         mascotName: mbtiData.bestMatchName,
                         mascotRegion: mbtiData.bestMatchRegion,
-                        traits: mbtiData.traits,
+                        traits: mbtiData.besttraits,
                         color: Colors.orange[100]!,
                       ),
                       SizedBox(height: 20),
@@ -142,7 +142,7 @@ class ResultCard extends StatelessWidget {
                         mascotImage: mbtiData.worstMatchImage,
                         mascotName: mbtiData.worstMatchName,
                         mascotRegion: mbtiData.worstMatchRegion,
-                        traits: mbtiData.traits,
+                        traits: mbtiData.worsttraits,
                         color: Colors.red[100]!,
                       ),
                       SizedBox(height: 20),
@@ -184,8 +184,8 @@ Widget buildMBTICard({
   required String mbtiType,
   required String description,
   required String mascotImage,
-  required String mascotName, // 추가된 파라미터
-  required String mascotRegion, // 추가된 파라미터
+  required String mascotName,
+  required String mascotRegion,
   required List<String> traits,
   required Color color,
 }) {
@@ -203,6 +203,7 @@ Widget buildMBTICard({
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        // 타이틀
         Text(
           title,
           style: TextStyle(
@@ -212,80 +213,78 @@ Widget buildMBTICard({
           ),
         ),
         SizedBox(height: 10),
+
+        // MBTI 타입과 설명 같은 행에 배치
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Text(
+              mbtiType,
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: textColor,
+              ),
+            ),
+            SizedBox(width: 10),
+            Text(
+              description,
+              style: TextStyle(fontSize: 16, color: textColor),
+            ),
+          ],
+        ),
+        SizedBox(height: 10),
+
+        // 이미지와 특징들 행으로 배치
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 이미지, 마스코트 이름, 지역 왼쪽 열
             Column(
               children: [
                 Image.asset(
                   mascotImage,
                   height: 80,
                 ),
-                SizedBox(height: 5), // 이미지와 텍스트 사이의 간격
+                SizedBox(height: 5),
                 Text(
-                  mascotName, // 마스코트 이름 추가
+                  mascotName,
                   style: TextStyle(
-                    fontSize: 14, // 텍스트 크기를 10으로 설정
+                    fontSize: 14,
                     color: Colors.black,
                   ),
                 ),
                 Text(
-                  mascotRegion, // 마스코트 지역 추가
+                  mascotRegion,
                   style: TextStyle(
-                    fontSize: 12, // 텍스트 크기를 10으로 설정
+                    fontSize: 12,
                     color: Colors.black,
                   ),
                 ),
               ],
             ),
             SizedBox(width: 10),
+
+            // 특징 오른쪽 열, 양 옆으로 확장
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                        decoration: BoxDecoration(
-                          color: textColor,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Text(
-                          mbtiType,
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 5),
-                      Text(
-                        description,
-                        style: TextStyle(fontSize: 15, color: textColor),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 10),
-                  ...traits.map(
-                    (trait) => Container(
-                      width: double.infinity,
-                      margin: EdgeInsets.symmetric(vertical: 5),
-                      padding: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: containerColor,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Text(
-                        trait,
-                        style: TextStyle(fontSize: 14, color: Colors.black),
-                        textAlign: TextAlign.left,
-                      ),
+                children: traits.map((trait) {
+                  return Container(
+                    width: double.infinity, // 이 부분에서 최대 너비로 확장
+                    margin: EdgeInsets.symmetric(vertical: 5),
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: containerColor,
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                  ),
-                ],
+                    child: Text(
+                      trait,
+                      style: TextStyle(fontSize: 14, color: Colors.black),
+                      textAlign: TextAlign.left,
+                    ),
+                  );
+                }).toList(),
               ),
             ),
           ],

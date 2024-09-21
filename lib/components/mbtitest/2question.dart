@@ -26,9 +26,22 @@ class _Questions2State extends State<Questions2> {
 
   void handleOptionSelected(String option) {
     setState(() {
-      selectedOption = widget.selectedOption + option; // 누적된 옵션
+      selectedOption = selectedOption + option; // 선택된 옵션 업데이트
     });
-    widget.onOptionSelected(selectedOption); // 누적된 옵션 전달
+    widget.onOptionSelected(selectedOption); // 부모에 전달
+  }
+
+  void _showPopupMessage() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          '문항을 선택해주세요',
+          style: TextStyle(color: Colors.black),
+        ),
+        duration: Duration(seconds: 2),
+        backgroundColor: Colors.white,
+      ),
+    );
   }
 
   @override
@@ -186,19 +199,21 @@ class _Questions2State extends State<Questions2> {
                     ),
                     SizedBox(height: 20),
                     ElevatedButton(
-                      onPressed: selectedOption.isNotEmpty
-                          ? () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => Questions3(
-                                    onOptionSelected: widget.onOptionSelected,
-                                    selectedOption: selectedOption,
-                                  ),
-                                ),
-                              );
-                            }
-                          : null,
+                      onPressed: () {
+                        if (selectedOption.isNotEmpty) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Questions3(
+                                onOptionSelected: widget.onOptionSelected,
+                                selectedOption: selectedOption,
+                              ),
+                            ),
+                          );
+                        } else {
+                          _showPopupMessage(); // 문항 선택 안 했을 시 팝업 띄움
+                        }
+                      },
                       child: Text(
                         '다음',
                         style: TextStyle(fontSize: 18, color: Colors.white),
