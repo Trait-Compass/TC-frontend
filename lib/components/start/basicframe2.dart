@@ -4,16 +4,16 @@ import 'package:untitled/components/mbti_selection_page.dart';
 import 'package:untitled/pages/travelplan.dart';  
 
 
-class BasicFramePage extends StatefulWidget {
+class BasicFramePage5 extends StatefulWidget {
   final Widget body;
 
-  BasicFramePage({required this.body});
+  BasicFramePage5({required this.body});
 
   @override
-  _BasicFramePageState createState() => _BasicFramePageState();
+  _BasicFramePage5State createState() => _BasicFramePage5State();
 }
 
-class _BasicFramePageState extends State<BasicFramePage> {
+class _BasicFramePage5State extends State<BasicFramePage5> {
   int _currentIndex = 1;
   late Widget _currentBody; 
 

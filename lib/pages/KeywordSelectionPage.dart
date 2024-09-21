@@ -39,7 +39,7 @@ class _KeywordSelectionPageState extends State<KeywordSelectionPage> {
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
 
-    return BasicFramePage(
+    return BasicFramePage5(
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

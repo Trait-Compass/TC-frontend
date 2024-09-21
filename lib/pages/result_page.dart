@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:intl/intl.dart'; 
+import 'package:intl/intl.dart';
 import 'BestCourseTop3.dart';
 import 'GyeongNamRecommend.dart';
 import '../components/basic_frame_page.dart';
+import '../pages/travelplan.dart';
+import '../components/start/basicframe2.dart';
 
 class ResultPage extends StatelessWidget {
   final String mbti;
@@ -109,10 +111,13 @@ class _RecommendedCoursesState extends State<RecommendedCourses> {
   }
 
   Future<List<Course>> fetchCourses() async {
-    final String formattedStartDate = DateFormat('yyyy-MM-dd').format(widget.startDate);
-    final String formattedEndDate = DateFormat('yyyy-MM-dd').format(widget.endDate);
+    final String formattedStartDate =
+        DateFormat('yyyy-MM-dd').format(widget.startDate);
+    final String formattedEndDate =
+        DateFormat('yyyy-MM-dd').format(widget.endDate);
 
-    final Uri uri = Uri.parse('https://www.traitcompass.store/course/simple').replace(queryParameters: {
+    final Uri uri = Uri.parse('https://www.traitcompass.store/course/simple')
+        .replace(queryParameters: {
       'mbti': widget.mbti,
       'startDate': formattedStartDate,
       'endDate': formattedEndDate,
@@ -122,7 +127,8 @@ class _RecommendedCoursesState extends State<RecommendedCourses> {
 
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body)['result'];
-      List<Course> courses = jsonResponse.map((course) => Course.fromJson(course)).toList();
+      List<Course> courses =
+          jsonResponse.map((course) => Course.fromJson(course)).toList();
 
       // 코스 리스트를 상태에 저장하고, 처음 4개를 표시할 코스로 선택
       setState(() {
@@ -134,7 +140,6 @@ class _RecommendedCoursesState extends State<RecommendedCourses> {
       throw Exception('코스를 불러오는 중입니다! 잠시만 기다려주세요!');
     }
   }
-
 
   List<Course> getRandomCourses(List<Course> courses) {
     courses.shuffle();
@@ -168,10 +173,10 @@ class _RecommendedCoursesState extends State<RecommendedCourses> {
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, 
-                  crossAxisSpacing: 10, 
-                  mainAxisSpacing: 10, 
-                  childAspectRatio: 1, 
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                  childAspectRatio: 1,
                 ),
                 itemCount: _displayCourses.length,
                 itemBuilder: (context, index) {
@@ -219,7 +224,7 @@ class Course {
       region: json['region'],
       courseName: json['courseName'],
       duration: json['duration'],
-      image: json['day1'][0]['imageUrl'], 
+      image: json['day1'][0]['imageUrl'],
     );
   }
 }
@@ -234,17 +239,21 @@ class CourseCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // 코스 상세 페이지로 이동하거나 다른 동작을 수행할 수 있습니다.
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => BasicFramePage5(body: MyNewPage()), 
+          ),
+        );
       },
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        elevation: 5, 
+        elevation: 5,
         shadowColor: Colors.grey.withOpacity(0.5),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(15),
           child: Stack(
             children: [
-              // 이미지
               Positioned.fill(
                 child: Image.network(
                   course.image,
@@ -265,12 +274,12 @@ class CourseCard extends StatelessWidget {
                       StackTrace? stackTrace) {
                     return Container(
                       color: Colors.grey[300],
-                      child: Icon(Icons.broken_image, size: 50, color: Colors.grey[700]),
+                      child: Icon(Icons.broken_image,
+                          size: 50, color: Colors.grey[700]),
                     );
                   },
                 ),
               ),
-              // 그라데이션 오버레이
               Positioned.fill(
                 child: Container(
                   decoration: BoxDecoration(
@@ -296,7 +305,7 @@ class CourseCard extends StatelessWidget {
                     Text(
                       course.courseName,
                       style: TextStyle(
-                        fontSize: 16, 
+                        fontSize: 16,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                         shadows: [
@@ -331,7 +340,7 @@ class CourseCard extends StatelessWidget {
                     Text(
                       course.duration,
                       style: TextStyle(
-                        fontSize: 12, 
+                        fontSize: 12,
                         color: Colors.white,
                         shadows: [
                           Shadow(

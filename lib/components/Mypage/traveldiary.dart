@@ -19,7 +19,7 @@ class _TravelDiaryState extends State<TravelDiary> {
       'coursename': '부산 여행',
       'region': '부산',
       'nature': 'F',
-      'imageUrl': 'https://example.com/busan.jpg',
+      'imageUrl': 'https://example.com/busan.jpg',  
     },
   ]);
 
