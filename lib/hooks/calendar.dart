@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:untitled/pages/course_generation_page.dart';
+import 'package:untitled/pages/result_page.dart'; // ResultPage import
 
 class CustomCalendar extends StatefulWidget {
   final Function(List<DateTime>) onDatesSelected;
+  final String mbti; // 추가된 파라미터
 
-  CustomCalendar({required this.onDatesSelected});
+  CustomCalendar({required this.onDatesSelected, required this.mbti});
 
   @override
   _CustomCalendarState createState() => _CustomCalendarState();
@@ -235,19 +236,22 @@ class _CustomCalendarState extends State<CustomCalendar> {
         Padding(
           padding: EdgeInsets.all(16.0),
           child: ElevatedButton(
-            onPressed: selectedDates.length == 2 // 날짜가 두 개 선택된 경우에만 활성화
+            onPressed: selectedDates.length == 2
                 ? () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            CourseGenerationPage(mbti: 'mbti'),
+                        builder: (context) => ResultPage(
+                          mbti: widget.mbti,
+                          startDate: selectedDates.first,
+                          endDate: selectedDates.last,
+                        ),
                       ),
                     );
                   }
                 : null,
             style: ElevatedButton.styleFrom(
-              backgroundColor: selectedDates.length == 2 // 두 날짜가 선택된 경우 색상 설정
+              backgroundColor: selectedDates.length == 2
                   ? Colors.grey[800]
                   : Colors.grey[400],
               foregroundColor: Colors.white,

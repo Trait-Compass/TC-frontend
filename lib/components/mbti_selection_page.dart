@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../hooks/calendar_selection_page.dart';
 import '../pages/BestCourseTop3.dart';
 import '../pages/GyeongNamRecommend.dart';
+import '../hooks/calendar_selection_page.dart';
 
 class MBTISelectionPage extends StatefulWidget {
   @override
@@ -41,7 +41,6 @@ class _MBTISelectionPageState extends State<MBTISelectionPage> {
 
   @override
   Widget build(BuildContext context) {
-    // final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
 
     return SingleChildScrollView(
@@ -100,7 +99,7 @@ class _MBTISelectionPageState extends State<MBTISelectionPage> {
   }
 }
 
-// 아래 StepOneWidget 정의를 추가합니다.
+
 class StepOneWidget extends StatelessWidget {
   final Map<String, String?> selectedMBTI;
   final Function(String, String) toggleSelection;

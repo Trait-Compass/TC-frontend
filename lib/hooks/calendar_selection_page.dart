@@ -1,6 +1,7 @@
+// calendar_selection_page.dart
 import 'package:flutter/material.dart';
 import '../components/basic_frame_page.dart';
-import '../hooks/calendar.dart';
+import '../hooks/calendar.dart'; 
 import '../pages/BestCourseTop3.dart';
 import '../pages/GyeongNamRecommend.dart';
 
@@ -19,7 +20,7 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
   void _onDatesSelected(List<DateTime> dates) {
     setState(() {
       selectedDates = dates;
-      print('Selected dates: $selectedDates'); // 디버그 메시지 추가
+      print('Selected dates: $selectedDates');
     });
   }
 
@@ -115,7 +116,10 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: CustomCalendar(onDatesSelected: _onDatesSelected),
+              child: CustomCalendar(
+                onDatesSelected: _onDatesSelected,
+                mbti: widget.mbti, // mbti 전달
+              ),
             ),
           ],
         ),
@@ -123,4 +127,3 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
     );
   }
 }
-
