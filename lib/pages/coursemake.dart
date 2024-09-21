@@ -1,3 +1,4 @@
+// Coursemake.dart
 import 'package:flutter/material.dart';
 import '../components/start/basicframe2.dart';
 import '../hooks/top3course.dart';
@@ -6,9 +7,9 @@ import '../pages/coursemodell.dart';
 import '../pages/Tripdetail.dart'; 
 
 class Coursemake extends StatefulWidget {
-  final List<DateTime> selectedDates; // 날짜 받기
-  final String selectedLocation; // 위치 받기
-  final String selectedGroup; // 그룹 받기
+  final List<DateTime> selectedDates; 
+  final String selectedLocation; 
+  final String selectedGroup; 
 
   Coursemake({
     required this.selectedDates,
@@ -23,21 +24,31 @@ class Coursemake extends StatefulWidget {
 class _CoursemakeState extends State<Coursemake> {
   Future<List<Map<String, dynamic>>> _fetchCourseImages() async {
     try {
+      print('Fetching user profile...');
+      final userProfile = await ApiService.fetchUserProfile();
+      final userMbti = userProfile['mbti'];
+      if (userMbti == null || userMbti.isEmpty) {
+        throw Exception('MBTI not found in user profile');
+      }
+
+      print('User MBTI: $userMbti');
+
       print('Fetching course data from API...');
       final result = await ApiService.fetchCourseForP(
-        mbti: 'INFP', // MBTI placeholder
+        mbti: userMbti, 
         startDate: widget.selectedDates[0].toIso8601String(),
         endDate: widget.selectedDates[widget.selectedDates.length - 1].toIso8601String(),
         location: widget.selectedLocation,
         companion: widget.selectedGroup,
       );
 
-      print('API Response: $result'); // 응답 데이터 로그 출력
+      print('Decoded API Response: $result');
 
       List<Map<String, dynamic>> fetchedData = [];
 
       if (result['result'] != null && result['result'] is List) {
         List<dynamic> coursesJson = result['result'];
+        print('Number of courses received: ${coursesJson.length}');
         List<Course> courses = coursesJson.map((json) {
           try {
             return Course.fromJson(json);
@@ -45,7 +56,9 @@ class _CoursemakeState extends State<Coursemake> {
             print('Error parsing course JSON: $e');
             return null;
           }
-        }).where((course) => course != null).cast<Course>().toList(); // null이 아닌 항목만 포함
+        }).where((course) => course != null).cast<Course>().toList(); 
+
+        print('Number of courses after parsing: ${courses.length}');
 
         for (var course in courses) {
           if (course.day1.isNotEmpty) {
@@ -53,20 +66,28 @@ class _CoursemakeState extends State<Coursemake> {
             String region = course.region;
             String courseName = course.courseName;
             String duration = course.duration;
+            String courseId = course.id;
 
-            // Day 객체 리스트를 Map으로 변환
+       
             List<Map<String, dynamic>> day1Maps = course.day1.map((day) => day.toMap()).toList();
             List<Map<String, dynamic>> day2Maps = course.day2.map((day) => day.toMap()).toList();
             List<Map<String, dynamic>> day3Maps = course.day3.map((day) => day.toMap()).toList();
+            List<Map<String, dynamic>> day4Maps = course.day4.map((day) => day.toMap()).toList(); 
+            List<Map<String, dynamic>> day5Maps = course.day5.map((day) => day.toMap()).toList(); 
+
+            print('Adding course: $courseName with imageUrl: $imageUrl'); 
 
             fetchedData.add({
               'imageUrl': imageUrl,
               'region': region,
               'courseName': courseName,
+              'courseId': courseId,
               'duration': duration,
               'day1': day1Maps,
               'day2': day2Maps,
               'day3': day3Maps,
+              'day4': day4Maps, 
+              'day5': day5Maps, 
             });
           }
         }
@@ -74,10 +95,12 @@ class _CoursemakeState extends State<Coursemake> {
         print('Result is null or not a list');
       }
 
+      print('Fetched data length: ${fetchedData.length}');
+
       return fetchedData;
     } catch (e) {
       print('Error fetching course images: $e');
-      throw e; 
+      return [];
     }
   }
 
@@ -85,7 +108,7 @@ class _CoursemakeState extends State<Coursemake> {
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
 
-    return BasicFramePage(
+    return BasicFramePage5(
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -135,7 +158,7 @@ class _CoursemakeState extends State<Coursemake> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: FutureBuilder<List<Map<String, dynamic>>>(
-                  future: _fetchCourseImages(), // Fetch data
+                  future: _fetchCourseImages(), 
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Center(child: CircularProgressIndicator());
@@ -145,34 +168,38 @@ class _CoursemakeState extends State<Coursemake> {
                       return Center(child: Text('코스 이미지가 없습니다.'));
                     } else if (snapshot.hasData) {
                       List<Map<String, dynamic>> courseData = snapshot.data!;
+                      print('Displaying ${courseData.length} courses');
                       return GridView.builder(
                         physics: NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 10,
-                          mainAxisSpacing: 10,
-                          childAspectRatio: 1,
+                          crossAxisCount: 2, 
+                          crossAxisSpacing: 10, 
+                          mainAxisSpacing: 10, 
+                          childAspectRatio: 1, 
                         ),
                         itemCount: courseData.length,
                         itemBuilder: (context, index) {
                           final course = courseData[index];
                           
-                          // 여행 기간에 따른 필요한 데이터만 추출
+                      
                           Map<int, List<Map<String, dynamic>>> tripDetails = {};
-                          int totalDays = 1; // 기본값은 당일치기
+                          int totalDays = 1;
 
-                          // 여행 일수 계산
+                       
                           DateTime startDate = widget.selectedDates.first;
                           DateTime endDate = widget.selectedDates.last;
                           int daysDifference = endDate.difference(startDate).inDays + 1;
                           totalDays = daysDifference;
 
-                          // tripDetails 설정
+                       
+                          totalDays = totalDays > 5 ? 5 : totalDays;
+
+                      
                           for (int i = 0; i < totalDays; i++) {
                             var dayData = course['day${i + 1}'];
-                            if (dayData != null && dayData.isNotEmpty) {
-                              tripDetails[i] = dayData;
+                            if (dayData != null && dayData is List && dayData.isNotEmpty) {
+                              tripDetails[i] = List<Map<String, dynamic>>.from(dayData);
                             } else {
                               // 데이터가 없을 경우 처리 (빈 리스트로 초기화)
                               tripDetails[i] = [];
@@ -185,8 +212,9 @@ class _CoursemakeState extends State<Coursemake> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => PdetailPage(
+                                    courseId: course['courseId'] ?? 'Default Value',
                                     tripDetails: tripDetails,
-                                    totalDays: totalDays,
+                                    totalDays: totalDays > 5 ? 5 : totalDays, 
                                   ),
                                 ),
                               );
@@ -228,15 +256,29 @@ class _CoursemakeState extends State<Coursemake> {
                                       },
                                       errorBuilder: (BuildContext context, Object exception,
                                           StackTrace? stackTrace) {
-                                        return Icon(Icons.broken_image, size: 50);
+                                        return Container(
+                                          color: Colors.grey[300],
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Icon(Icons.broken_image, size: 50, color: Colors.grey[700]),
+                                              SizedBox(height: 10),
+                                              Text(
+                                                '이미지를 불러올 수 없습니다.',
+                                                style: TextStyle(color: Colors.grey[700]),
+                                              ),
+                                            ],
+                                          ),
+                                        );
                                       },
                                     ),
                                   ),
                                   Positioned(
                                     bottom: 10,
+                                    left: 10,
                                     right: 10,
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           course['courseName']!,
@@ -251,6 +293,8 @@ class _CoursemakeState extends State<Coursemake> {
                                               ),
                                             ],
                                           ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
                                         ),
                                         Text(
                                           course['region']!,
@@ -264,6 +308,8 @@ class _CoursemakeState extends State<Coursemake> {
                                               ),
                                             ],
                                           ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
                                         ),
                                         Text(
                                           course['duration']!,
@@ -277,6 +323,8 @@ class _CoursemakeState extends State<Coursemake> {
                                               ),
                                             ],
                                           ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
                                         ),
                                       ],
                                     ),
@@ -287,8 +335,10 @@ class _CoursemakeState extends State<Coursemake> {
                           );
                         },
                       );
+                    } else {
+                      // 모든 조건을 벗어날 경우 기본적으로 반환
+                      return SizedBox.shrink();
                     }
-                    return Container();
                   },
                 ),
               ),

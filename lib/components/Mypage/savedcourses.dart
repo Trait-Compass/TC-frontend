@@ -41,18 +41,18 @@ class _SavedTravelCoursesState extends State<SavedTravelCourses> {
                 return Text('오류 발생: ${snapshot.error}');
               } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                 return DottedBorder(
-                  color: Colors.black, 
-                  strokeWidth: 1, 
-                  borderType: BorderType.RRect, 
-                  radius: Radius.circular(10), 
-                  dashPattern: [4, 2], 
+                  color: Colors.black,
+                  strokeWidth: 1,
+                  borderType: BorderType.RRect,
+                  radius: Radius.circular(10),
+                  dashPattern: [4, 2],
                   child: Container(
-                    height: 160, 
+                    height: 160,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    alignment: Alignment.center, 
+                    alignment: Alignment.center,
                     child: Text(
                       '지정한 코스가 없습니다.',
                       style: TextStyle(
@@ -64,83 +64,99 @@ class _SavedTravelCoursesState extends State<SavedTravelCourses> {
                   ),
                 );
               } else {
-                // 저장된 여행 코스가 있는 경우
                 List<Map<String, dynamic>> courses = snapshot.data!;
-                return ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: courses.length,
-                  itemBuilder: (context, index) {
-                    Map<String, dynamic> course = courses[index];
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 10.0),
-                      child: DottedBorder(
-                        color: Colors.black, 
-                        strokeWidth: 1, 
-                        borderType: BorderType.RRect, 
-                        radius: Radius.circular(10), 
-                        dashPattern: [4, 2], 
-                        child: Container(
-                          height: 160,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Stack(
-                                children: [
-                                  Container(
-                                    width: double.infinity, 
-                                    height: 160 / 2 - 5, 
-                                    decoration: BoxDecoration(
-                                      color: Colors.white, 
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(
-                                        color: Colors.black,
-                                        width: 1,
+                return Container(
+                  height: 160, 
+                  width: double.infinity,
+                  child: ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    itemCount: courses.length, 
+                    physics: AlwaysScrollableScrollPhysics(), 
+                    itemBuilder: (context, index) {
+                      Map<String, dynamic> course = courses[index];
+
+                      return Container(
+                        height: 70, 
+                        margin: EdgeInsets.symmetric(
+                          vertical: 5,
+                          horizontal: 0,
+                        ),
+                        child: Stack(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image.network(
+                                  _getImageUrl(course),
+                                  fit: BoxFit.cover,
+                                  width: double.infinity,
+                                  height: double.infinity,
+                                  loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                                    if (loadingProgress == null) return child;
+                                    return Center(
+                                      child: CircularProgressIndicator(
+                                        value: loadingProgress.expectedTotalBytes != null
+                                            ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                                            : null,
                                       ),
+                                    );
+                                  },
+                                  errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+                                    return Container(
+                                      color: Colors.grey[300],
+                                      child: Icon(Icons.broken_image, size: 50, color: Colors.grey[700]),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 8,
+                              left: 8,
+                              right: 8,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    course['region'] ?? '지역 정보 없음',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      shadows: [
+                                        Shadow(
+                                          offset: Offset(1.0, 1.0),
+                                          blurRadius: 3.0,
+                                          color: Colors.black,
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  Positioned(
-                                    bottom: 8, 
-                                    right: 8, 
-                                    child: Text(
-                                      course['courseName'] ?? '코스 이름 없음',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black,
-                                      ),
+                                  Text(
+                                    course['duration'] ?? '기간 정보 없음',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.white,
+                                      shadows: [
+                                        Shadow(
+                                          offset: Offset(1.0, 1.0),
+                                          blurRadius: 3.0,
+                                          color: Colors.black,
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ],
                               ),
-                              Container(
-                                height: 10, 
-                              ),
-                              // 추가 정보 표시 (예: 지역, 기간 등)
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                child: Text(
-                                  '지역: ${course['region'] ?? '정보 없음'}',
-                                  style: TextStyle(fontSize: 14, color: Colors.grey[700]),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                child: Text(
-                                  '기간: ${course['duration'] ?? '정보 없음'}',
-                                  style: TextStyle(fontSize: 14, color: Colors.grey[700]),
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 );
               }
             },
@@ -152,7 +168,7 @@ class _SavedTravelCoursesState extends State<SavedTravelCourses> {
               Expanded(
                 child: ElevatedButton(
                   onPressed: () {
-                
+                    // '코스 제작하기' 버튼 클릭 시의 동작 추가
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFFEDEDED),
@@ -167,7 +183,7 @@ class _SavedTravelCoursesState extends State<SavedTravelCourses> {
                   ),
                 ),
               ),
-              SizedBox(width: 10), 
+              SizedBox(width: 10),
               Expanded(
                 child: ElevatedButton(
                   onPressed: () {
@@ -191,5 +207,20 @@ class _SavedTravelCoursesState extends State<SavedTravelCourses> {
         ],
       ),
     );
+  }
+
+  // 이미지 URL을 가져오는 헬퍼 함수 추가
+  String _getImageUrl(Map<String, dynamic> course) {
+    try {
+      if (course['day1'] != null && course['day1'] is List && course['day1'].isNotEmpty) {
+        var day1FirstItem = course['day1'][0];
+        if (day1FirstItem['imageUrl'] != null) {
+          return day1FirstItem['imageUrl'];
+        }
+      }
+    } catch (e) {
+      print('Error fetching image URL: $e');
+    }
+    return ''; // 기본값으로 빈 문자열 반환
   }
 }
