@@ -217,7 +217,7 @@ class _CoursemakejState extends State<Coursemakej> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => PdetailPage(
-                                    courseId: course['courseId'],
+                                    courseId: course['courseId'] ?? 'Default Value',
                                     tripDetails: tripDetails,
                                     totalDays: totalDays,
                                   ),

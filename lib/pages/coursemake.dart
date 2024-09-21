@@ -67,6 +67,7 @@ class _CoursemakeState extends State<Coursemake> {
             String region = course.region;
             String courseName = course.courseName;
             String duration = course.duration;
+            String courseId = course.id;
 
        
             List<Map<String, dynamic>> day1Maps = course.day1.map((day) => day.toMap()).toList();
@@ -81,6 +82,7 @@ class _CoursemakeState extends State<Coursemake> {
               'imageUrl': imageUrl,
               'region': region,
               'courseName': courseName,
+              'courseId': courseId,
               'duration': duration,
               'day1': day1Maps,
               'day2': day2Maps,
@@ -211,7 +213,7 @@ class _CoursemakeState extends State<Coursemake> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => PdetailPage(
-                                    courseId: course['courseId'],
+                                    courseId: course['courseId'] ?? 'Default Value',
                                     tripDetails: tripDetails,
                                     totalDays: totalDays > 5 ? 5 : totalDays, 
                                   ),

@@ -51,7 +51,6 @@ class _PdetailPageState extends State<PdetailPage> {
                     ElevatedButton(
                       onPressed: () async {
                         Navigator.of(context).pop();
-                        print(courseId);
                         if (courseId != null) {
                           await ApiService.saveCourseToServer(courseId!);
 
