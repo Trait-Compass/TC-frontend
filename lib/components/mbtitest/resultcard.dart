@@ -1,6 +1,8 @@
+// ResultCard.dart
 import 'package:flutter/material.dart';
 import 'mbtidata.dart';
 import '../basicframe.dart';
+import '../map/api.dart'; // ApiService가 정의된 파일 경로
 
 class ResultCard extends StatelessWidget {
   final String selectedOption;
@@ -76,8 +78,10 @@ class ResultCard extends StatelessWidget {
                                 ),
                                 SizedBox(width: 20),
                                 Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.center,
                                   children: [
+                                    // MBTI 정보 표시
                                     Text(
                                       mbtiData.type,
                                       style: TextStyle(
@@ -149,11 +153,23 @@ class ResultCard extends StatelessWidget {
                       Container(
                         margin: EdgeInsets.only(bottom: 10),
                         child: ElevatedButton(
-                          onPressed: () {
-                            // 저장 기능
+                          onPressed: () async {
+                            try {
+                              await ApiService.saveUserMBTI(
+                                  selectedOption); // MBTI 저장
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    content:
+                                        Text('MBTI가 성공적으로 저장되었습니다.')),
+                              );
+                            } catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('MBTI 저장에 실패했습니다.')),
+                              );
+                              print('Error: $e');
+                            }
                           },
                           child: Text(
-                            // api 달기
                             'MBTI 저장하기',
                             style: TextStyle(fontSize: 18, color: Colors.white),
                           ),
@@ -177,7 +193,6 @@ class ResultCard extends StatelessWidget {
       ),
     );
   }
-}
 
 Widget buildMBTICard({
   required String title,
@@ -285,11 +300,123 @@ Widget buildMBTICard({
                     ),
                   );
                 }).toList(),
-              ),
+                
+  Widget buildMBTICard({
+    required String title,
+    required String mbtiType,
+    required String description,
+    required String mascotImage,
+    required String mascotName,
+    required String mascotRegion,
+    required List<String> traits,
+    required Color color,
+  }) {
+    final Color textColor =
+        title == '찰떡궁합 MBTI' ? Colors.orange : Colors.red;
+    final Color containerColor =
+        title == '찰떡궁합 MBTI' ? Colors.orange[100]! : Colors.red[100]!;
+
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 10),
+      padding: EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
             ),
-          ],
-        ),
-      ],
-    ),
-  );
+          ),
+          SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Column(
+                children: [
+                  Image.asset(
+                    mascotImage,
+                    height: 80,
+                  ),
+                  SizedBox(height: 5),
+                  Text(
+                    mascotName,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.black,
+                    ),
+                  ),
+                  Text(
+                    mascotRegion,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 5),
+                          decoration: BoxDecoration(
+                            color: textColor,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Text(
+                            mbtiType,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 5),
+                        Text(
+                          description,
+                          style: TextStyle(
+                              fontSize: 15, color: textColor),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 10),
+                    ...traits.map(
+                      (trait) => Container(
+                        width: double.infinity,
+                        margin: EdgeInsets.symmetric(vertical: 5),
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: containerColor,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Text(
+                          trait,
+                          style: TextStyle(
+                              fontSize: 14, color: Colors.black),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 }

@@ -1,7 +1,8 @@
+// Trip.dart
 import 'package:flutter/material.dart';
-import 'tripmodal.dart'; // TripDetailModal import
-import 'mapdetail.dart'; // MapdetailPage import
-import 'package:untitled/components/map/api.dart'; // ApiService import
+import 'tripmodal.dart'; 
+import 'mapdetail.dart'; 
+import 'package:untitled/components/map/api.dart'; 
 
 class Trip extends StatefulWidget {
   final int selectedDayIndex;
@@ -55,6 +56,7 @@ class _TripState extends State<Trip> {
       print('Error fetching data: $e');
     }
   }
+
   @override
   void dispose() {
     _titleController.dispose();
@@ -246,7 +248,7 @@ class _TripState extends State<Trip> {
                 _titleController.text = _filteredRegions[index];
                 _selectedRegion = _filteredRegions[index]; // 하위 지역만 전송
                 _filteredRegions.clear();
-                _fetchInitialData(); // 지역 선택 후 데이터 갱신
+                _fetchInitialData(); 
               });
             },
           );
@@ -265,51 +267,54 @@ class _TripState extends State<Trip> {
     );
   }
 
-  Widget _buildHorizontalImageList(List<Map<String, dynamic>> trips) {
-    return Container(
-      height: 150,
-      padding: EdgeInsets.only(left: 18.0, right: 18.0),
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: trips.length,
-        itemBuilder: (context, index) {
-          return GestureDetector(
-            onTap: () {
-              showDialog(
-                context: context,
-                barrierColor: Colors.black.withOpacity(0.5),
-                builder: (context) => TripDetailModal(
-                  imageUrl: trips[index]['imageUrl'] ?? 'assets/city2.png',  
-                  title: trips[index]['title'] ?? '경상남도',
-                  address: trips[index]['address'] ?? '주소 정보 없음', 
-                ),
-              ).then((result) {
-                if (result != null) {
-                  setState(() {
-                    int dayIndex = widget.selectedDayIndex;
-                    if (!widget.tripDetails.containsKey(dayIndex)) {
-                      widget.tripDetails[dayIndex] = [];
-                    }
-                    widget.tripDetails[dayIndex]!.add(result);
-                  });
-                  // MapdetailPage로 이동하면서 tripDetails 전달
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => MapdetailPage(
-                        tripDetails: widget.tripDetails,
-                      ),
+Widget _buildHorizontalImageList(List<Map<String, dynamic>> trips) {
+  return Container(
+    height: 150,
+    padding: EdgeInsets.only(left: 18.0, right: 18.0),
+    child: ListView.builder(
+      scrollDirection: Axis.horizontal,
+      itemCount: trips.length,
+      itemBuilder: (context, index) {
+        return GestureDetector(
+          onTap: () {
+            showDialog(
+              context: context,
+              barrierColor: Colors.black.withOpacity(0.5),
+              builder: (context) => TripDetailModal(
+                imageUrl: trips[index]['imageUrl'] ?? 'assets/city2.png',
+                title: trips[index]['title'] ?? '경상남도',
+                address: trips[index]['address'] ?? '주소 정보 없음',
+                code: trips[index]['code'],
+                contentId: trips[index]['contentId'],
+                x: trips[index]['location']['coordinates'][0].toDouble(), 
+                y: trips[index]['location']['coordinates'][1].toDouble(), 
+              ),
+            ).then((result) {
+              if (result != null) {
+                setState(() {
+                  int dayIndex = widget.selectedDayIndex;
+                  if (!widget.tripDetails.containsKey(dayIndex)) {
+                    widget.tripDetails[dayIndex] = [];
+                  }
+                  widget.tripDetails[dayIndex]!.add(result);
+                });
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MapdetailPage(
+                      tripDetails: widget.tripDetails,
                     ),
-                  );
-                }
-              });
-            },
-            child: _buildImageItem(trips[index]['imageUrl'] ?? 'assets/city2.png', trips[index]['title'] ?? '경상남도'),  
-          );
-        },
-      ),
-    );
-  }
+                  ),
+                );
+              }
+            });
+          },
+          child: _buildImageItem(trips[index]['imageUrl'] ?? 'assets/city2.png', trips[index]['title'] ?? '경상남도'),
+        );
+      },
+    ),
+  );
+}
 
   Widget _buildImageItem(String imagePath, String title) {
     return Container(
@@ -318,7 +323,7 @@ class _TripState extends State<Trip> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         image: DecorationImage(
-          image: imagePath.startsWith('http')  // 이미지 경로가 http로 시작하면 네트워크 이미지를 로드
+          image: imagePath.startsWith('http')  
               ? NetworkImage(imagePath)
               : AssetImage(imagePath) as ImageProvider,
           fit: BoxFit.cover,

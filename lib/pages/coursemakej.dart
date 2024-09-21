@@ -169,7 +169,7 @@ class _CoursemakejState extends State<Coursemakej> {
                           crossAxisCount: 2,
                           crossAxisSpacing: 10,
                           mainAxisSpacing: 10,
-                          childAspectRatio: 1.25,
+                          childAspectRatio: 1,
                         ),
                         itemCount: courseData.length,
                         itemBuilder: (context, index) {

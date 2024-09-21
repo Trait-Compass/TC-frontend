@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:intl/intl.dart'; 
 import 'BestCourseTop3.dart';
 import 'GyeongNamRecommend.dart';
 import '../components/basic_frame_page.dart';
 
 class ResultPage extends StatelessWidget {
   final String mbti;
+  final DateTime startDate;
+  final DateTime endDate;
 
-  ResultPage({required this.mbti});
+  ResultPage({
+    required this.mbti,
+    required this.startDate,
+    required this.endDate,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -60,16 +67,23 @@ class ResultPage extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  RecommendedCourses(mbti: mbti),
+                  RecommendedCourses(
+                    mbti: mbti,
+                    startDate: startDate,
+                    endDate: endDate,
+                  ),
                   SizedBox(height: 10),
                   Center(
                     child: ElevatedButton(
                       onPressed: () {
-                        // 코스 재생성 버튼 눌렀을 때 동작 추가
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ResultPage(mbti: mbti),
+                            builder: (context) => ResultPage(
+                              mbti: mbti,
+                              startDate: startDate,
+                              endDate: endDate,
+                            ),
                           ),
                         );
                       },
@@ -99,12 +113,32 @@ class ResultPage extends StatelessWidget {
 
 class RecommendedCourses extends StatelessWidget {
   final String mbti;
+  final DateTime startDate;
+  final DateTime endDate;
 
-  RecommendedCourses({required this.mbti});
+  RecommendedCourses({
+    required this.mbti,
+    required this.startDate,
+    required this.endDate,
+  });
 
   Future<List<Course>> fetchCourses() async {
-    final response = await http.get(Uri.parse(
-        'https://www.traitcompass.store/course/simple?mbti=$mbti&startDate=24-07-12&endDate=24-07-15'));
+    final String formattedStartDate = DateFormat('yyyy-MM-dd').format(startDate);
+    final String formattedEndDate = DateFormat('yyyy-MM-dd').format(endDate);
+
+  
+    final Uri uri = Uri.parse('https://www.traitcompass.store/course/simple').replace(queryParameters: {
+      'mbti': mbti,
+      'startDate': formattedStartDate,
+      'endDate': formattedEndDate,
+    });
+
+    print('Requesting URL: $uri'); // 디버그 메시지 추가
+
+    final response = await http.get(uri);
+
+    print('Response status code: ${response.statusCode}');
+    print('Response body: ${response.body}');
 
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body)['result'];
@@ -127,24 +161,19 @@ class RecommendedCourses extends StatelessWidget {
           return Center(child: Text('No courses available'));
         } else {
           List<Course> courses = snapshot.data!;
-          return GridView.count(
-            crossAxisCount: 2,
-            childAspectRatio: 1.0,
-            shrinkWrap: true,
+          return GridView.builder(
             physics: NeverScrollableScrollPhysics(),
-            padding: EdgeInsets.all(5),
-            children: courses.map((course) {
-              return Container(
-                margin: EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  image: DecorationImage(
-                    image: NetworkImage(course.image),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              );
-            }).toList(),
+            shrinkWrap: true,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2, 
+              crossAxisSpacing: 10, 
+              mainAxisSpacing: 10, 
+              childAspectRatio: 1, 
+            ),
+            itemCount: courses.length,
+            itemBuilder: (context, index) {
+              return CourseCard(course: courses[index]);
+            },
           );
         }
       },
@@ -153,17 +182,152 @@ class RecommendedCourses extends StatelessWidget {
 }
 
 class Course {
-  final String city;
-  final String title;
+  final String region;
+  final String courseName;
+  final String duration;
   final String image;
 
-  Course({required this.city, required this.title, required this.image});
+  Course({
+    required this.region,
+    required this.courseName,
+    required this.duration,
+    required this.image,
+  });
 
   factory Course.fromJson(Map<String, dynamic> json) {
     return Course(
-      city: json['city'],
-      title: json['title'],
-      image: json['image'],
+      region: json['region'],
+      courseName: json['courseName'],
+      duration: json['duration'],
+      image: json['day1'][0]['imageUrl'], 
+    );
+  }
+}
+
+class CourseCard extends StatelessWidget {
+  final Course course;
+
+  const CourseCard({required this.course});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+      },
+
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        elevation: 5, 
+        shadowColor: Colors.grey.withOpacity(0.5),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(15),
+          child: Stack(
+            children: [
+              // 이미지
+              Positioned.fill(
+                child: Image.network(
+                  course.image,
+                  fit: BoxFit.cover,
+                  loadingBuilder: (BuildContext context, Widget child,
+                      ImageChunkEvent? loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return Center(
+                      child: CircularProgressIndicator(
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                loadingProgress.expectedTotalBytes!
+                            : null,
+                      ),
+                    );
+                  },
+                  errorBuilder: (BuildContext context, Object exception,
+                      StackTrace? stackTrace) {
+                    return Container(
+                      color: Colors.grey[300],
+                      child: Icon(Icons.broken_image, size: 50, color: Colors.grey[700]),
+                    );
+                  },
+                ),
+              ),
+              Positioned.fill(
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.black.withOpacity(0.6),
+                        Colors.transparent,
+                      ],
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: 10,
+                left: 10,
+                right: 10,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      course.courseName,
+                      style: TextStyle(
+                        fontSize: 16, 
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        shadows: [
+                          Shadow(
+                            offset: Offset(1.0, 1.0),
+                            blurRadius: 3.0,
+                            color: Colors.black,
+                          ),
+                        ],
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    SizedBox(height: 3),
+                    Text(
+                      course.region,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.white,
+                        shadows: [
+                          Shadow(
+                            offset: Offset(1.0, 1.0),
+                            blurRadius: 3.0,
+                            color: Colors.black,
+                          ),
+                        ],
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    SizedBox(height: 3),
+                    Text(
+                      course.duration,
+                      style: TextStyle(
+                        fontSize: 12, 
+                        color: Colors.white,
+                        shadows: [
+                          Shadow(
+                            offset: Offset(1.0, 1.0),
+                            blurRadius: 3.0,
+                            color: Colors.black,
+                          ),
+                        ],
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

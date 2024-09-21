@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:untitled/components/mbtitest/MBTItestpage.dart';
+import 'package:untitled/components/start/basicframe3.dart';
 import 'dart:convert';
-import '../../components/mbtitest/MBTItestpage.dart';
+import 'package:untitled/components/mbti_selection_page.dart';
 
 class UserInfoScreen extends StatefulWidget {
   final String id;
@@ -92,6 +94,11 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('회원정보가 성공적으로 제출되었습니다.')),
       );
+       Navigator.push(context, 
+       MaterialPageRoute(
+        builder: (context) => BasicFramePage(body : MBTISelectionPage()),
+      ),
+    );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -139,6 +146,11 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
       context,
       MaterialPageRoute(builder: (context) => MBTItestselection()),
     );
+     Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MBTItestselection(),
+                          ),);
   }
 
   @override
