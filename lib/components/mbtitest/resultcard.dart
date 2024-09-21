@@ -1,7 +1,7 @@
 // ResultCard.dart
 import 'package:flutter/material.dart';
 import 'package:untitled/components/mbti_selection_page.dart';
-import 'package:untitled/components/start/basicframe3.dart';
+import 'package:untitled/components/basic_frame_page.dart';
 import 'package:untitled/hooks/login/creataccount.dart';
 import 'mbtidata.dart';
 import '../basicframe.dart';
@@ -154,7 +154,7 @@ class ResultCard extends StatelessWidget {
                             try {
                               await ApiService.saveUserMBTI(selectedOption);
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('MBTI 저장에 성공했습니다')),
+                                SnackBar(content: Text('MBTI 저장에 성공했어요! 내 정보에서 확인해주세요!')),
                               );
                               Navigator.push(
                                 context,
