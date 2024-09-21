@@ -20,7 +20,6 @@ class _SavedTravelCoursesState extends State<SavedTravelCourses> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      // 기존 코드 유지
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -189,7 +188,6 @@ class _SavedTravelCoursesState extends State<SavedTravelCourses> {
     );
   }
 
-  // 이미지 위젯을 빌드하는 함수 추가
   Widget _buildImage(Map<String, dynamic> course) {
     String? imageUrl = _getImageUrl(course);
     if (imageUrl != null && imageUrl.isNotEmpty) {
@@ -227,7 +225,7 @@ class _SavedTravelCoursesState extends State<SavedTravelCourses> {
     }
   }
 
-  // 이미지 URL을 가져오는 헬퍼 함수 수정
+
   String? _getImageUrl(Map<String, dynamic> course) {
     try {
       if (course['day1'] != null && course['day1'] is List && course['day1'].isNotEmpty) {
@@ -239,6 +237,6 @@ class _SavedTravelCoursesState extends State<SavedTravelCourses> {
     } catch (e) {
       print('Error fetching image URL: $e');
     }
-    return null; // 이미지 URL이 없을 경우 null 반환
+    return null; 
   }
 }

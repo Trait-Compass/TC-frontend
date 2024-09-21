@@ -22,7 +22,6 @@ class _TravelDiaryState extends State<TravelDiary> {
     final response = await ApiService.get('/diary/list');
 
     if (response.statusCode == 200) {
-
       Map<String, dynamic> responseData = json.decode(response.body);
 
       List<dynamic> diaryList = responseData['result'];
@@ -36,7 +35,6 @@ class _TravelDiaryState extends State<TravelDiary> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      // 기존 코드 유지
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,12 +85,12 @@ class _TravelDiaryState extends State<TravelDiary> {
                   child: ListView.builder(
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemCount: diaries.length > 2 ? 2 : diaries.length, 
+                    itemCount: diaries.length > 2 ? 2 : diaries.length,
                     itemBuilder: (context, index) {
                       Map<String, dynamic> diary = diaries[index];
 
                       return Container(
-                        height: 70, 
+                        height: 70,
                         margin: EdgeInsets.symmetric(
                           vertical: 5,
                           horizontal: 0,
@@ -105,28 +103,7 @@ class _TravelDiaryState extends State<TravelDiary> {
                               ),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(10),
-                                child: Image.network(
-                                  diary['imageUrl'] ?? '',
-                                  fit: BoxFit.cover,
-                                  width: double.infinity,
-                                  height: double.infinity,
-                                  loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-                                    if (loadingProgress == null) return child;
-                                    return Center(
-                                      child: CircularProgressIndicator(
-                                        value: loadingProgress.expectedTotalBytes != null
-                                            ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
-                                            : null,
-                                      ),
-                                    );
-                                  },
-                                  errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
-                                    return Container(
-                                      color: Colors.grey[300],
-                                      child: Icon(Icons.broken_image, size: 50, color: Colors.grey[700]),
-                                    );
-                                  },
-                                ),
+                                child: _buildImage(diary),
                               ),
                             ),
                             Positioned(
@@ -180,5 +157,43 @@ class _TravelDiaryState extends State<TravelDiary> {
         ],
       ),
     );
+  }
+
+  Widget _buildImage(Map<String, dynamic> diary) {
+    String? imageUrl = diary['imageUrl'];
+    if (imageUrl != null && imageUrl.isNotEmpty) {
+      return Image.network(
+        imageUrl,
+        fit: BoxFit.cover,
+        width: double.infinity,
+        height: double.infinity,
+        loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Center(
+            child: CircularProgressIndicator(
+              value: loadingProgress.expectedTotalBytes != null
+                  ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                  : null,
+            ),
+          );
+        },
+        errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+          return Image.asset(
+            'assets/city2.png',
+            fit: BoxFit.cover,
+            width: double.infinity,
+            height: double.infinity,
+          );
+        },
+      );
+    } else {
+
+      return Image.asset(
+        'assets/city2.png',
+        fit: BoxFit.cover,
+        width: double.infinity,
+        height: double.infinity,
+      );
+    }
   }
 }
