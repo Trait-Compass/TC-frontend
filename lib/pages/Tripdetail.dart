@@ -3,8 +3,9 @@ import '../components/map/api.dart';
 class PdetailPage extends StatefulWidget {
   final Map<int, List<Map<String, dynamic>>> tripDetails;
   final int totalDays;
+  final String courseId;
 
-  PdetailPage({required this.tripDetails, required this.totalDays});
+  PdetailPage({required this.tripDetails, required this.totalDays, required this.courseId});
 
   @override
   _PdetailPageState createState() => _PdetailPageState();
@@ -13,6 +14,17 @@ class PdetailPage extends StatefulWidget {
 class _PdetailPageState extends State<PdetailPage> {
   int selectedDayIndex = 0;
 
+  // Add a variable to store courseId
+  String? courseId;
+
+  @override
+  void initState() {
+    super.initState();
+    // Assign the courseId from widget to local variable
+    courseId = widget.courseId;
+  }
+
+  // Show confirmation dialog and save course using courseId
   void _showConfirmationDialog() {
     showDialog(
       context: context,
@@ -37,51 +49,33 @@ class _PdetailPageState extends State<PdetailPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton(
-  onPressed: () async {
-    // 네! 코스 저장할게요 버튼을 누르면 course/p post 요청 실행
-    Navigator.of(context).pop();
+                      onPressed: () async {
+                        Navigator.of(context).pop();
+                        print(courseId);
+                        if (courseId != null) {
+                          await ApiService.saveCourseToServer(courseId!);
 
-    // 저장할 데이터를 ApiService로 전달하여 서버에 POST 요청
-    List<Map<String, dynamic>> tripDetails = widget.tripDetails[selectedDayIndex] ?? [];
-    List<int> contentIds = [];
-
-    // 각 여행지의 contentId 추출
-    for (var item in tripDetails) {
-      if (item.containsKey('contentId')) {
-        contentIds.add(item['contentId']);
-      }
-    }
-
-    // tripDetails에서 필요한 값을 추출 (region, courseName, duration)
-    String region = tripDetails.isNotEmpty ? tripDetails[0]['region'] ?? '알 수 없음' : '알 수 없음';
-    String courseName = tripDetails.isNotEmpty ? tripDetails[0]['courseName'] ?? '알 수 없음' : '알 수 없음';
-    String duration = tripDetails.isNotEmpty ? tripDetails[0]['duration'] ?? '알 수 없음' : '알 수 없음';
-
-
-    await ApiService.saveCourseToServer(
-      region,          
-      courseName,     
-      duration,      
-      contentIds,      
-    );
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('코스가 성공적으로 저장되었습니다!')),
-    );
-  },
-  style: ElevatedButton.styleFrom(
-    backgroundColor: Colors.grey[200],
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(10),
-    ),
-    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 60),
-  ),
-  child: Text(
-    '네! 코스 저장할게요',
-    style: TextStyle(color: Colors.black, fontSize: 18),
-  ),
-),
-
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('코스가 성공적으로 저장되었습니다!')),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('코스 ID가 없습니다. 저장할 수 없습니다.')),
+                          );
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey[200],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 60),
+                      ),
+                      child: Text(
+                        '네! 코스 저장할게요',
+                        style: TextStyle(color: Colors.black, fontSize: 18),
+                      ),
+                    ),
                     SizedBox(height: 10),
                     ElevatedButton(
                       onPressed: () {
@@ -251,11 +245,11 @@ class _PdetailPageState extends State<PdetailPage> {
                                     SizedBox(height: 8),
                                     currentTripDetails[index]['imageUrl'] != null
                                         ? Image.network(
-                                            currentTripDetails[index]['imageUrl'],
-                                            height: 150,
-                                            width: double.infinity,
-                                            fit: BoxFit.cover,
-                                          )
+                                      currentTripDetails[index]['imageUrl'],
+                                      height: 150,
+                                      width: double.infinity,
+                                      fit: BoxFit.cover,
+                                    )
                                         : Container(),
                                   ],
                                 ),

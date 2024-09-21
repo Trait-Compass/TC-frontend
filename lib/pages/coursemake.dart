@@ -211,6 +211,7 @@ class _CoursemakeState extends State<Coursemake> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => PdetailPage(
+                                    courseId: course['courseId'],
                                     tripDetails: tripDetails,
                                     totalDays: totalDays > 5 ? 5 : totalDays, 
                                   ),

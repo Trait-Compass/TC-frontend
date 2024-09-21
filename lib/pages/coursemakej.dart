@@ -80,6 +80,7 @@ class _CoursemakejState extends State<Coursemakej> {
             String region = course.region;
             String courseName = course.courseName;
             String duration = course.duration;
+            String courseId = course.id;
 
             // Day 객체 리스트를 Map으로 변환
             List<Map<String, dynamic>> day1Maps = course.day1.map((day) => day.toMap()).toList();
@@ -92,6 +93,7 @@ class _CoursemakejState extends State<Coursemakej> {
               'imageUrl': imageUrl,
               'region': region,
               'courseName': courseName,
+              'courseId' : courseId,
               'duration': duration,
               'day1': day1Maps,
               'day2': day2Maps,
@@ -215,6 +217,7 @@ class _CoursemakejState extends State<Coursemakej> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => PdetailPage(
+                                    courseId: course['courseId'],
                                     tripDetails: tripDetails,
                                     totalDays: totalDays,
                                   ),
