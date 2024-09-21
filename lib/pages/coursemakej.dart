@@ -1,16 +1,17 @@
+// Coursemakej.dart
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:untitled/pages/Tripdetail.dart'; // PdetailPage import 경로 수정 필요
+import 'package:untitled/pages/Tripdetail.dart'; 
 import '../components/start/basicframe2.dart';
 import '../hooks/top3course.dart';
 import '../pages/coursemodell.dart';
 import '../components/map/api.dart';
 
 class Coursemakej extends StatefulWidget {
-  final List<DateTime> selectedDates; // 선택된 날짜
-  final String selectedLocation; // 선택된 장소
-  final String selectedGroup; // 선택된 인원 그룹
-  final List<String> selectedKeywords; // 선택된 키워드
+  final List<DateTime> selectedDates; 
+  final String selectedLocation; 
+  final String selectedGroup; 
+  final List<String> selectedKeywords; 
 
   Coursemakej({
     required this.selectedDates,
@@ -39,9 +40,18 @@ class _CoursemakejState extends State<Coursemakej> {
 
   Future<List<Map<String, dynamic>>> _fetchCourseImages() async {
     try {
+      print('Fetching user profile...');
+      final userProfile = await ApiService.fetchUserProfile();
+      final userMbti = userProfile['mbti'];
+      if (userMbti == null || userMbti.isEmpty) {
+        throw Exception('MBTI not found in user profile');
+      }
+
+      print('User MBTI: $userMbti');
+
       print('Fetching course data from API...');
       final result = await ApiService.fetchCourseForJ(
-        mbti: 'INFP', // MBTI placeholder, 실제로는 사용자 데이터를 활용
+        mbti: userMbti, // 동적으로 사용자 MBTI 값 사용
         startDate: widget.selectedDates[0].toIso8601String(),
         endDate: widget.selectedDates[widget.selectedDates.length - 1].toIso8601String(),
         location: widget.selectedLocation,
@@ -49,7 +59,7 @@ class _CoursemakejState extends State<Coursemakej> {
         keyword: widget.selectedKeywords,
       );
 
-      print('API Response: $result'); // 응답 데이터 로그 출력
+      print('API Response: $result'); 
 
       List<Map<String, dynamic>> fetchedData = [];
 
@@ -62,7 +72,7 @@ class _CoursemakejState extends State<Coursemakej> {
             print('Error parsing course JSON: $e');
             return null;
           }
-        }).where((course) => course != null).cast<Course>().toList(); // null이 아닌 항목만 포함
+        }).where((course) => course != null).cast<Course>().toList(); 
 
         for (var course in courses) {
           if (course.day1.isNotEmpty) {
@@ -75,6 +85,8 @@ class _CoursemakejState extends State<Coursemakej> {
             List<Map<String, dynamic>> day1Maps = course.day1.map((day) => day.toMap()).toList();
             List<Map<String, dynamic>> day2Maps = course.day2.map((day) => day.toMap()).toList();
             List<Map<String, dynamic>> day3Maps = course.day3.map((day) => day.toMap()).toList();
+            List<Map<String, dynamic>> day4Maps = course.day4.map((day) => day.toMap()).toList(); 
+            List<Map<String, dynamic>> day5Maps = course.day5.map((day) => day.toMap()).toList(); 
 
             fetchedData.add({
               'imageUrl': imageUrl,
@@ -84,6 +96,8 @@ class _CoursemakejState extends State<Coursemakej> {
               'day1': day1Maps,
               'day2': day2Maps,
               'day3': day3Maps,
+              'day4': day4Maps, 
+              'day5': day5Maps, 
             });
           }
         }
@@ -94,7 +108,7 @@ class _CoursemakejState extends State<Coursemakej> {
       return fetchedData;
     } catch (e) {
       print('Error fetching course images: $e');
-      throw e; // 에러 전파
+      return [];
     }
   }
 
@@ -152,7 +166,7 @@ class _CoursemakejState extends State<Coursemakej> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: FutureBuilder<List<Map<String, dynamic>>>(
-                  future: _fetchCourseImages(), // 데이터 가져오기
+                  future: _fetchCourseImages(), 
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Center(child: CircularProgressIndicator());
@@ -176,13 +190,13 @@ class _CoursemakejState extends State<Coursemakej> {
                           final course = courseData[index];
 
                           Map<int, List<Map<String, dynamic>>> tripDetails = {};
-                          int totalDays = 1; // 기본값은 1일차
+                          int totalDays = 1; 
 
-                          // 여행 일수 계산
                           DateTime startDate = widget.selectedDates.first;
                           DateTime endDate = widget.selectedDates.last;
                           int daysDifference = endDate.difference(startDate).inDays + 1;
                           totalDays = daysDifference;
+                          totalDays = totalDays > 5 ? 5 : totalDays;
 
                           // tripDetails 설정
                           for (int i = 0; i < totalDays; i++) {
@@ -245,15 +259,29 @@ class _CoursemakejState extends State<Coursemakej> {
                                       errorBuilder: (BuildContext context,
                                           Object exception,
                                           StackTrace? stackTrace) {
-                                        return Icon(Icons.broken_image, size: 50);
+                                        return Container(
+                                          color: Colors.grey[300],
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Icon(Icons.broken_image, size: 50, color: Colors.grey[700]),
+                                              SizedBox(height: 10),
+                                              Text(
+                                                '이미지를 불러올 수 없습니다.',
+                                                style: TextStyle(color: Colors.grey[700]),
+                                              ),
+                                            ],
+                                          ),
+                                        );
                                       },
                                     ),
                                   ),
                                   Positioned(
                                     bottom: 10,
+                                    left: 10,
                                     right: 10,
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           course['courseName']!,
@@ -272,12 +300,12 @@ class _CoursemakejState extends State<Coursemakej> {
                                         Text(
                                           course['region']!,
                                           style: TextStyle(
-                                            color: Colors.white, // 흰색 텍스트
+                                            color: Colors.white,
                                             shadows: [
                                               Shadow(
                                                 offset: Offset(1.0, 1.0),
                                                 blurRadius: 3.0,
-                                                color: Colors.black, // 그림자
+                                                color: Colors.black,
                                               ),
                                             ],
                                           ),
