@@ -69,7 +69,7 @@ class _TravelDiaryState extends State<TravelDiary> {
                     ),
                     alignment: Alignment.center,
                     child: Text(
-                      '작성된 여행일기장이 없습니다.',
+                      '작성된 여행일기장이 없습니다',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
