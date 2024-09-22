@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:untitled/components/basicframe.dart';
 import 'package:untitled/components/mbtitest/resultcard.dart';
-import '../mbtitest/0question.dart'; // StartTestSection이 정의된 파일을 임포트
 
 class ResultPage extends StatelessWidget {
   final String selectedOption;
@@ -79,68 +78,31 @@ class ResultPage extends StatelessWidget {
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(height: 30),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => StartTestSection(
-                                    onStartPressed: () {
-                                      // 여기에 시작 버튼을 눌렀을 때의 동작을 추가
-                                    },
-                                    isStarted: true, // 시작 상태 설정
-                                    onOptionSelected: (option) {
-                                      // 선택한 옵션을 처리하는 로직
-                                    },
-                                    selectedOption: '', // 초기 선택 값
-                                  ),
-                                ),
-                                (Route<dynamic> route) =>
-                                    false, // 이전 모든 화면을 스택에서 제거
-                              );
-                            },
-                            child: Text(
-                              '다시하기',
-                              style:
-                                  TextStyle(fontSize: 16, color: Colors.white),
-                            ),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.grey,
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 10),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
+                      Center(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => (ResultCard(
+                                        selectedOption: selectedOption,
+                                      ))),
+                            );
+                          },
+                          child: Text(
+                            '자세히 보기',
+                            style:
+                                TextStyle(fontSize: 16, color: Colors.white),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.grey,
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 10),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => (ResultCard(
-                                          selectedOption: selectedOption,
-                                        ))),
-                              );
-                            },
-                            child: Text(
-                              '자세히 보기',
-                              style:
-                                  TextStyle(fontSize: 16, color: Colors.white),
-                            ),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.grey,
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 10),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     ],
                   ),
