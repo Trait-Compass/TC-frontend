@@ -36,7 +36,7 @@ class _TravelDiaryState extends State<TravelDiary> {
       }
     } catch (error) {
       throw Exception('Failed to fetch travel diaries: $error');
-    } // 여기에 중괄호를 추가하여 try-catch 블록을 닫습니다.
+    }
   }
 
   @override
@@ -88,11 +88,12 @@ class _TravelDiaryState extends State<TravelDiary> {
               } else {
                 List<Map<String, dynamic>> diaries = snapshot.data!;
                 return Container(
+                  height: 160, 
                   width: double.infinity,
                   child: ListView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: diaries.length > 2 ? 2 : diaries.length,
+                    scrollDirection: Axis.vertical,
+                    itemCount: diaries.length,
+                    physics: AlwaysScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
                       Map<String, dynamic> diary = diaries[index];
 
@@ -136,7 +137,7 @@ class _TravelDiaryState extends State<TravelDiary> {
                                     ),
                                   ),
                                   Text(
-                                    ' ${diary['nature'] == 'T' ? 'T' : 'F'}',
+                                    '${diary['nature'] == 'T' ? 'T' : 'F'}',
                                     style: TextStyle(
                                       fontSize: 12,
                                       color: Colors.white,
@@ -166,7 +167,6 @@ class _TravelDiaryState extends State<TravelDiary> {
     );
   }
 
-  // _buildImage 메소드를 클래스 내부로 이동시킵니다.
   Widget _buildImage(Map<String, dynamic> diary) {
     String? imageUrl = diary['imageUrl'];
     if (imageUrl != null && imageUrl.isNotEmpty) {

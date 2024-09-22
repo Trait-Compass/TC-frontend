@@ -56,7 +56,7 @@ class _SavedTravelCoursesState extends State<SavedTravelCourses> {
                     ),
                     alignment: Alignment.center,
                     child: Text(
-                      '지정한 코스가 없습니다',
+                      '저정한 코스가 없습니다',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
