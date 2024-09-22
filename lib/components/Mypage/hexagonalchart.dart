@@ -170,7 +170,7 @@ class _RadarChartPainter extends CustomPainter {
       ..style = PaintingStyle.stroke;
 
     Paint dataPaint = Paint()
-      ..color = Color(0xFF7F7D9C).withOpacity(0.5)
+      ..color = Color.fromARGB(255, 127, 126, 133).withOpacity(0.5)
       ..style = PaintingStyle.fill;
 
     Paint handlePaint = Paint()
