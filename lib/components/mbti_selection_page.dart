@@ -67,7 +67,7 @@ class _MBTISelectionPageState extends State<MBTISelectionPage> {
                   ),
                   child: Text(
                     allGroupsSelected()
-                        ? '${selectedMBTI.values.join()} OOO님!\n오늘은 경상남도 어디로 떠나볼까요?'
+                        ? '${selectedMBTI.values.join()}님!\n오늘은 경상남도 어디로 떠나볼까요?'
                         : '경상남도 추천지를 원하시면 \nMBTI를 선택해주세요 ',
                     style: TextStyle(fontSize: 16),
                   ),

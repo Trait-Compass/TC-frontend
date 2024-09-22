@@ -69,7 +69,7 @@ class _CalendarSelectionPageState extends State<CalendarSelectionPage> {
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text(
-                '${widget.mbti} OOO님!\n오늘은 경상남도 어디로 떠나볼까요?',
+                '${widget.mbti}님!\n오늘은 경상남도 어디로 떠나볼까요?',
                 style: TextStyle(fontSize: 16),
               ),
             ),
