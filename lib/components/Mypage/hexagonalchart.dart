@@ -1,13 +1,20 @@
+// lib/pages/hexagonalchart.dart
+
 import 'dart:math';
 import 'package:flutter/material.dart';
+import '../Mypage/mypagemodelforT.dart'; // 모델 파일 경로에 맞게 수정하세요.
 
 class RadarChartWidget extends StatefulWidget {
+  final TravelDiary diary; // 모델 인스턴스 전달
+
+  RadarChartWidget({required this.diary});
+
   @override
   _RadarChartWidgetState createState() => _RadarChartWidgetState();
 }
 
 class _RadarChartWidgetState extends State<RadarChartWidget> {
-  List<double> values = [0.8, 0.6, 0.7, 0.5, 0.9, 0.4];
+  late List<double> values;
   final List<String> labels = [
     '교통\n편의성:\n',
     '관광 명소\n만족도:\n',
@@ -37,6 +44,16 @@ class _RadarChartWidgetState extends State<RadarChartWidget> {
   void initState() {
     super.initState();
     radius = sideLength / sqrt(3); // 중심에서 꼭짓점까지의 거리
+
+    // 모델에서 값을 가져와서 values 리스트 초기화
+    values = [
+      (widget.diary.transportationSatisfaction ?? 0) / 10.0,
+      (widget.diary.sightseeingSatisfaction ?? 0) / 10.0,
+      (widget.diary.foodSatisfaction ?? 0) / 10.0,
+      (widget.diary.environmentSatisfaction ?? 0) / 10.0,
+      (widget.diary.priceSatisfaction ?? 0) / 10.0,
+      (widget.diary.accommodationSatisfaction ?? 0) / 10.0,
+    ];
   }
 
   @override
@@ -100,9 +117,34 @@ class _RadarChartWidgetState extends State<RadarChartWidget> {
 
         setState(() {
           values[i] = closestScore; // 값 설정
+          _updateModel(i, closestScore);
         });
         break;
       }
+    }
+  }
+
+  void _updateModel(int index, double value) {
+    int score = (value * 10).round();
+    switch (index) {
+      case 0:
+        widget.diary.transportationSatisfaction = score;
+        break;
+      case 1:
+        widget.diary.sightseeingSatisfaction = score;
+        break;
+      case 2:
+        widget.diary.foodSatisfaction = score;
+        break;
+      case 3:
+        widget.diary.environmentSatisfaction = score;
+        break;
+      case 4:
+        widget.diary.priceSatisfaction = score;
+        break;
+      case 5:
+        widget.diary.accommodationSatisfaction = score;
+        break;
     }
   }
 }
@@ -128,11 +170,11 @@ class _RadarChartPainter extends CustomPainter {
       ..style = PaintingStyle.stroke;
 
     Paint dataPaint = Paint()
-      ..color = Color(0x7F7D9C).withOpacity(0.5)
+      ..color = Color(0xFF7F7D9C).withOpacity(0.5)
       ..style = PaintingStyle.fill;
 
     Paint handlePaint = Paint()
-      ..color = Color(0x4D4C5C).withOpacity(1)
+      ..color = Color(0xFF4D4C5C)
       ..style = PaintingStyle.fill;
 
     int sides = labels.length;

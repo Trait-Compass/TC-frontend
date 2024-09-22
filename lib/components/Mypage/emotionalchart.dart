@@ -1,7 +1,13 @@
+// lib/pages/emotionalchart.dart
+
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart'; // Google Fonts 패키지 임포트
+import '../Mypage/mypagemodelforF.dart';
 
 class EmotionChart extends StatefulWidget {
+  final TravelDiaryEmotion diaryEmotion; // 모델 인스턴스 전달
+
+  EmotionChart({required this.diaryEmotion});
+
   @override
   _EmotionChartState createState() => _EmotionChartState();
 }
@@ -26,7 +32,7 @@ class _EmotionChartState extends State<EmotionChart> {
     {
       'emoji': '😮',
       'title': '놀람',
-      'feelings': ['감탄', '경이로움', '신비로움', '깜짝놀람', '새로운\n 발견']
+      'feelings': ['감탄', '경이로움', '신비로움', '깜짝 놀람', '새로운\n 발견']
     },
     {
       'emoji': '😞',
@@ -56,6 +62,28 @@ class _EmotionChartState extends State<EmotionChart> {
           ),
         );
 
+  // 선택된 감정들을 모델에 저장하는 함수
+  void _saveToModel() {
+    widget.diaryEmotion.happyEmotions = _getSelectedFeelings(0);
+    widget.diaryEmotion.satisfiedEmotions = _getSelectedFeelings(1);
+    widget.diaryEmotion.comfortableEmotions = _getSelectedFeelings(2);
+    widget.diaryEmotion.surprisedEmotions = _getSelectedFeelings(3);
+    widget.diaryEmotion.disappointedEmotions = _getSelectedFeelings(4);
+    widget.diaryEmotion.sadEmotions = _getSelectedFeelings(5);
+    widget.diaryEmotion.angryEmotions = _getSelectedFeelings(6);
+  }
+
+  // 선택된 세부 감정들을 추출하는 함수
+  List<String> _getSelectedFeelings(int emotionIndex) {
+    List<String> selectedFeelings = [];
+    for (int i = 0; i < emotions[emotionIndex]['feelings'].length; i++) {
+      if (_isSelected[emotionIndex][i]) {
+        selectedFeelings.add(emotions[emotionIndex]['feelings'][i]);
+      }
+    }
+    return selectedFeelings;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -82,9 +110,7 @@ class _EmotionChartState extends State<EmotionChart> {
                           children: [
                             Text(
                               emotion['emoji'],
-                              style: GoogleFonts.notoColorEmoji(
-                                textStyle: TextStyle(fontSize: 20),
-                              ), // 이모지를 위한 폰트 설정
+                              style: TextStyle(fontSize: 20),
                             ),
                             SizedBox(height: 4),
                             Text(
@@ -119,6 +145,7 @@ class _EmotionChartState extends State<EmotionChart> {
                                 setState(() {
                                   _isSelected[emotionIndex][feelingIndex] =
                                       !_isSelected[emotionIndex][feelingIndex];
+                                  _saveToModel(); // 모델 업데이트
                                 });
                               },
                               child: IntrinsicHeight(

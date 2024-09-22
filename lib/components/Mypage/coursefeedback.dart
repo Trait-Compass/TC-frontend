@@ -1,7 +1,13 @@
-// coursefeedback.dart
+// lib/pages/coursefeedback.dart
+
 import 'package:flutter/material.dart';
+import '../Mypage/mypagemodelforT.dart';
 
 class TravelDetailAnalysisSection extends StatefulWidget {
+  final TravelDiary diary; // 모델 인스턴스 전달
+
+  TravelDetailAnalysisSection({required this.diary});
+
   @override
   _TravelDetailAnalysisSectionState createState() =>
       _TravelDetailAnalysisSectionState();
@@ -15,9 +21,44 @@ class _TravelDetailAnalysisSectionState
   TextEditingController satisfiedController = TextEditingController();
   TextEditingController maintainController = TextEditingController();
 
-  // 저장된 텍스트를 관리하기 위한 변수
-  String? satisfiedText; // 사용자 입력 텍스트 저장
-  String? maintainText; // 사용자 입력 텍스트 저장
+  @override
+  void initState() {
+    super.initState();
+    satisfiedController.text = widget.diary.satisfactionFeedback ?? '';
+    maintainController.text = widget.diary.keepFeedback ?? '';
+  }
+
+  void _saveSatisfied() {
+    setState(() {
+      if (isEditingSatisfied) {
+        // 완료 버튼 클릭 시
+        if (satisfiedController.text.isNotEmpty) {
+          widget.diary.satisfactionFeedback = satisfiedController.text;
+          isEditingSatisfied = false;
+        }
+      } else {
+        // 작성하기 또는 수정하기 버튼 클릭 시
+        satisfiedController.text = widget.diary.satisfactionFeedback ?? '';
+        isEditingSatisfied = true;
+      }
+    });
+  }
+
+  void _saveMaintain() {
+    setState(() {
+      if (isEditingMaintain) {
+        // 완료 버튼 클릭 시
+        if (maintainController.text.isNotEmpty) {
+          widget.diary.keepFeedback = maintainController.text;
+          isEditingMaintain = false;
+        }
+      } else {
+        // 작성하기 또는 수정하기 버튼 클릭 시
+        maintainController.text = widget.diary.keepFeedback ?? '';
+        isEditingMaintain = true;
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +109,7 @@ class _TravelDetailAnalysisSectionState
                             ),
                             child: SingleChildScrollView(
                               // 스크롤 가능하도록 변경
-                              child: isEditingSatisfied // 편집 모드 확인
+                              child: isEditingSatisfied
                                   ? TextField(
                                       controller: satisfiedController,
                                       style: TextStyle(
@@ -78,13 +119,19 @@ class _TravelDetailAnalysisSectionState
                                         isCollapsed: true, // 텍스트 필드의 내부 패딩 제거
                                         border: InputBorder.none, // 테두리 제거
                                       ),
+                                      onChanged: (value) {
+                                        widget.diary.satisfactionFeedback =
+                                            value;
+                                      },
                                     )
                                   : Text(
-                                      satisfiedText ??
+                                      widget.diary.satisfactionFeedback ??
                                           'ex) 액티비티 활동을 많이 즐김', // 저장된 텍스트를 표시 또는 기본 텍스트
                                       style: TextStyle(
                                           fontSize: 12,
-                                          color: satisfiedText != null
+                                          color: widget.diary
+                                                      .satisfactionFeedback !=
+                                                  null
                                               ? Color(0xFF41424C)
                                               : Colors.grey),
                                     ),
@@ -99,23 +146,7 @@ class _TravelDetailAnalysisSectionState
                         child: Align(
                           alignment: Alignment.bottomCenter,
                           child: ElevatedButton(
-                            onPressed: () {
-                              setState(() {
-                                if (isEditingSatisfied) {
-                                  // 완료 버튼 클릭 시
-                                  if (satisfiedController.text.isNotEmpty) {
-                                    satisfiedText =
-                                        satisfiedController.text; // 입력된 텍스트를 저장
-                                    isEditingSatisfied = false; // 편집 모드 종료
-                                  }
-                                } else {
-                                  // 작성하기 버튼 클릭 시
-                                  satisfiedController.text =
-                                      satisfiedText ?? ''; // 기존 텍스트를 텍스트필드에 설정
-                                  isEditingSatisfied = true; // 편집 모드 시작
-                                }
-                              });
-                            },
+                            onPressed: _saveSatisfied,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,
                               elevation: 3,
@@ -131,7 +162,7 @@ class _TravelDetailAnalysisSectionState
                               ),
                             ),
                             child: Text(
-                              satisfiedText == null
+                              widget.diary.satisfactionFeedback == null
                                   ? '작성하기'
                                   : (isEditingSatisfied ? '완료' : '수정하기'),
                               style: TextStyle(
@@ -173,7 +204,7 @@ class _TravelDetailAnalysisSectionState
                             ),
                             child: SingleChildScrollView(
                               // 스크롤 가능하도록 변경
-                              child: isEditingMaintain // 편집 모드 확인
+                              child: isEditingMaintain
                                   ? TextField(
                                       controller: maintainController,
                                       style: TextStyle(
@@ -183,15 +214,19 @@ class _TravelDetailAnalysisSectionState
                                         isCollapsed: true, // 텍스트 필드의 내부 패딩 제거
                                         border: InputBorder.none, // 테두리 제거
                                       ),
+                                      onChanged: (value) {
+                                        widget.diary.keepFeedback = value;
+                                      },
                                     )
                                   : Text(
-                                      maintainText ??
+                                      widget.diary.keepFeedback ??
                                           'ex) 활동적 • 여행지 많이 다니기', // 저장된 텍스트를 표시 또는 기본 텍스트
                                       style: TextStyle(
                                           fontSize: 12,
-                                          color: maintainText != null
-                                              ? Color(0xFF41424C)
-                                              : Colors.grey),
+                                          color:
+                                              widget.diary.keepFeedback != null
+                                                  ? Color(0xFF41424C)
+                                                  : Colors.grey),
                                     ),
                             ),
                           ),
@@ -204,23 +239,7 @@ class _TravelDetailAnalysisSectionState
                         child: Align(
                           alignment: Alignment.bottomCenter,
                           child: ElevatedButton(
-                            onPressed: () {
-                              setState(() {
-                                if (isEditingMaintain) {
-                                  // 완료 버튼 클릭 시
-                                  if (maintainController.text.isNotEmpty) {
-                                    maintainText =
-                                        maintainController.text; // 입력된 텍스트를 저장
-                                    isEditingMaintain = false; // 편집 모드 종료
-                                  }
-                                } else {
-                                  // 작성하기 버튼 클릭 시
-                                  maintainController.text =
-                                      maintainText ?? ''; // 기존 텍스트를 텍스트필드에 설정
-                                  isEditingMaintain = true; // 편집 모드 시작
-                                }
-                              });
-                            },
+                            onPressed: _saveMaintain,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,
                               elevation: 3,
@@ -236,7 +255,7 @@ class _TravelDetailAnalysisSectionState
                               ),
                             ),
                             child: Text(
-                              maintainText == null
+                              widget.diary.keepFeedback == null
                                   ? '작성하기'
                                   : (isEditingMaintain ? '완료' : '수정하기'),
                               style: TextStyle(

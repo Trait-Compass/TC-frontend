@@ -1,8 +1,13 @@
+
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:dotted_border/dotted_border.dart';
+import '../map/api.dart';
 import 'package:flutter/material.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'dart:convert';
-
 import 'package:untitled/components/map/api.dart';
+
 
 class TravelDiary extends StatefulWidget {
   @override
@@ -19,6 +24,25 @@ class _TravelDiaryState extends State<TravelDiary> {
   }
 
   Future<List<Map<String, dynamic>>> fetchTravelDiaries() async {
+
+    try {
+      final response = await ApiService.get('/diary/list');
+      if (response.statusCode == 200) {
+        print(response);
+        final Map<String, dynamic> responseData = json.decode(response.body);
+
+        if (responseData['result'] is List) {
+          final List<dynamic> data = responseData['result'];
+          return List<Map<String, dynamic>>.from(data.map((item) => Map<String, dynamic>.from(item)));
+        } else {
+          throw Exception('Unexpected data format: result is not a list');
+        }
+      } else {
+        throw Exception('Failed to load travel diaries: ${response.statusCode}');
+      }
+    } catch (error) {
+      throw Exception('Failed to fetch travel diaries: $error');
+
     final response = await ApiService.get('/diary/list');
 
     if (response.statusCode == 200) {
@@ -158,6 +182,10 @@ class _TravelDiaryState extends State<TravelDiary> {
       ),
     );
   }
+
+}
+
+
 
   Widget _buildImage(Map<String, dynamic> diary) {
     String? imageUrl = diary['imageUrl'];

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../map/apierror.dart';
@@ -91,6 +93,49 @@ class ApiService {
 
     print('Response status code: ${response.statusCode}');
     print('Response body: ${response.body}');
+
+    return response;
+  }
+
+  static Future<http.StreamedResponse> postMultipart(
+      String endpoint, {
+        required Map<String, String> fields,
+        List<File>? files,
+      }) async {
+    String path = endpoint.startsWith('/') ? endpoint : '/$endpoint';
+    Uri uri = Uri.parse('$baseUrl$path');
+
+    final headers = _createHeaders();
+
+    var request = http.MultipartRequest('POST', uri);
+    request.headers.addAll(headers);
+
+    fields.forEach((key, value) {
+      request.fields[key] = value;
+    });
+
+    if (files != null && files.isNotEmpty) {
+      for (var file in files) {
+        if (await file.exists()) {
+          var multipartFile = await http.MultipartFile.fromPath(
+            'travelPhotos',
+            file.path,
+          );
+          request.files.add(multipartFile);
+        }
+      }
+    }
+
+    // Log the request
+    _logRequest('POST', uri.toString(), headers, fields);
+
+    // Send the request
+    final response = await request.send();
+
+    print('Response status code: ${response.statusCode}');
+    response.stream.transform(utf8.decoder).listen((value) {
+      print('Response body: $value');
+    });
 
     return response;
   }
