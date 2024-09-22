@@ -165,7 +165,7 @@ class _CoursemakeState extends State<Coursemake> {
                     } else if (snapshot.hasError) {
                       return Center(child: Text('코스 이미지를 불러오는 데 문제가 발생했습니다.'));
                     } else if (snapshot.hasData && snapshot.data!.isEmpty) {
-                      return Center(child: Text('내 정보에 들어가서 MBTI테스트를 진행한 후 MBTI를 저장해주세요'));
+                      return Center(child: Text('내 정보에 들어가서 MBTI테스트를 \n 진행한 후 MBTI를 저장해주세요'));
                     } else if (snapshot.hasData) {
                       List<Map<String, dynamic>> courseData = snapshot.data!;
                       print('Displaying ${courseData.length} courses');
