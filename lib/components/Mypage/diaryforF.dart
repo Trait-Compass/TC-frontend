@@ -1,6 +1,10 @@
 // lib/pages/diaryforF.dart
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'diaryforT.dart';
 import 'emotionalchart.dart';
 import 'uploadmypicturesforF.dart';
 import 'emotionalfeedback.dart';
@@ -40,7 +44,22 @@ class _DiaryforFState extends State<DiaryforF> {
             Center(
               child: ElevatedButton(
                 onPressed: () {
-                  // 저장 로직 구현
+                  uploadDiary(
+                    courseName: diaryEmotion.courseName,
+                    travelDate: diaryEmotion.travelDate,
+                    nature: 'F',
+                    happyEmotions: diaryEmotion.happyEmotions,
+                    satisfiedEmotions: diaryEmotion.satisfiedEmotions,
+                    comfortableEmotions: diaryEmotion.comfortableEmotions,
+                    surprisedEmotions: diaryEmotion.surprisedEmotions,
+                    disappointedEmotions: diaryEmotion.disappointedEmotions,
+                    sadEmotions: diaryEmotion.sadEmotions,
+                    angryEmotions: diaryEmotion.angryEmotions,
+                    positiveFeedback: diaryEmotion.positiveFeedback,
+                    improvementFeedback: diaryEmotion.negativeFeedback, //TODO
+                    finalThoughts: diaryEmotion.finalThoughts,
+                    travelPhotos: diaryEmotion.travelPhotos,
+                  );
                   print('저장된 데이터: ${diaryEmotion.toJson()}');
                 },
                 style: ElevatedButton.styleFrom(

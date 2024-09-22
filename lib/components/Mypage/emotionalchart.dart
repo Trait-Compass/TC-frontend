@@ -32,7 +32,7 @@ class _EmotionChartState extends State<EmotionChart> {
     {
       'emoji': '😮',
       'title': '놀람',
-      'feelings': ['감탄', '경이로움', '신비로움', '깜짝놀람', '새로운\n 발견']
+      'feelings': ['감탄', '경이로움', '신비로움', '깜짝 놀람', '새로운\n 발견']
     },
     {
       'emoji': '😞',
