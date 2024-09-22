@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:untitled/components/map/api.dart';
 import 'package:untitled/components/mbtitest/MBTItestpage.dart';
+import 'package:untitled/components/start/onboarding.dart';
+import 'package:untitled/hooks/login/information.dart';
 
 class ProfileSection extends StatelessWidget {
   @override
@@ -37,15 +39,15 @@ class ProfileSection extends StatelessWidget {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFFEDEDED), // 버튼 배경색
-                    foregroundColor: Colors.black, // 텍스트 색상
+                    backgroundColor: Color(0xFFEDEDED), 
+                    foregroundColor: Colors.black, 
                   ),
                   child: Text(
                     'MBTI 테스트 하러가기',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black, // 텍스트 색상 검정
+                      color: Colors.black, 
                     ),
                   ),
                 ),
@@ -56,19 +58,67 @@ class ProfileSection extends StatelessWidget {
         } else if (!snapshot.hasData) {
           return Center(child: Text('프로필 정보가 없습니다.'));
         } else {
-          // 데이터를 정상적으로 가져온 경우 위젯 빌드
           final profileData = snapshot.data!;
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  '나의 프로필',
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                  ),
+                Row(
+                  children: [
+                    Text(
+                      '나의 프로필',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Spacer(),
+                    Theme(
+                      data: Theme.of(context).copyWith(
+                        popupMenuTheme: PopupMenuThemeData(
+                          color: Colors.white,
+                        ),
+                      ),
+                      child: PopupMenuButton<String>(
+                        icon: Icon(Icons.settings),
+                        onSelected: (value) {
+                          if (value == '회원탈퇴') {
+                            _showWithdrawalDialog(context);
+                          } else if (value == '이용약관') {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => TermsAndConditionsPage(),
+                              ),
+                            );
+                          }
+                        },
+                        itemBuilder: (BuildContext context) => [
+                          PopupMenuItem<String>(
+                            value: '회원탈퇴',
+                            child: Row(
+                              children: [
+                                Icon(Icons.logout, color: Colors.black),
+                                SizedBox(width: 10),
+                                Text('회원탈퇴'),
+                              ],
+                            ),
+                          ),
+                          PopupMenuItem<String>(
+                            value: '이용약관',
+                            child: Row(
+                              children: [
+                                Icon(Icons.settings, color: Colors.black),
+                                SizedBox(width: 10),
+                                Text('이용약관'),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
                 SizedBox(height: 5),
                 Container(
@@ -105,7 +155,7 @@ class ProfileSection extends StatelessWidget {
                                   height: 25,
                                   alignment: Alignment.center,
                                   child: Text(
-                                    profileData['mbti'] ?? "", // API에서 가져온 MBTI
+                                    profileData['mbti'] ?? "", 
                                     style: TextStyle(
                                       fontSize: 11,
                                       fontWeight: FontWeight.bold,
@@ -123,8 +173,7 @@ class ProfileSection extends StatelessWidget {
                                   alignment: Alignment.center,
                                   child: Text(
                                     _addLineBreakAfterFiveChars(
-                                        profileData['mbtiDescription'][0] ??
-                                            ""),
+                                        profileData['mbtiDescription'][0] ?? ""),
                                     style: TextStyle(
                                       fontSize: 8,
                                       fontWeight: FontWeight.bold,
@@ -156,12 +205,10 @@ class ProfileSection extends StatelessWidget {
                                     padding: const EdgeInsets.all(8.0),
                                     alignment: Alignment.center,
                                     child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Text(
-                                          profileData['mbtiDescription'][1] ??
-                                              "",
+                                          profileData['mbtiDescription'][1] ?? "",
                                           style: TextStyle(
                                             fontSize: 9,
                                             fontWeight: FontWeight.bold,
@@ -183,12 +230,10 @@ class ProfileSection extends StatelessWidget {
                                     padding: const EdgeInsets.all(8.0),
                                     alignment: Alignment.center,
                                     child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
+                                          mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
                                             Text(
                                               "❤️ 찰떡궁합 ",
@@ -200,9 +245,7 @@ class ProfileSection extends StatelessWidget {
                                               ),
                                             ),
                                             Text(
-                                              profileData['mbtiMatchups']
-                                                      ['chalTeok'] ??
-                                                  "",
+                                              profileData['mbtiMatchups']['chalTeok'] ?? "",
                                               style: TextStyle(
                                                 fontSize: 8,
                                                 fontWeight: FontWeight.bold,
@@ -212,8 +255,7 @@ class ProfileSection extends StatelessWidget {
                                         ),
                                         SizedBox(height: 5),
                                         Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
+                                          mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
                                             Text(
                                               "😅 환장궁합 ",
@@ -225,9 +267,7 @@ class ProfileSection extends StatelessWidget {
                                               ),
                                             ),
                                             Text(
-                                              profileData['mbtiMatchups']
-                                                      ['hwanJang'] ??
-                                                  "",
+                                              profileData['mbtiMatchups']['hwanJang'] ?? "",
                                               style: TextStyle(
                                                 fontSize: 8,
                                                 fontWeight: FontWeight.bold,
@@ -258,6 +298,7 @@ class ProfileSection extends StatelessWidget {
         }
       },
     );
+
   }
 
   // 문자열에서 5자 뒤에 줄바꿈을 추가하는 메서드
@@ -267,4 +308,107 @@ class ProfileSection extends StatelessWidget {
     }
     return text;
   }
+
+void _showWithdrawalDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        backgroundColor: Colors.white, 
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20), 
+        ),
+        content: Container(
+          height: 200,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                '탈퇴 하시겠습니까?',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 40),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () async {
+                      bool success = await _withdrawMembership();
+
+                      if (success) {
+                        Navigator.of(context).pop();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('회원 탈퇴가 완료되었습니다.')),
+                        );
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => OnboardingPage(),
+                          ),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('다시 시도해주세요.')),
+                        );
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.grey[200],
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 60),
+                    ),
+                    child: Text(
+                      '네 탈퇴 할게요',
+                      style: TextStyle(color: Colors.black, fontSize: 18),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.grey[200],
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 35),
+                    ),
+                    child: Text(
+                      '아니요 탈퇴 안할게요',
+                      style: TextStyle(color: Colors.black, fontSize: 18),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
 }
+
+// 회원탈퇴 로직을 처리하는 메서드
+Future<bool> _withdrawMembership() async {
+  try {
+    bool response = await ApiService.deleteUser();
+
+    if (response) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (e) {
+    print('Error in _withdrawMembership: $e');
+    return false;
+  }
+}
+}
+
