@@ -88,7 +88,7 @@ class ResultCard extends StatelessWidget {
                                     Text(
                                       mbtiData.description,
                                       style: TextStyle(
-                                        fontSize: 18,
+                                        fontSize: 14,
                                         color: Colors.green,
                                       ),
                                     ),
@@ -209,7 +209,6 @@ class ResultCard extends StatelessWidget {
   }
 }
 
-// 하나의 buildMBTICard 함수만 남김
 Widget buildMBTICard({
   required String title,
   required String mbtiType,
@@ -232,7 +231,7 @@ Widget buildMBTICard({
       borderRadius: BorderRadius.circular(15),
     ),
     child: Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center, 
       children: [
         Text(
           title,
@@ -245,6 +244,33 @@ Widget buildMBTICard({
         SizedBox(height: 10),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              decoration: BoxDecoration(
+                color: textColor,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Text(
+                mbtiType,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            SizedBox(width: 10),
+            Text(
+              description,
+              style: TextStyle(fontSize: 13, color: textColor),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+        SizedBox(height: 10),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Column(
               children: [
@@ -269,54 +295,26 @@ Widget buildMBTICard({
                 ),
               ],
             ),
-            SizedBox(width: 10),
+            SizedBox(width: 20),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                        decoration: BoxDecoration(
-                          color: textColor,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Text(
-                          mbtiType,
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 5),
-                      Text(
-                        description,
-                        style: TextStyle(fontSize: 15, color: textColor),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 10),
-                  ...traits.map(
-                    (trait) => Container(
-                      width: double.infinity,
-                      margin: EdgeInsets.symmetric(vertical: 5),
-                      padding: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: containerColor,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Text(
-                        trait,
-                        style: TextStyle(fontSize: 14, color: Colors.black),
-                        textAlign: TextAlign.left,
-                      ),
+                children: traits.map(
+                  (trait) => Container(
+                    width: double.infinity,
+                    margin: EdgeInsets.symmetric(vertical: 5),
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: containerColor,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      trait,
+                      style: TextStyle(fontSize: 14, color: Colors.black),
+                      textAlign: TextAlign.left,
                     ),
                   ),
-                ],
+                ).toList(),
               ),
             ),
           ],
