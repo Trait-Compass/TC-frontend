@@ -198,10 +198,19 @@ class _CustomCalendarSelectionState extends State<CustomCalendarSelection> {
 
     Widget buildCalendar(double boxWidth) {
       List<Widget> months = [];
-      int year = 2024;
+      
+      int year = DateTime.now().year;
+      int startMonth = DateTime.now().month;
+
+      for (int month = startMonth; month <= 12; month++) {
+        months.add(buildCalendarMonth(year, month, boxWidth));
+      }
+
+      year += 1;
       for (int month = 1; month <= 12; month++) {
         months.add(buildCalendarMonth(year, month, boxWidth));
       }
+
       return Column(children: months);
     }
 

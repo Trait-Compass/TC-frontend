@@ -1,4 +1,3 @@
-// calendarforJ.dart
 import 'package:flutter/material.dart';
 import '../pages/LocationAndPersonSelectionJ.dart';
 
@@ -100,7 +99,7 @@ class _CalendarForJState extends State<CalendarForJ> {
           fontSize: 16.0,
         );
       } else if (isBetweenSelectedDates(date)) {
-        return TextStyle(); // 범위 내의 날짜 글자 스타일
+        return TextStyle(); 
       } else {
         return TextStyle(
           color: Colors.black,
@@ -198,10 +197,19 @@ class _CalendarForJState extends State<CalendarForJ> {
 
     Widget buildFullCalendar(double boxWidth) {
       List<Widget> months = [];
-      int year = 2024;
+
+      int year = DateTime.now().year;
+      int startMonth = DateTime.now().month;
+
+      for (int month = startMonth; month <= 12; month++) {
+        months.add(buildMonthCalendar(year, month, boxWidth));
+      }
+
+      year += 1;
       for (int month = 1; month <= 12; month++) {
         months.add(buildMonthCalendar(year, month, boxWidth));
       }
+
       return Column(children: months);
     }
 

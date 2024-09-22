@@ -164,9 +164,9 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                     Expanded(
                       child: Text(
-                        "회원가입 및 이용약관에 동의하겠습니다",
+                        "회원가입 및 이용약관에 \n동의하겠습니다",
                         style: TextStyle(
-                            fontSize: screenHeight * 0.015,
+                            fontSize: 10,
                             fontWeight: FontWeight.bold),
                       ),
                     ),

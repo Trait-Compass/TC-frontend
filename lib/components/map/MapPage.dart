@@ -21,15 +21,6 @@ class _MapPageState extends State<MapPage> {
       appBar: AppBar(
         title: Text('내 일정', style: TextStyle(fontSize: 15)),
         actions: [
-          TextButton(
-            onPressed: () {
-              // 완료 버튼 기능 추가
-            },
-            child: Text(
-              '완료',
-              style: TextStyle(fontSize: 12, color: Colors.black),
-            ),
-          ),
         ],
         backgroundColor: Colors.white,
         elevation: 0,

@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-
-import 'package:untitled/components/basicframe.dart';
+import '../login/loginscreen.dart';
 import 'dart:convert';
 import '../../components/mbtitest/MBTItestpage.dart';
-import '../../components/mbti_selection_page.dart';
 
-import 'package:untitled/components/start/basicframe3.dart';
 
 class UserInfoScreen extends StatefulWidget {
   final String id;
@@ -100,8 +97,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => BasicFramePage(body: MBTISelectionPage()),
-        ),
+          builder: (context) => LoginScreen()),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -416,19 +412,18 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                 ElevatedButton(
                   onPressed: isButtonEnabled
                       ? () {
-                          _submitUserInfo(); // 회원정보 제출 후
+                          _submitUserInfo();
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => BasicFrame1Page(
-                                body: MBTISelectionPage(),
+                              builder: (context) => LoginScreen(
                               ),
-                            ), // 페이지 이동
+                            ), 
                           );
                         }
                       : null,
                   child: Text(
-                    '시작',
+                    '로그인 하러가기',
                     style: TextStyle(
                       fontSize: screenHeight * 0.025,
                       fontWeight: FontWeight.bold,

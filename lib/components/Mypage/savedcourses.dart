@@ -2,6 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:untitled/components/map/api.dart';
+import 'package:untitled/components/mbti_selection_page.dart';
+import 'package:untitled/components/start/basicframe2.dart';
+import 'package:untitled/pages/travelplan.dart';
 
 class SavedTravelCourses extends StatefulWidget {
   @override
@@ -54,7 +57,7 @@ class _SavedTravelCoursesState extends State<SavedTravelCourses> {
                     ),
                     alignment: Alignment.center,
                     child: Text(
-                      '지정한 코스가 없습니다.',
+                      '지정한 코스가 없습니다',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -66,17 +69,17 @@ class _SavedTravelCoursesState extends State<SavedTravelCourses> {
               } else {
                 List<Map<String, dynamic>> courses = snapshot.data!;
                 return Container(
-                  height: 160, 
+                  height: 160,
                   width: double.infinity,
                   child: ListView.builder(
                     scrollDirection: Axis.vertical,
-                    itemCount: courses.length, 
-                    physics: AlwaysScrollableScrollPhysics(), 
+                    itemCount: courses.length,
+                    physics: AlwaysScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
                       Map<String, dynamic> course = courses[index];
 
                       return Container(
-                        height: 70, 
+                        height: 70,
                         margin: EdgeInsets.symmetric(
                           vertical: 5,
                           horizontal: 0,
@@ -89,28 +92,7 @@ class _SavedTravelCoursesState extends State<SavedTravelCourses> {
                               ),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(10),
-                                child: Image.network(
-                                  _getImageUrl(course),
-                                  fit: BoxFit.cover,
-                                  width: double.infinity,
-                                  height: double.infinity,
-                                  loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-                                    if (loadingProgress == null) return child;
-                                    return Center(
-                                      child: CircularProgressIndicator(
-                                        value: loadingProgress.expectedTotalBytes != null
-                                            ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
-                                            : null,
-                                      ),
-                                    );
-                                  },
-                                  errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
-                                    return Container(
-                                      color: Colors.grey[300],
-                                      child: Icon(Icons.broken_image, size: 50, color: Colors.grey[700]),
-                                    );
-                                  },
-                                ),
+                                child: _buildImage(course),
                               ),
                             ),
                             Positioned(
@@ -168,7 +150,13 @@ class _SavedTravelCoursesState extends State<SavedTravelCourses> {
               Expanded(
                 child: ElevatedButton(
                   onPressed: () {
-                    // '코스 제작하기' 버튼 클릭 시의 동작 추가
+                    Navigator.push(
+                      context, 
+                      MaterialPageRoute(
+                        builder: (context) => BasicFramePage5(
+                            body: MyNewPage()), 
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFFEDEDED),
@@ -187,7 +175,13 @@ class _SavedTravelCoursesState extends State<SavedTravelCourses> {
               Expanded(
                 child: ElevatedButton(
                   onPressed: () {
-                    // '인기코스 보러가기' 버튼 클릭 시의 동작 추가
+                    Navigator.push(
+                      context, 
+                      MaterialPageRoute(
+                        builder: (context) => BasicFramePage5(
+                            body: MyNewPage()),
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFFEDEDED),
@@ -209,18 +203,60 @@ class _SavedTravelCoursesState extends State<SavedTravelCourses> {
     );
   }
 
-  // 이미지 URL을 가져오는 헬퍼 함수 추가
-  String _getImageUrl(Map<String, dynamic> course) {
+  Widget _buildImage(Map<String, dynamic> course) {
+    String? imageUrl = _getImageUrl(course);
+    if (imageUrl != null && imageUrl.isNotEmpty) {
+      return Image.network(
+        imageUrl,
+        fit: BoxFit.cover,
+        width: double.infinity,
+        height: double.infinity,
+        loadingBuilder: (BuildContext context, Widget child,
+            ImageChunkEvent? loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Center(
+            child: CircularProgressIndicator(
+              value: loadingProgress.expectedTotalBytes != null
+                  ? loadingProgress.cumulativeBytesLoaded /
+                      loadingProgress.expectedTotalBytes!
+                  : null,
+            ),
+          );
+        },
+        errorBuilder:
+            (BuildContext context, Object exception, StackTrace? stackTrace) {
+          return Image.asset(
+            'assets/city2.png',
+            fit: BoxFit.cover,
+            width: double.infinity,
+            height: double.infinity,
+          );
+        },
+      );
+    } else {
+      return Image.asset(
+        'assets/city2.png',
+        fit: BoxFit.cover,
+        width: double.infinity,
+        height: double.infinity,
+      );
+    }
+  }
+
+  String? _getImageUrl(Map<String, dynamic> course) {
     try {
-      if (course['day1'] != null && course['day1'] is List && course['day1'].isNotEmpty) {
+      if (course['day1'] != null &&
+          course['day1'] is List &&
+          course['day1'].isNotEmpty) {
         var day1FirstItem = course['day1'][0];
-        if (day1FirstItem['imageUrl'] != null) {
+        if (day1FirstItem['imageUrl'] != null &&
+            day1FirstItem['imageUrl'].isNotEmpty) {
           return day1FirstItem['imageUrl'];
         }
       }
     } catch (e) {
       print('Error fetching image URL: $e');
     }
-    return ''; // 기본값으로 빈 문자열 반환
+    return null;
   }
 }

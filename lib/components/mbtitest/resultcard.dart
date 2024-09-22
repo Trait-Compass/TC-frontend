@@ -153,6 +153,7 @@ class ResultCard extends StatelessWidget {
                                   SnackBar(
                                       content: Text(
                                           'MBTI 저장에 성공했어요! 내 정보에서 확인해주세요!')));
+                            
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(

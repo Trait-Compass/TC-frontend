@@ -166,9 +166,9 @@ class StepOneWidget extends StatelessWidget {
               child: Text(
                 '다음',
                 style: TextStyle(
-                  fontSize: screenHeight * 0.025,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                  color: Colors.grey[600],
                 ),
               ),
               style: ElevatedButton.styleFrom(
@@ -176,7 +176,7 @@ class StepOneWidget extends StatelessWidget {
                     ? Colors.black.withOpacity(0.28)
                     : Color(0xFFD9D9D9),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(20),
                   side: BorderSide(
                     color: allGroupsSelected()
                         ? Colors.black.withOpacity(0.28)

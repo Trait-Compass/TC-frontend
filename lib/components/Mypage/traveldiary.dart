@@ -1,8 +1,13 @@
-import 'dart:convert';
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:dotted_border/dotted_border.dart';
 import '../map/api.dart';
+import 'package:flutter/material.dart';
+import 'package:dotted_border/dotted_border.dart';
+import 'dart:convert';
+import 'package:untitled/components/map/api.dart';
+
 
 class TravelDiary extends StatefulWidget {
   @override
@@ -19,6 +24,7 @@ class _TravelDiaryState extends State<TravelDiary> {
   }
 
   Future<List<Map<String, dynamic>>> fetchTravelDiaries() async {
+
     try {
       final response = await ApiService.get('/diary/list');
       if (response.statusCode == 200) {
@@ -36,6 +42,17 @@ class _TravelDiaryState extends State<TravelDiary> {
       }
     } catch (error) {
       throw Exception('Failed to fetch travel diaries: $error');
+
+    final response = await ApiService.get('/diary/list');
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> responseData = json.decode(response.body);
+
+      List<dynamic> diaryList = responseData['result'];
+
+      return diaryList.cast<Map<String, dynamic>>();
+    } else {
+      throw Exception('Failed to load travel diaries');
     }
   }
 
@@ -76,7 +93,7 @@ class _TravelDiaryState extends State<TravelDiary> {
                     ),
                     alignment: Alignment.center,
                     child: Text(
-                      '작성된 여행일기장이 없습니다.',
+                      '작성된 여행일기장이 없습니다',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -110,28 +127,7 @@ class _TravelDiaryState extends State<TravelDiary> {
                               ),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(10),
-                                child: Image.network(
-                                  diary['imageUrl'] ?? '',
-                                  fit: BoxFit.cover,
-                                  width: double.infinity,
-                                  height: double.infinity,
-                                  loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-                                    if (loadingProgress == null) return child;
-                                    return Center(
-                                      child: CircularProgressIndicator(
-                                        value: loadingProgress.expectedTotalBytes != null
-                                            ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
-                                            : null,
-                                      ),
-                                    );
-                                  },
-                                  errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
-                                    return Container(
-                                      color: Colors.grey[300],
-                                      child: Icon(Icons.broken_image, size: 50, color: Colors.grey[700]),
-                                    );
-                                  },
-                                ),
+                                child: _buildImage(diary),
                               ),
                             ),
                             Positioned(
@@ -147,20 +143,6 @@ class _TravelDiaryState extends State<TravelDiary> {
                                       fontSize: 14,
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
-                                      shadows: [
-                                        Shadow(
-                                          offset: Offset(1.0, 1.0),
-                                          blurRadius: 3.0,
-                                          color: Colors.black,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Text(
-                                    '지역: ${diary['region'] ?? '정보 없음'}',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.white,
                                       shadows: [
                                         Shadow(
                                           offset: Offset(1.0, 1.0),
@@ -200,6 +182,46 @@ class _TravelDiaryState extends State<TravelDiary> {
       ),
     );
   }
+
 }
 
 
+
+  Widget _buildImage(Map<String, dynamic> diary) {
+    String? imageUrl = diary['imageUrl'];
+    if (imageUrl != null && imageUrl.isNotEmpty) {
+      return Image.network(
+        imageUrl,
+        fit: BoxFit.cover,
+        width: double.infinity,
+        height: double.infinity,
+        loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Center(
+            child: CircularProgressIndicator(
+              value: loadingProgress.expectedTotalBytes != null
+                  ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                  : null,
+            ),
+          );
+        },
+        errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+          return Image.asset(
+            'assets/city2.png',
+            fit: BoxFit.cover,
+            width: double.infinity,
+            height: double.infinity,
+          );
+        },
+      );
+    } else {
+
+      return Image.asset(
+        'assets/city2.png',
+        fit: BoxFit.cover,
+        width: double.infinity,
+        height: double.infinity,
+      );
+    }
+  }
+}
