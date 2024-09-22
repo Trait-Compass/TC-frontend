@@ -66,16 +66,39 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
     return koreanNumbers[index];
   }
 
-  // 권한 요청 함수
-  Future<void> _requestPermissions(int index) async {
-    PermissionStatus status = await Permission.photos.request(); // 사진 접근 권한 요청
+Future<void> _requestPermissions(int index) async {
+  Map<Permission, PermissionStatus> statuses;
 
-    if (status.isGranted) {
-      _pickImage(index); // 권한이 허용되면 이미지 선택 함수 호출
+  if (Platform.isAndroid) {
+    if (Platform.isAndroid && await Permission.photos.isGranted) {
+      statuses = await [
+        Permission.photos,
+        Permission.videos,
+      ].request();
     } else {
-      print("사진 접근 권한이 필요합니다.");
+      statuses = await [
+        Permission.photos,
+        Permission.videos,
+      ].request();
+    }
+  } else if (Platform.isIOS) {
+    statuses = await [Permission.photos].request();
+  } else {
+    statuses = {};
+  }
+
+  if (statuses.values.any((status) => status.isGranted)) {
+    _pickImage(index); 
+  } else {
+    print("사진 접근 권한이 필요합니다.");
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('사진 접근 권한이 필요합니다. 설정에서 권한을 허용해주세요.')),
+    );
+    if (statuses.values.any((status) => status.isPermanentlyDenied)) {
+      openAppSettings(); 
     }
   }
+}
 
   Future<void> _pickImage(int index) async {
     try {
