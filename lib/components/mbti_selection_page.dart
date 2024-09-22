@@ -168,7 +168,7 @@ class StepOneWidget extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Colors.grey[600],
+                  color: allGroupsSelected() ? Colors.white : Colors.grey[600],
                 ),
               ),
               style: ElevatedButton.styleFrom(
