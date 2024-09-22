@@ -1,9 +1,7 @@
 // lib/pages/diaryforT.dart
 
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 import '../map/api.dart';
 import '../start/basicframe3.dart';
 import 'uploadmypictures.dart';
@@ -11,7 +9,7 @@ import 'hexagonalchart.dart';
 import 'coursefeedback.dart';
 import '../Mypage/mypagemodelforT.dart';
 import 'package:http/http.dart' as http;
-import 'dart:typed_data';
+
 
 void main() {
   runApp(MaterialApp(

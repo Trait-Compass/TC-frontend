@@ -1,9 +1,7 @@
 // lib/pages/diaryforF.dart
 
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
+
 import 'diaryforT.dart';
 import 'emotionalchart.dart';
 import 'uploadmypicturesforF.dart';
@@ -56,7 +54,7 @@ class _DiaryforFState extends State<DiaryforF> {
                     sadEmotions: diaryEmotion.sadEmotions,
                     angryEmotions: diaryEmotion.angryEmotions,
                     positiveFeedback: diaryEmotion.positiveFeedback,
-                    improvementFeedback: diaryEmotion.negativeFeedback, //TODO
+                    improvementFeedback: diaryEmotion.negativeFeedback, 
                     finalThoughts: diaryEmotion.finalThoughts,
                     travelPhotos: diaryEmotion.travelPhotos,
                   );

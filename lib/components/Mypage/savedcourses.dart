@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:untitled/components/map/api.dart';
-import 'package:untitled/components/mbti_selection_page.dart';
 import 'package:untitled/components/start/basicframe2.dart';
 import 'package:untitled/pages/travelplan.dart';
 
