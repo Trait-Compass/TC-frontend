@@ -122,7 +122,7 @@ class _MapdetailPageState extends State<MapdetailPage> {
                         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 60),
                       ),
                       child: Text(
-                        '네! 코스 저장할게요',
+                        '코스 저장할게요',
                         style: TextStyle(color: Colors.black, fontSize: 18),
                       ),
                     ),
@@ -136,10 +136,10 @@ class _MapdetailPageState extends State<MapdetailPage> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 35),
+                        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 50),
                       ),
                       child: Text(
-                        '아니요! 코스 저장안할게요 ',
+                        '코스 저장안할게요 ',
                         style: TextStyle(color: Colors.black, fontSize: 18),
                       ),
                     ),
