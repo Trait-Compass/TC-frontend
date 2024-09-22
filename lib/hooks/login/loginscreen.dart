@@ -179,15 +179,6 @@ class _LoginScreenState extends State<LoginScreen> {
             children: <Widget>[
               // 로고 이미지 (필요에 따라 수정)
               GestureDetector(
-                onTap: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          BasicFramePage(body: MBTISelectionPage()),
-                    ),
-                  );
-                },
                 child: Image.asset(
                   'assets/mbtilogo.jpg',
                   height: 100,
