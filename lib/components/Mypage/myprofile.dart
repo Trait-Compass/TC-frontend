@@ -89,7 +89,7 @@ class ProfileSection extends StatelessWidget {
                         height: 110,
                         width: 70,
                         child: Image.asset(
-                          'assets/istj.png',
+                          'assets/image.png',
                           fit: BoxFit.cover,
                         ),
                       ),
