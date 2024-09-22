@@ -1,6 +1,8 @@
-// TravelDiary.dart
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:dotted_border/dotted_border.dart';
+import '../map/api.dart';
 
 class TravelDiary extends StatefulWidget {
   @override
@@ -8,25 +10,38 @@ class TravelDiary extends StatefulWidget {
 }
 
 class _TravelDiaryState extends State<TravelDiary> {
-  Future<List<Map<String, dynamic>>> _travelDiaryFuture = Future.value([
-    {
-      'coursename': '제주도 여행',
-      'region': '제주도',
-      'nature': 'T',
-      'imageUrl': 'https://example.com/jeju.jpg',
-    },
-    {
-      'coursename': '부산 여행',
-      'region': '부산',
-      'nature': 'F',
-      'imageUrl': 'https://example.com/busan.jpg',  
-    },
-  ]);
+  late Future<List<Map<String, dynamic>>> _travelDiaryFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _travelDiaryFuture = fetchTravelDiaries();
+  }
+
+  Future<List<Map<String, dynamic>>> fetchTravelDiaries() async {
+    try {
+      final response = await ApiService.get('/diary/list');
+      if (response.statusCode == 200) {
+        print(response);
+        final Map<String, dynamic> responseData = json.decode(response.body);
+
+        if (responseData['result'] is List) {
+          final List<dynamic> data = responseData['result'];
+          return List<Map<String, dynamic>>.from(data.map((item) => Map<String, dynamic>.from(item)));
+        } else {
+          throw Exception('Unexpected data format: result is not a list');
+        }
+      } else {
+        throw Exception('Failed to load travel diaries: ${response.statusCode}');
+      }
+    } catch (error) {
+      throw Exception('Failed to fetch travel diaries: $error');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      // 기존 코드 유지
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,12 +92,12 @@ class _TravelDiaryState extends State<TravelDiary> {
                   child: ListView.builder(
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemCount: diaries.length > 2 ? 2 : diaries.length, 
+                    itemCount: diaries.length > 2 ? 2 : diaries.length,
                     itemBuilder: (context, index) {
                       Map<String, dynamic> diary = diaries[index];
 
                       return Container(
-                        height: 70, 
+                        height: 70,
                         margin: EdgeInsets.symmetric(
                           vertical: 5,
                           horizontal: 0,
@@ -127,7 +142,7 @@ class _TravelDiaryState extends State<TravelDiary> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    diary['coursename'] ?? '코스 이름 없음',
+                                    diary['courseName'] ?? '코스 이름 없음',
                                     style: TextStyle(
                                       fontSize: 14,
                                       color: Colors.white,
@@ -186,3 +201,5 @@ class _TravelDiaryState extends State<TravelDiary> {
     );
   }
 }
+
+
