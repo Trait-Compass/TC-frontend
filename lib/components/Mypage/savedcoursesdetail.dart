@@ -1,5 +1,3 @@
-// saved_course_detail_page.dart
-
 import 'package:flutter/material.dart';
 
 class SavedCourseDetailPage extends StatefulWidget {
@@ -35,11 +33,15 @@ class _SavedCourseDetailPageState extends State<SavedCourseDetailPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title:
-            Text('내 일정', style: TextStyle(fontSize: 15, color: Colors.black)),
+        title: Text('내 일정', style: TextStyle(fontSize: 15, color: Colors.black)),
         backgroundColor: Colors.white,
         elevation: 0,
-        iconTheme: IconThemeData(color: Colors.black),
+        iconTheme: IconThemeData(color: Colors.black), 
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+          ),
+        ), 
       ),
       body: Column(
         children: [
@@ -106,6 +108,7 @@ class _SavedCourseDetailPageState extends State<SavedCourseDetailPage> {
                                   crossAxisAlignment:
                                       CrossAxisAlignment.start,
                                   children: [
+                                    // 여행지 이름
                                     Text(
                                       currentTripDetails[index]['name'] ??
                                           '알 수 없는 장소',
@@ -139,9 +142,11 @@ class _SavedCourseDetailPageState extends State<SavedCourseDetailPage> {
                         ),
                       ],
                     ),
+                    // 이동 시간 표시
                     if (index < currentTripDetails.length - 1)
                       Padding(
-                        padding: const EdgeInsets.only(left: 40.0, top: 8.0),
+                        padding:
+                            const EdgeInsets.only(left: 40.0, top: 8.0),
                         child: Row(
                           children: [
                             Icon(Icons.directions_car, size: 20),
