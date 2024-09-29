@@ -2,7 +2,7 @@
 
 import 'dart:typed_data';
 
-class TravelDiary {
+class TravelDiaryT {
   // 필수 필드
   String courseName;
   DateTime travelDate;
@@ -30,7 +30,7 @@ class TravelDiary {
   String? improvementFeedback;
   String? finalThoughts;
 
-  TravelDiary({
+  TravelDiaryT({
     required this.courseName,
     required this.travelDate,
     required this.nature,
@@ -56,55 +56,65 @@ class TravelDiary {
     this.finalThoughts,
   });
 
-  // JSON으로부터 객체 생성
-  factory TravelDiary.fromJson(Map<String, dynamic> json) {
-    return TravelDiary(
-      courseName: json['courseName'],
-      travelDate: DateTime.parse(json['travelDate']),
-      nature: json['nature'],
-      travelPhotos: json['travelPhotos'] != null
-          ? List<String>.from(json['travelPhotos'])
+  // Map<String, dynamic>으로부터 객체 생성
+  factory TravelDiaryT.fromMap(Map<String, dynamic> map) {
+    return TravelDiaryT(
+      courseName: map['courseName'] ?? '',
+      travelDate: map['travelDate'] != null
+          ? DateTime.parse(map['travelDate'])
+          : DateTime.now(),
+      nature: map['nature'] ?? 'T',
+      travelPhotos: map['imageUrls'] != null
+          ? List<String>.from(map['imageUrls'])
           : null,
-      webImages: json['webImages'] != null
-          ? List<Uint8List>.from(json['webImages']
-              .map((x) => Uint8List.fromList(List<int>.from(x))))
+      transportationSatisfaction: map['transportationSatisfaction'] != null
+          ? int.tryParse(map['transportationSatisfaction'].toString())
           : null,
-      transportationSatisfaction: json['transportationSatisfaction'],
-      sightseeingSatisfaction: json['sightseeingSatisfaction'],
-      accommodationSatisfaction: json['accommodationSatisfaction'],
-      priceSatisfaction: json['priceSatisfaction'],
-      environmentSatisfaction: json['environmentSatisfaction'],
-      foodSatisfaction: json['foodSatisfaction'],
-      satisfactionFeedback: json['satisfactionFeedback'],
-      keepFeedback: json['keepFeedback'],
-      happyEmotions: json['happyEmotions'] != null
-          ? List<String>.from(json['happyEmotions'])
+      sightseeingSatisfaction: map['sightseeingSatisfaction'] != null
+          ? int.tryParse(map['sightseeingSatisfaction'].toString())
           : null,
-      satisfiedEmotions: json['satisfiedEmotions'] != null
-          ? List<String>.from(json['satisfiedEmotions'])
+      accommodationSatisfaction: map['accommodationSatisfaction'] != null
+          ? int.tryParse(map['accommodationSatisfaction'].toString())
           : null,
-      comfortableEmotions: json['comfortableEmotions'] != null
-          ? List<String>.from(json['comfortableEmotions'])
+      priceSatisfaction: map['priceSatisfaction'] != null
+          ? int.tryParse(map['priceSatisfaction'].toString())
           : null,
-      surprisedEmotions: json['surprisedEmotions'] != null
-          ? List<String>.from(json['surprisedEmotions'])
+      environmentSatisfaction: map['environmentSatisfaction'] != null
+          ? int.tryParse(map['environmentSatisfaction'].toString())
           : null,
-      disappointedEmotions: json['disappointedEmotions'] != null
-          ? List<String>.from(json['disappointedEmotions'])
+      foodSatisfaction: map['foodSatisfaction'] != null
+          ? int.tryParse(map['foodSatisfaction'].toString())
           : null,
-      sadEmotions: json['sadEmotions'] != null
-          ? List<String>.from(json['sadEmotions'])
+      satisfactionFeedback: map['satisfactionFeedback'],
+      keepFeedback: map['keepFeedback'],
+      happyEmotions: map['happyEmotions'] != null
+          ? (map['happyEmotions'] as String).split(',')
           : null,
-      angryEmotions: json['angryEmotions'] != null
-          ? List<String>.from(json['angryEmotions'])
+      satisfiedEmotions: map['satisfiedEmotions'] != null
+          ? (map['satisfiedEmotions'] as String).split(',')
           : null,
-      positiveFeedback: json['positiveFeedback'],
-      improvementFeedback: json['improvementFeedback'],
-      finalThoughts: json['finalThoughts'],
+      comfortableEmotions: map['comfortableEmotions'] != null
+          ? (map['comfortableEmotions'] as String).split(',')
+          : null,
+      surprisedEmotions: map['surprisedEmotions'] != null
+          ? (map['surprisedEmotions'] as String).split(',')
+          : null,
+      disappointedEmotions: map['disappointedEmotions'] != null
+          ? (map['disappointedEmotions'] as String).split(',')
+          : null,
+      sadEmotions: map['sadEmotions'] != null
+          ? (map['sadEmotions'] as String).split(',')
+          : null,
+      angryEmotions: map['angryEmotions'] != null
+          ? (map['angryEmotions'] as String).split(',')
+          : null,
+      positiveFeedback: map['positiveFeedback'],
+      improvementFeedback: map['improvementFeedback'],
+      finalThoughts: map['finalThoughts'],
     );
   }
 
-  // 객체를 JSON으로 변환
+  // 객체를 Map<String, dynamic>으로 변환
   Map<String, dynamic> toJson() {
     return {
       'courseName': courseName,
@@ -120,13 +130,13 @@ class TravelDiary {
       'foodSatisfaction': foodSatisfaction,
       'satisfactionFeedback': satisfactionFeedback,
       'keepFeedback': keepFeedback,
-      'happyEmotions': happyEmotions,
-      'satisfiedEmotions': satisfiedEmotions,
-      'comfortableEmotions': comfortableEmotions,
-      'surprisedEmotions': surprisedEmotions,
-      'disappointedEmotions': disappointedEmotions,
-      'sadEmotions': sadEmotions,
-      'angryEmotions': angryEmotions,
+      'happyEmotions': happyEmotions?.join(','),
+      'satisfiedEmotions': satisfiedEmotions?.join(','),
+      'comfortableEmotions': comfortableEmotions?.join(','),
+      'surprisedEmotions': surprisedEmotions?.join(','),
+      'disappointedEmotions': disappointedEmotions?.join(','),
+      'sadEmotions': sadEmotions?.join(','),
+      'angryEmotions': angryEmotions?.join(','),
       'positiveFeedback': positiveFeedback,
       'improvementFeedback': improvementFeedback,
       'finalThoughts': finalThoughts,

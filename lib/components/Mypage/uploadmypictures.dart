@@ -11,7 +11,7 @@ import '../Mypage/mypagemodelforT.dart';
 import 'selectdate.dart';
 
 class TravelDetailPage extends StatefulWidget {
-  final TravelDiary diary; // 모델 인스턴스 전달
+  final TravelDiaryT diary; // 모델 인스턴스 전달
 
   TravelDetailPage({required this.diary});
 

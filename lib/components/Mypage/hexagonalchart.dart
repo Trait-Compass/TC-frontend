@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import '../Mypage/mypagemodelforT.dart'; // 모델 파일 경로에 맞게 수정하세요.
 
 class RadarChartWidget extends StatefulWidget {
-  final TravelDiary diary; // 모델 인스턴스 전달
+  final TravelDiaryT diary; // 모델 인스턴스 전달
 
   RadarChartWidget({required this.diary});
 

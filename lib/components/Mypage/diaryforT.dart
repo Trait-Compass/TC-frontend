@@ -24,7 +24,7 @@ class DiaryforT extends StatefulWidget {
 
 class _DiaryforTState extends State<DiaryforT> {
   // TravelDiary 모델 인스턴스 생성
-  TravelDiary diary = TravelDiary(
+  TravelDiaryT diary = TravelDiaryT(
     courseName: '',
     travelDate: DateTime.now(),
     nature: '일기 종류 예시',

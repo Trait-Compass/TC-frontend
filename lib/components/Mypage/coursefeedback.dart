@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../Mypage/mypagemodelforT.dart';
 
 class TravelDetailAnalysisSection extends StatefulWidget {
-  final TravelDiary diary; // 모델 인스턴스 전달
+  final TravelDiaryT diary; // 모델 인스턴스 전달
 
   TravelDetailAnalysisSection({required this.diary});
 

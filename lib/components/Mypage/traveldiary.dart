@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:untitled/components/Mypage/diaryforF.dart';
+import 'package:untitled/components/Mypage/diaryforT.dart';
 import '../map/api.dart';
 
 class TravelDiary extends StatefulWidget {
@@ -32,7 +34,8 @@ class _TravelDiaryState extends State<TravelDiary> {
           throw Exception('Unexpected data format: result is not a list');
         }
       } else {
-        throw Exception('Failed to load travel diaries: ${response.statusCode}');
+        throw Exception(
+            'Failed to load travel diaries: ${response.statusCode}');
       }
     } catch (error) {
       throw Exception('Failed to fetch travel diaries: $error');
@@ -88,7 +91,7 @@ class _TravelDiaryState extends State<TravelDiary> {
               } else {
                 List<Map<String, dynamic>> diaries = snapshot.data!;
                 return Container(
-                  height: 160, 
+                  height: 160,
                   width: double.infinity,
                   child: ListView.builder(
                     scrollDirection: Axis.vertical,
@@ -97,63 +100,83 @@ class _TravelDiaryState extends State<TravelDiary> {
                     itemBuilder: (context, index) {
                       Map<String, dynamic> diary = diaries[index];
 
-                      return Container(
-                        height: 70,
-                        margin: EdgeInsets.symmetric(
-                          vertical: 5,
-                          horizontal: 0,
-                        ),
-                        child: Stack(
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
+                      return GestureDetector(
+                        onTap: () {
+                          String nature = diary['nature'] ?? 'F';
+                          if (nature == 'T') {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DiaryforT(),//diary: diary),
                               ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: _buildImage(diary),
+                            );
+                          } else {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DiaryforF(),  //diary: diary),
                               ),
-                            ),
-                            Positioned(
-                              bottom: 8,
-                              left: 8,
-                              right: 8,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    diary['courseName'] ?? '코스 이름 없음',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      shadows: [
-                                        Shadow(
-                                          offset: Offset(1.0, 1.0),
-                                          blurRadius: 3.0,
-                                          color: Colors.black,
-                                        ),
-                                      ],
+                            );
+                          }
+                        },
+                        child: Container(
+                          height: 70,
+                          margin: EdgeInsets.symmetric(
+                            vertical: 5,
+                            horizontal: 0,
+                          ),
+                          child: Stack(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: _buildImage(diary),
+                                ),
+                              ),
+                              Positioned(
+                                bottom: 8,
+                                left: 8,
+                                right: 8,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      diary['courseName'] ?? '코스 이름 없음',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        shadows: [
+                                          Shadow(
+                                            offset: Offset(1.0, 1.0),
+                                            blurRadius: 3.0,
+                                            color: Colors.black,
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  Text(
-                                    '${diary['nature'] == 'T' ? 'T' : 'F'}',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.white,
-                                      shadows: [
-                                        Shadow(
-                                          offset: Offset(1.0, 1.0),
-                                          blurRadius: 3.0,
-                                          color: Colors.black,
-                                        ),
-                                      ],
+                                    Text(
+                                      '${diary['nature'] == 'T' ? 'T' : 'F'}',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.white,
+                                        shadows: [
+                                          Shadow(
+                                            offset: Offset(1.0, 1.0),
+                                            blurRadius: 3.0,
+                                            color: Colors.black,
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       );
                     },
