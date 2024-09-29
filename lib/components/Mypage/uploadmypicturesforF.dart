@@ -1,8 +1,10 @@
 // lib/pages/uploadmypictures.dart
 
+import 'dart:math';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart'; // file_picker 임포트
 import 'package:dotted_border/dotted_border.dart';
 import 'dart:io';
 import 'dart:typed_data';
@@ -47,6 +49,14 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
         _nextBoxToShow = i + 1;
       }
     }
+    if (widget.diaryEmotion.webImages != null) {
+      for (int i = 0;
+          i < widget.diaryEmotion.webImages!.length && i < 10;
+          i++) {
+        _webImages[i] = widget.diaryEmotion.webImages![i];
+        _nextBoxToShow = i + 1;
+      }
+    }
   }
 
   String _getKoreanNumber(int index) {
@@ -65,71 +75,98 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
     return koreanNumbers[index];
   }
 
- Future<void> _requestPermissions(int index) async {
-  Map<Permission, PermissionStatus> statuses;
+  Future<void> _requestPermissions(int index) async {
+    if (kIsWeb) {
+      // 웹에서는 권한 요청 불필요
+      _pickImage(index);
+      return;
+    }
 
-  if (Platform.isAndroid) {
-    if (Platform.isAndroid && await Permission.photos.isGranted) {
+    Map<Permission, PermissionStatus> statuses;
+
+    if (Platform.isAndroid) {
       statuses = await [
         Permission.photos,
         Permission.videos,
       ].request();
+    } else if (Platform.isIOS) {
+      statuses = await [Permission.photos].request();
     } else {
-      statuses = await [
-        Permission.photos,
-        Permission.videos,
-      ].request();
+      statuses = {};
     }
-  } else if (Platform.isIOS) {
-    statuses = await [Permission.photos].request();
-  } else {
-    statuses = {};
+
+    if (statuses.values.any((status) => status.isGranted)) {
+      _pickImage(index);
+    } else {
+      print("사진 접근 권한이 필요합니다.");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('사진 접근 권한이 필요합니다. 설정에서 권한을 허용해주세요.')),
+      );
+      if (statuses.values.any((status) => status.isPermanentlyDenied)) {
+        openAppSettings();
+      }
+    }
   }
 
-  if (statuses.values.any((status) => status.isGranted)) {
-    _pickImage(index); 
-  } else {
-    print("사진 접근 권한이 필요합니다.");
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('사진 접근 권한이 필요합니다. 설정에서 권한을 허용해주세요.')),
-    );
-    if (statuses.values.any((status) => status.isPermanentlyDenied)) {
-      openAppSettings(); 
-    }
-  }
-}
   Future<void> _pickImage(int index) async {
     try {
-      final ImagePicker picker = ImagePicker();
-      final XFile? pickedFile =
-          await picker.pickImage(source: ImageSource.gallery);
+      setState(() {
+        _isLoading[index] = true;
+      });
 
-      if (pickedFile != null) {
-        setState(() {
-          _isLoading[index] = true;
-        });
+      if (kIsWeb) {
+        // 웹에서는 file_picker 사용
+        FilePickerResult? result = await FilePicker.platform.pickFiles(
+          type: FileType.image,
+          allowMultiple: false,
+        );
 
-        await Future.delayed(Duration(seconds: loadingTime));
+        if (result != null && result.files.single.bytes != null) {
+          Uint8List webImageBytes = result.files.single.bytes!;
+          await Future.delayed(Duration(seconds: loadingTime));
 
-        if (kIsWeb) {
-          Uint8List webImageBytes = await pickedFile.readAsBytes();
           setState(() {
             _webImages[index] = webImageBytes;
             _isLoading[index] = false;
             if (index + 1 < 10) _nextBoxToShow = index + 2;
           });
         } else {
+          // 사용자가 파일 선택을 취소한 경우
+          setState(() {
+            _isLoading[index] = false;
+          });
+        }
+      } else {
+        // 모바일에서는 image_picker 사용
+        final ImagePicker picker = ImagePicker();
+        final XFile? pickedFile =
+            await picker.pickImage(source: ImageSource.gallery);
+
+        if (pickedFile != null) {
+          await Future.delayed(Duration(seconds: loadingTime));
+
           setState(() {
             _selectedImages[index] = File(pickedFile.path);
             _isLoading[index] = false;
             if (index + 1 < 10) _nextBoxToShow = index + 2;
           });
+        } else {
+          // 사용자가 이미지 선택을 취소한 경우
+          setState(() {
+            _isLoading[index] = false;
+          });
         }
-
-        _saveToModel();
       }
+
+      _saveToModel();
     } catch (e) {
       print("이미지를 선택하는 중 오류가 발생했습니다: $e");
+      setState(() {
+        _isLoading[index] = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('이미지 선택 중 오류가 발생했습니다. 다시 시도해주세요.')),
+      );
     }
   }
 
@@ -180,63 +217,33 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
     if (_selectedDateRange != null && _selectedDateRange!.length == 2) {
       widget.diaryEmotion.travelDate = _selectedDateRange![0]; // 시작 날짜로 설정
     }
+
+    // 모바일 사진 저장
     widget.diaryEmotion.travelPhotos = _selectedImages
         .where((file) => file != null)
         .map((file) => file!.path)
         .toList();
+
+    // 웹 사진 저장 (base64 인코딩 필요 시 서버에 맞게 조정)
+    widget.diaryEmotion.webImages =
+        _webImages.where((data) => data != null).map((data) => data!).toList();
+
     // 추가 필드도 동일하게 저장
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          SizedBox(height: 5),
-          Row(
-            children: [
-              Expanded(
-                child: Container(
-                  height: 30,
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  decoration: BoxDecoration(
-                    color: Color(0xFFEAEAEA),
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        '코스 이름:',
-                        style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey[800]),
-                      ),
-                      Expanded(
-                        child: TextField(
-                          controller: _courseNameController,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.symmetric(horizontal: 5),
-                            isDense: true,
-                          ),
-                          style: TextStyle(fontSize: 14),
-                          onChanged: (value) {
-                            _saveToModel();
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(width: 10),
-              Expanded(
-                child: GestureDetector(
-                  onTap: _showDateSelectionDialog,
+    return SingleChildScrollView(
+      // 스크롤 가능하도록 SingleChildScrollView 추가
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            SizedBox(height: 5),
+            Row(
+              children: [
+                Expanded(
                   child: Container(
                     height: 30,
                     padding: EdgeInsets.symmetric(horizontal: 8.0),
@@ -247,51 +254,92 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        if (_selectedDateRange == null)
-                          Text(
-                            '여행 날짜:',
-                            style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey[800]),
+                        Text(
+                          '코스 이름:',
+                          style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey[800]),
+                        ),
+                        Expanded(
+                          child: TextField(
+                            controller: _courseNameController,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              contentPadding:
+                                  EdgeInsets.symmetric(horizontal: 5),
+                              isDense: true,
+                            ),
+                            style: TextStyle(fontSize: 14),
+                            onChanged: (value) {
+                              _saveToModel();
+                            },
                           ),
-                        if (_selectedDateRange != null &&
-                            _selectedDateRange!.length == 2)
-                          Text(
-                            '${formatDateRange(_selectedDateRange!)}',
-                            style: TextStyle(
-                                fontSize: 10, fontWeight: FontWeight.bold),
-                          ),
+                        ),
                       ],
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-          SizedBox(height: 5),
-          Text('여행 사진 업로드 (최대 10장)',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-          SizedBox(height: 5),
-          Container(
-            height: 150,
-            child: Scrollbar(
-              controller: _scrollController,
-              thumbVisibility: true,
-              child: SingleChildScrollView(
+                SizedBox(width: 10),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: _showDateSelectionDialog,
+                    child: Container(
+                      height: 30,
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      decoration: BoxDecoration(
+                        color: Color(0xFFEAEAEA),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          if (_selectedDateRange == null)
+                            Text(
+                              '여행 날짜:',
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey[800]),
+                            ),
+                          if (_selectedDateRange != null &&
+                              _selectedDateRange!.length == 2)
+                            Text(
+                              '${formatDateRange(_selectedDateRange!)}',
+                              style: TextStyle(
+                                  fontSize: 10, fontWeight: FontWeight.bold),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 5),
+            Text('여행 사진 업로드 (최대 10장)',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            SizedBox(height: 5),
+            Container(
+              height: 150,
+              child: Scrollbar(
                 controller: _scrollController,
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: List.generate(
-                      _nextBoxToShow, (index) => _buildImageBox(index)),
+                thumbVisibility: true,
+                child: SingleChildScrollView(
+                  controller: _scrollController,
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: List.generate(
+                        _nextBoxToShow, (index) => _buildImageBox(index)),
+                  ),
                 ),
               ),
             ),
-          ),
-          SizedBox(height: 10),
-          Divider(color: Color(0xFFE4E4E4), thickness: 1, height: 1),
-        ],
+            SizedBox(height: 10),
+            Divider(color: Color(0xFFE4E4E4), thickness: 1, height: 1),
+          ],
+        ),
       ),
     );
   }
@@ -349,12 +397,14 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
                                     height: 80,
                                     fit: BoxFit.contain,
                                   )
-                                : Image.memory(
-                                    _webImages[index]!,
-                                    width: 120,
-                                    height: 80,
-                                    fit: BoxFit.contain,
-                                  ),
+                                : _webImages[index] != null
+                                    ? Image.memory(
+                                        _webImages[index]!,
+                                        width: 120,
+                                        height: 80,
+                                        fit: BoxFit.contain,
+                                      )
+                                    : Container(),
                           ),
                         )
                       : DottedBorder(
