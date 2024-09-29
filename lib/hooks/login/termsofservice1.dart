@@ -265,7 +265,7 @@ class _TermsAndConditionsPage1State extends State<TermsAndConditionsPage1> {
                   '사용자는 계정 삭제 또는 가입한 정보 일부 또는 전체 정보를 삭제하도록 관리자에게 요청할 수 있습니다. ​\n'
                   '사용자 아이디, 이름을 기재하여 삭제가 필요한 정보를 메일로 보내주세요​.\n'
                   '-담당자 이메일: hwang020107@naver.com​\n'
-                  '담당자가 확인하여 사용자가 요청하는 정보를 삭제할 수 있습니다. 이 내용 으로 전체를 다 바꿔줘!',
+                  '담당자가 확인하여 사용자가 요청하는 정보를 삭제할 수 있습니다.',
                   style: TextStyle(fontSize: 10),
                 ),
                 SizedBox(height: screenHeight * 0.05),
@@ -297,8 +297,7 @@ class _TermsAndConditionsPage1State extends State<TermsAndConditionsPage1> {
                         horizontal: screenWidth * 0.1,
                       ),
                       decoration: BoxDecoration(
-                        color:
-                            _isPressed ? Colors.grey[800] : Colors.grey[200],
+                        color: _isPressed ? Colors.grey[800] : Colors.grey[200],
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
