@@ -422,4 +422,29 @@ class ApiService {
       return false;
     }
   }
-}
+
+  // 저장된 코스 상세 정보 가져오기
+  static Future<Map<String, dynamic>> fetchSavedCourseDetails(
+      String courseId) async {
+    final String endpoint = '/course/my/$courseId';
+    final response = await get(endpoint);
+
+    if (response.statusCode == 200) {
+      try {
+        Map<String, dynamic> data = json.decode(response.body);
+        if (data['result'] is Map<String, dynamic>) {
+          return data['result']; 
+        } else if (data['result'] is List && data['result'].isNotEmpty) {
+          return data['result'][0]; 
+        } else {
+          throw Exception('Unexpected data format: result is not valid');
+        }
+      } catch (e) {
+        throw Exception('Failed to parse saved course details. Error: $e');
+      }
+    } else {
+      throw Exception(
+          'Failed to load saved course details. Status code: ${response.statusCode}, Reason: ${response.reasonPhrase}');
+    }
+  }
+} 

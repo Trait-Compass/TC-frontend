@@ -1,9 +1,11 @@
 // SavedTravelCourses.dart
+
 import 'package:flutter/material.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:untitled/components/map/api.dart';
 import 'package:untitled/components/start/basicframe2.dart';
 import 'package:untitled/pages/travelplan.dart';
+import 'package:untitled/components/Mypage/savedcoursesdetail.dart'; 
 
 class SavedTravelCourses extends StatefulWidget {
   @override
@@ -56,7 +58,7 @@ class _SavedTravelCoursesState extends State<SavedTravelCourses> {
                     ),
                     alignment: Alignment.center,
                     child: Text(
-                      '저정한 코스가 없습니다',
+                      '저장한 코스가 없습니다',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -83,57 +85,122 @@ class _SavedTravelCoursesState extends State<SavedTravelCourses> {
                           vertical: 5,
                           horizontal: 0,
                         ),
-                        child: Stack(
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: _buildImage(course),
-                              ),
-                            ),
-                            Positioned(
-                              bottom: 8,
-                              left: 8,
-                              right: 8,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    course['region'] ?? '지역 정보 없음',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      shadows: [
-                                        Shadow(
-                                          offset: Offset(1.0, 1.0),
-                                          blurRadius: 3.0,
-                                          color: Colors.black,
-                                        ),
-                                      ],
-                                    ),
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () async {
+                            print('Image tapped');
+                            String? courseId = course['_id'] ?? course['id']; 
+                            if (courseId == null) {
+                              print('Course ID is null');
+                              return;
+                            }
+                            try {
+
+                              Map<String, dynamic> courseDetails =
+                                  await ApiService.fetchSavedCourseDetails(
+                                      courseId);
+
+                              Map<int, List<Map<String, dynamic>>> tripDetails =
+                                  {};
+                              int totalDays = 0;
+
+                              courseDetails.forEach((key, value) {
+                                if (key.startsWith('day') &&
+                                    value is List &&
+                                    value.isNotEmpty) {
+                                  int dayIndex =
+                                      int.parse(key.substring(3)) - 1;
+                                  List<dynamic> dayData = value;
+                                  tripDetails[dayIndex] =
+                                      dayData.cast<Map<String, dynamic>>();
+                                  if (dayIndex + 1 > totalDays) {
+                                    totalDays = dayIndex + 1;
+                                  }
+                                }
+                              });
+
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SavedCourseDetailPage(
+                                    tripDetails: tripDetails,
+                                    totalDays: totalDays,
+                                    courseId: courseId,
                                   ),
-                                  Text(
-                                    course['duration'] ?? '기간 정보 없음',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.white,
-                                      shadows: [
-                                        Shadow(
-                                          offset: Offset(1.0, 1.0),
-                                          blurRadius: 3.0,
-                                          color: Colors.black,
-                                        ),
-                                      ],
-                                    ),
+                                ),
+                              );
+                            } catch (e) {
+                              print('Error fetching course details: $e');
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    content:
+                                        Text('코스 상세 정보를 가져오는 데 실패했습니다.')),
+                              );
+                            }
+                          },
+                          child: Stack(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child:
+                                            _buildImage(course, imageIndex: 0),
+                                      ),
+                                      Expanded(
+                                        child:
+                                            _buildImage(course, imageIndex: 1),
+                                      ),
+                                    ],
                                   ),
-                                ],
+                                ),
                               ),
-                            ),
-                          ],
+                              Positioned(
+                                bottom: 8,
+                                left: 8,
+                                right: 8,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      course['region'] ?? '지역 정보 없음',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        shadows: [
+                                          Shadow(
+                                            offset: Offset(1.0, 1.0),
+                                            blurRadius: 3.0,
+                                            color: Colors.black,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Text(
+                                      course['duration'] ?? '기간 정보 없음',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.white,
+                                        shadows: [
+                                          Shadow(
+                                            offset: Offset(1.0, 1.0),
+                                            blurRadius: 3.0,
+                                            color: Colors.black,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       );
                     },
@@ -150,10 +217,10 @@ class _SavedTravelCoursesState extends State<SavedTravelCourses> {
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.push(
-                      context, 
+                      context,
                       MaterialPageRoute(
-                        builder: (context) => BasicFramePage5(
-                            body: MyNewPage()), 
+                        builder: (context) =>
+                            BasicFramePage5(body: MyNewPage()),
                       ),
                     );
                   },
@@ -166,7 +233,8 @@ class _SavedTravelCoursesState extends State<SavedTravelCourses> {
                   ),
                   child: Text(
                     '코스 제작하기',
-                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        fontSize: 13, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
@@ -175,10 +243,10 @@ class _SavedTravelCoursesState extends State<SavedTravelCourses> {
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.push(
-                      context, 
+                      context,
                       MaterialPageRoute(
-                        builder: (context) => BasicFramePage5(
-                            body: MyNewPage()),
+                        builder: (context) =>
+                            BasicFramePage5(body: MyNewPage()),
                       ),
                     );
                   },
@@ -191,7 +259,8 @@ class _SavedTravelCoursesState extends State<SavedTravelCourses> {
                   ),
                   child: Text(
                     '인기코스 보러가기',
-                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        fontSize: 13, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
@@ -202,8 +271,8 @@ class _SavedTravelCoursesState extends State<SavedTravelCourses> {
     );
   }
 
-  Widget _buildImage(Map<String, dynamic> course) {
-    String? imageUrl = _getImageUrl(course);
+  Widget _buildImage(Map<String, dynamic> course, {required int imageIndex}) {
+    String? imageUrl = _getImageUrl(course, imageIndex: imageIndex);
     if (imageUrl != null && imageUrl.isNotEmpty) {
       return Image.network(
         imageUrl,
@@ -242,15 +311,16 @@ class _SavedTravelCoursesState extends State<SavedTravelCourses> {
     }
   }
 
-  String? _getImageUrl(Map<String, dynamic> course) {
+  String? _getImageUrl(Map<String, dynamic> course, {required int imageIndex}) {
     try {
-      if (course['day1'] != null &&
-          course['day1'] is List &&
-          course['day1'].isNotEmpty) {
-        var day1FirstItem = course['day1'][0];
-        if (day1FirstItem['imageUrl'] != null &&
-            day1FirstItem['imageUrl'].isNotEmpty) {
-          return day1FirstItem['imageUrl'];
+      String dayKey = 'day${imageIndex + 1}';
+      if (course[dayKey] != null &&
+          course[dayKey] is List &&
+          course[dayKey].isNotEmpty) {
+        var dayFirstItem = course[dayKey][0];
+        if (dayFirstItem['imageUrl'] != null &&
+            dayFirstItem['imageUrl'].isNotEmpty) {
+          return dayFirstItem['imageUrl'];
         }
       }
     } catch (e) {
