@@ -22,8 +22,8 @@ jobs:
       - name: Install Dependencies
         run: flutter pub get
 
-      - name: Build Flutter Web
-        run: flutter build web --release
+      - name: Build Flutter Web with HTML Renderer
+        run: flutter build web --release --web-renderer html
 
       - name: Upload to S3
         env:
