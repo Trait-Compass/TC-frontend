@@ -3,6 +3,7 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart'; // file_picker 임포트
 import 'package:dotted_border/dotted_border.dart';
 import 'dart:io';
 import 'dart:typed_data';
@@ -66,72 +67,99 @@ class _TravelDetailPageState extends State<TravelDetailPage> {
     return koreanNumbers[index];
   }
 
-Future<void> _requestPermissions(int index) async {
-  Map<Permission, PermissionStatus> statuses;
+  Future<void> _requestPermissions(int index) async {
+    Map<Permission, PermissionStatus> statuses;
 
-  if (Platform.isAndroid) {
-    if (Platform.isAndroid && await Permission.photos.isGranted) {
-      statuses = await [
-        Permission.photos,
-        Permission.videos,
-      ].request();
+    if (!kIsWeb) {
+      // 웹에서는 권한 요청 불필요
+      if (Platform.isAndroid) {
+        statuses = await [
+          Permission.photos,
+          Permission.videos,
+        ].request();
+      } else if (Platform.isIOS) {
+        statuses = await [Permission.photos].request();
+      } else {
+        statuses = {};
+      }
+
+      if (statuses.values.any((status) => status.isGranted)) {
+        _pickImage(index);
+      } else {
+        print("사진 접근 권한이 필요합니다.");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('사진 접근 권한이 필요합니다. 설정에서 권한을 허용해주세요.')),
+        );
+        if (statuses.values.any((status) => status.isPermanentlyDenied)) {
+          openAppSettings();
+        }
+        return;
+      }
     } else {
-      statuses = await [
-        Permission.photos,
-        Permission.videos,
-      ].request();
-    }
-  } else if (Platform.isIOS) {
-    statuses = await [Permission.photos].request();
-  } else {
-    statuses = {};
-  }
-
-  if (statuses.values.any((status) => status.isGranted)) {
-    _pickImage(index); 
-  } else {
-    print("사진 접근 권한이 필요합니다.");
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('사진 접근 권한이 필요합니다. 설정에서 권한을 허용해주세요.')),
-    );
-    if (statuses.values.any((status) => status.isPermanentlyDenied)) {
-      openAppSettings(); 
+      // 웹에서는 바로 이미지 선택
+      _pickImage(index);
     }
   }
-}
 
   Future<void> _pickImage(int index) async {
     try {
-      final ImagePicker picker = ImagePicker();
-      final XFile? pickedFile =
-          await picker.pickImage(source: ImageSource.gallery);
+      setState(() {
+        _isLoading[index] = true;
+      });
 
-      if (pickedFile != null) {
-        setState(() {
-          _isLoading[index] = true;
-        });
+      if (kIsWeb) {
+        // 웹에서는 file_picker 사용
+        FilePickerResult? result = await FilePicker.platform.pickFiles(
+          type: FileType.image,
+          allowMultiple: false,
+        );
 
-        await Future.delayed(Duration(seconds: loadingTime));
+        if (result != null && result.files.single.bytes != null) {
+          Uint8List webImageBytes = result.files.single.bytes!;
+          await Future.delayed(Duration(seconds: loadingTime));
 
-        if (kIsWeb) {
-          Uint8List webImageBytes = await pickedFile.readAsBytes();
           setState(() {
             _webImages[index] = webImageBytes;
             _isLoading[index] = false;
             if (index + 1 < 10) _nextBoxToShow = index + 2;
           });
         } else {
+          // 사용자가 파일 선택을 취소한 경우
+          setState(() {
+            _isLoading[index] = false;
+          });
+        }
+      } else {
+        // 모바일에서는 image_picker 사용
+        final ImagePicker picker = ImagePicker();
+        final XFile? pickedFile =
+            await picker.pickImage(source: ImageSource.gallery);
+
+        if (pickedFile != null) {
+          await Future.delayed(Duration(seconds: loadingTime));
+
           setState(() {
             _selectedImages[index] = File(pickedFile.path);
             _isLoading[index] = false;
             if (index + 1 < 10) _nextBoxToShow = index + 2;
           });
+        } else {
+          // 사용자가 이미지 선택을 취소한 경우
+          setState(() {
+            _isLoading[index] = false;
+          });
         }
-
-        _saveToModel();
       }
+
+      _saveToModel();
     } catch (e) {
       print("이미지를 선택하는 중 오류가 발생했습니다: $e");
+      setState(() {
+        _isLoading[index] = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('이미지 선택 중 오류가 발생했습니다. 다시 시도해주세요.')),
+      );
     }
   }
 
@@ -353,18 +381,19 @@ Future<void> _requestPermissions(int index) async {
                                     height: 80,
                                     fit: BoxFit.contain,
                                   )
-                                : Image.memory(
-                                    _webImages[index]!,
-                                    width: 120,
-                                    height: 80,
-                                    fit: BoxFit.contain,
-                                  ),
+                                : _webImages[index] != null
+                                    ? Image.memory(
+                                        _webImages[index]!,
+                                        width: 120,
+                                        height: 80,
+                                        fit: BoxFit.contain,
+                                      )
+                                    : Container(),
                           ),
                         )
                       : DottedBorder(
                           color: Colors.black,
                           strokeWidth: 1,
-                          dashPattern: [4, 2],
                           borderType: BorderType.RRect,
                           radius: Radius.circular(10),
                           child: Container(

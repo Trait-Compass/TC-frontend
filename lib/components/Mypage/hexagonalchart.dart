@@ -45,14 +45,20 @@ class _RadarChartWidgetState extends State<RadarChartWidget> {
     super.initState();
     radius = sideLength / sqrt(3); // 중심에서 꼭짓점까지의 거리
 
-    // 모델에서 값을 가져와서 values 리스트 초기화
+    // Helper 함수 정의: 점수가 null이거나 0이면 5로 설정, 그렇지 않으면 원래 값 사용
+    double getInitialValue(int? score) {
+      if (score == null || score == 0) return 5.0 / 10.0; // 0을 5로 설정 후 10으로 나눔
+      return score / 10.0;
+    }
+
+    // 모델에서 값을 가져와서 values 리스트 초기화 (0이면 5로 설정)
     values = [
-      (widget.diary.transportationSatisfaction ?? 0) / 10.0,
-      (widget.diary.sightseeingSatisfaction ?? 0) / 10.0,
-      (widget.diary.foodSatisfaction ?? 0) / 10.0,
-      (widget.diary.environmentSatisfaction ?? 0) / 10.0,
-      (widget.diary.priceSatisfaction ?? 0) / 10.0,
-      (widget.diary.accommodationSatisfaction ?? 0) / 10.0,
+      getInitialValue(widget.diary.transportationSatisfaction),
+      getInitialValue(widget.diary.sightseeingSatisfaction),
+      getInitialValue(widget.diary.foodSatisfaction),
+      getInitialValue(widget.diary.environmentSatisfaction),
+      getInitialValue(widget.diary.priceSatisfaction),
+      getInitialValue(widget.diary.accommodationSatisfaction),
     ];
   }
 
