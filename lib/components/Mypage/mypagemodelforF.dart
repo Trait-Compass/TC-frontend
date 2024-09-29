@@ -1,10 +1,12 @@
 // lib/models/mypagemodelforF.dart
+import 'dart:typed_data';
 
 class TravelDiaryEmotion {
   // 필수 필드
   String courseName;
   DateTime travelDate;
   List<String>? travelPhotos; // 이미지 경로 또는 URL
+  List<Uint8List>? webImages;
 
   // 감정 데이터
   List<String>? happyEmotions;
@@ -24,6 +26,7 @@ class TravelDiaryEmotion {
     required this.courseName,
     required this.travelDate,
     this.travelPhotos,
+    this.webImages,
     this.happyEmotions,
     this.satisfiedEmotions,
     this.comfortableEmotions,
@@ -43,6 +46,10 @@ class TravelDiaryEmotion {
       travelDate: DateTime.parse(json['travelDate']),
       travelPhotos: json['travelPhotos'] != null
           ? List<String>.from(json['travelPhotos'])
+          : null,
+      webImages: json['webImages'] != null
+          ? List<Uint8List>.from(json['webImages']
+              .map((x) => Uint8List.fromList(List<int>.from(x))))
           : null,
       happyEmotions: json['happyEmotions'] != null
           ? List<String>.from(json['happyEmotions'])
@@ -77,6 +84,7 @@ class TravelDiaryEmotion {
       'courseName': courseName,
       'travelDate': travelDate.toIso8601String(),
       'travelPhotos': travelPhotos,
+      'webImages': webImages?.map((x) => x.toList()).toList(),
       'happyEmotions': happyEmotions,
       'satisfiedEmotions': satisfiedEmotions,
       'comfortableEmotions': comfortableEmotions,
