@@ -158,7 +158,7 @@ class _MyNewPageState extends State<MyNewPage> {
                                     ),
                                     Text('# 계획을 즐기는',
                                         style: TextStyle(fontSize: 10)),
-                                    Text('# 체계적 # 역설정',
+                                    Text('# 체계적 # 엑셀형',
                                         style: TextStyle(fontSize: 10)),
                                   ],
                                 ),
